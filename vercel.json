@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "name": "ectracc-frontend",
+  "builds": [
+    {
+      "src": "ectracc-frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/ectracc-frontend/$1"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!api/.*).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
