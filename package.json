@@ -2,11 +2,15 @@
   "name": "ectracc-app",
   "version": "1.0.0",
   "description": "ECTRACC Application",
+  "main": "server.js",
   "scripts": {
-    "start": "cd ectracc-backend && npm start",
-    "install-backend": "cd ectracc-backend && npm install"
+    "start": "node server.js",
+    "postinstall": "cd ectracc-backend && npm install"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }
