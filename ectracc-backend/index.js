@@ -163,21 +163,37 @@ app.use((error, req, res, next) => {
 // Initialize services and start server
 const startServer = async () => {
   try {
-    logger.info('🚀 Starting ECTRACC Backend API (Phase 1)...');
+    logger.info('🚀 Starting ECTRACC Backend API v2.0.0...');
+    logger.info('🔧 MongoDB URI configured:', process.env.MONGODB_URI ? 'YES' : 'NO');
+    logger.info('🔧 MongoDB Database:', process.env.MONGODB_DATABASE);
     
-    // Initialize database connections (placeholder for Phase 1)
+    // Initialize database connections
+    logger.info('📦 Connecting to MongoDB...');
     await connectMongoDB();
+    logger.info('✅ MongoDB connected successfully');
+    
+    logger.info('🔐 Initializing Supabase...');
     initializeSupabase();
+    logger.info('✅ Supabase initialized');
     
     // Start the server
-    app.listen(PORT, () => {
+    logger.info(`🚀 Starting server on port ${PORT}...`);
+    const server = app.listen(PORT, '0.0.0.0', () => {
       logger.info(`✅ Server running on port ${PORT}`);
       logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`📊 Health check: http://localhost:${PORT}/api/healthcheck`);
-      logger.info(`🎯 Phase 1: Project Setup & Architecture - COMPLETE`);
+      logger.info(`🎯 Week 2: Real Product Database Integration - COMPLETE`);
     });
+    
+    // Handle server errors
+    server.on('error', (error) => {
+      logger.error('❌ Server error:', error);
+      process.exit(1);
+    });
+    
   } catch (error) {
     logger.error('❌ Failed to start server:', error);
+    logger.error('❌ Error details:', error.stack);
     process.exit(1);
   }
 };
