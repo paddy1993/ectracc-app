@@ -1,0 +1,24 @@
+{
+  "name": "ectracc-marketing",
+  "version": "1.0.0",
+  "description": "ECTRACC Marketing Landing Page for Beta Launch",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve . -l 3001",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "carbon footprint",
+    "sustainability",
+    "eco-friendly",
+    "barcode scanner",
+    "environmental impact",
+    "marketing page"
+  ],
+  "author": "ECTRACC Team",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

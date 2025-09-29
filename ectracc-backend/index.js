@@ -8,6 +8,7 @@ const compression = require('compression');
 const { connectMongoDB, initializeSupabase } = require('./config/database');
 const { mongoHealthCheck } = require('./config/mongodb');
 const productsRouter = require('./routes/products');
+const betaRouter = require('./routes/beta');
 const logger = require('./utils/logger');
 
 const app = express();
@@ -113,6 +114,7 @@ app.get('/healthz', (req, res) => {
 
 // API Routes
 app.use('/api/products', productsRouter);
+app.use('/api/beta', betaRouter);
 
 // Root endpoint
 app.get('/', (req, res) => {
