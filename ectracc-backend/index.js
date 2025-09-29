@@ -103,6 +103,14 @@ app.get('/api/ping', (req, res) => {
   });
 });
 
+// Render health check endpoint (expected at /healthz)
+app.get('/healthz', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // API Routes
 app.use('/api/products', productsRouter);
 
