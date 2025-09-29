@@ -1,35 +1,26 @@
-const { MongoClient } = require('mongodb');
 const { createClient } = require('@supabase/supabase-js');
+const { connectMongoDB: connectMongoAtlas, mongoHealthCheck } = require('./mongodb');
 
-// MongoDB connection (placeholder for Phase 1)
-let mongoClient;
-let mongodb;
+// MongoDB Atlas connection using our new module
+let mongoConnected = false;
 
 const connectMongoDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
-    const dbName = process.env.MONGODB_DATABASE || 'ectracc';
-    
-    console.log('📦 Connecting to MongoDB...');
-    
-    mongoClient = new MongoClient(mongoUri);
-    await mongoClient.connect();
-    mongodb = mongoClient.db(dbName);
-    
-    // Test the connection
-    await mongodb.admin().ping();
-    console.log('✅ Connected to MongoDB');
-    
-    return mongodb;
+    console.log('📦 Connecting to MongoDB Atlas...');
+    await connectMongoAtlas();
+    mongoConnected = true;
+    console.log('✅ Connected to MongoDB Atlas');
+    return true;
   } catch (error) {
-    console.log('⚠️ MongoDB connection failed:', error.message);
+    console.log('⚠️ MongoDB Atlas connection failed:', error.message);
     console.log('📝 Using test data mode for development');
-    return null;
+    mongoConnected = false;
+    return false;
   }
 };
 
 const getMongoDb = () => {
-  return mongodb; // Can return null if not connected
+  return mongoConnected;
 };
 
 // Supabase connection (placeholder for Phase 1)

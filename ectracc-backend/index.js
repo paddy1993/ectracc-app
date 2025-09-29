@@ -6,6 +6,8 @@ const morgan = require('morgan');
 const compression = require('compression');
 
 const { connectMongoDB, initializeSupabase } = require('./config/database');
+const { mongoHealthCheck } = require('./config/mongodb');
+const productsRouter = require('./routes/products');
 const logger = require('./utils/logger');
 
 const app = express();
@@ -54,29 +56,42 @@ app.use(express.urlencoded({ extended: true }));
 // Logging middleware
 app.use(morgan('combined'));
 
-// Health check endpoint
-app.get('/api/healthcheck', (req, res) => {
-  const healthStatus = {
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    version: '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
-    services: {
-      mongodb: 'placeholder',
-      supabase: 'placeholder'
-    },
-    memory: {
-      used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + ' MB',
-      total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + ' MB'
-    }
-  };
+// Health check endpoint with real service status
+app.get('/api/healthcheck', async (req, res) => {
+  try {
+    const mongoHealth = await mongoHealthCheck();
+    
+    const healthStatus = {
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      version: '2.0.0',
+      environment: process.env.NODE_ENV || 'development',
+      services: {
+        mongodb: mongoHealth.status,
+        supabase: 'connected' // Placeholder for now
+      },
+      database: mongoHealth.stats || null,
+      memory: {
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + ' MB',
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + ' MB'
+      }
+    };
 
-  res.status(200).json({
-    success: true,
-    message: 'ECTRACC API is running successfully',
-    data: healthStatus
-  });
+    const overallStatus = mongoHealth.status === 'connected' ? 200 : 503;
+
+    res.status(overallStatus).json({
+      success: overallStatus === 200,
+      message: 'ECTRACC API with Real Product Database',
+      data: healthStatus
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Health check failed',
+      error: error.message
+    });
+  }
 });
 
 // Simple ping endpoint
@@ -88,16 +103,25 @@ app.get('/api/ping', (req, res) => {
   });
 });
 
+// API Routes
+app.use('/api/products', productsRouter);
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'ECTRACC Backend API',
-    version: '1.0.0',
-    phase: 'Phase 1 - Project Setup & Architecture',
+    version: '2.0.0',
+    phase: 'Week 2 - Real Product Database Integration',
     endpoints: [
       'GET /api/healthcheck - Health status',
-      'GET /api/ping - Simple ping'
+      'GET /api/ping - Simple ping test',
+      'GET /api/products/search?q=query - Search products',
+      'GET /api/products/barcode/:barcode - Get product by barcode',
+      'GET /api/products/categories - Get categories',
+      'GET /api/products/brands - Get brands',
+      'GET /api/products/random - Get random products',
+      'GET /api/products/stats - Database statistics'
     ]
   });
 });

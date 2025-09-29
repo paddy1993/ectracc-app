@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "import-data": "node scripts/import-openfoodfacts.js",
+    "seed-data": "node scripts/seed-sample-data.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
