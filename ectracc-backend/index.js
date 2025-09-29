@@ -161,5 +161,10 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Start the server
-startServer();
+// For Vercel serverless deployment
+module.exports = app;
+
+// Start the server (only in non-serverless environments)
+if (require.main === module) {
+  startServer();
+}

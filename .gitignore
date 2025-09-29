@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 */node_modules/
+**/node_modules/
 
 # Environment variables
 .env
@@ -50,9 +51,6 @@ coverage/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-
 # next.js build output
 .next
 
@@ -81,3 +79,6 @@ coverage/
 # Temporary files
 *.tmp
 *.temp
+
+# Vercel
+.vercel
