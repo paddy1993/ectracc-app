@@ -1,0 +1,12 @@
+{
+  "name": "ectracc-app",
+  "version": "1.0.0",
+  "description": "ECTRACC Application",
+  "scripts": {
+    "start": "cd ectracc-backend && npm start",
+    "install-backend": "cd ectracc-backend && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
