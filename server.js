@@ -23,12 +23,48 @@ process.on('unhandledRejection', (reason, promise) => {
   process.exit(1);
 });
 
-try {
-  // Import and start the backend
-  console.log('📦 Loading backend module...');
-  require('./ectracc-backend/index.js');
-  console.log('✅ Backend module loaded successfully');
-} catch (error) {
-  console.error('❌ Failed to load backend:', error);
-  process.exit(1);
-}
+const startApp = async () => {
+  try {
+    // Import the backend module
+    console.log('📦 Loading backend module...');
+    const backendApp = require('./ectracc-backend/index.js');
+    console.log('✅ Backend module loaded successfully');
+    
+    // Import database functions
+    const { connectMongoDB, initializeSupabase } = require('./ectracc-backend/config/database');
+    
+    // Initialize database connections
+    console.log('📦 Connecting to MongoDB...');
+    await connectMongoDB();
+    console.log('✅ MongoDB connected successfully');
+    
+    console.log('🔐 Initializing Supabase...');
+    initializeSupabase();
+    console.log('✅ Supabase initialized');
+    
+    // Start the server
+    console.log('🚀 Starting server...');
+    const PORT = process.env.PORT || 10000;
+    
+    const server = backendApp.listen(PORT, '0.0.0.0', () => {
+      console.log(`✅ Server running on port ${PORT}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`📊 Health check: http://localhost:${PORT}/api/healthcheck`);
+      console.log(`🎯 Week 2: Real Product Database Integration - LIVE!`);
+    });
+    
+    // Handle server errors
+    server.on('error', (error) => {
+      console.error('❌ Server error:', error);
+      process.exit(1);
+    });
+    
+  } catch (error) {
+    console.error('❌ Failed to start app:', error);
+    console.error('❌ Error details:', error.stack);
+    process.exit(1);
+  }
+};
+
+// Start the application
+startApp();
