@@ -1,6 +1,9 @@
-// Root server that imports the backend directly
+// Root server that starts the backend
 require('dotenv').config();
-const backendApp = require('./ectracc-backend/index.js');
 
-// The backend app is already configured and exported
-// This file just ensures it runs from the root directory
+// Set the working directory environment for the backend
+process.env.NODE_PATH = __dirname;
+
+// Import and start the backend
+console.log('🚀 Starting ECTRACC from root directory...');
+require('./ectracc-backend/index.js');
