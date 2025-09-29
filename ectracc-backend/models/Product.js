@@ -34,14 +34,16 @@ class Product {
   async search(query, options = {}) {
     try {
       const products = this.getCollection();
-    const {
+      const {
         limit = 20,
         skip = 0,
-      category = null,
+        category = null,
         brand = null,
-      ecoScore = null,
-      sortBy = 'relevance'
-    } = options;
+        ecoScore = null,
+        minCarbon = null,
+        maxCarbon = null,
+        sortBy = 'relevance'
+      } = options;
 
       // Build search filter
       const filter = {
@@ -50,41 +52,86 @@ class Product {
 
       // Add additional filters
       if (category) {
-        filter.categories = { $regex: category, $options: 'i' };
+        if (Array.isArray(category)) {
+          filter.categories = { $in: category.map(cat => new RegExp(cat, 'i')) };
+        } else {
+          filter.categories = { $regex: category, $options: 'i' };
+        }
       }
       
       if (brand) {
-        filter.brands = { $regex: brand, $options: 'i' };
+        if (Array.isArray(brand)) {
+          filter.brands = { $in: brand.map(b => new RegExp(b, 'i')) };
+        } else {
+          filter.brands = { $regex: brand, $options: 'i' };
+        }
       }
       
       if (ecoScore) {
-        filter.ecoscore_grade = ecoScore.toLowerCase();
+        if (Array.isArray(ecoScore)) {
+          filter.ecoscore_grade = { $in: ecoScore.map(score => score.toLowerCase()) };
+        } else {
+          filter.ecoscore_grade = ecoScore.toLowerCase();
+        }
+      }
+
+      // Carbon footprint filtering (we'll calculate this on the fly)
+      if (minCarbon !== null || maxCarbon !== null) {
+        // For now, we'll filter after calculation since carbon footprint is computed
+        // In a production system, you'd want to pre-calculate and index this
       }
 
       // Build sort options
       let sort = {};
-    switch (sortBy) {
-        case 'name':
+      switch (sortBy) {
+        case 'name_asc':
           sort = { product_name: 1 };
           break;
-        case 'ecoscore':
-          sort = { ecoscore_grade: 1 };
-        break;
-        case 'nutrition':
-          sort = { 'nutriments.energy-kcal_100g': 1 };
-        break;
-      default:
+        case 'eco_best':
+          sort = { ecoscore_grade: 1 }; // A comes before E
+          break;
+        case 'carbon_asc':
+          // We'll sort after calculating carbon footprint
+          sort = { score: { $meta: 'textScore' } };
+          break;
+        case 'carbon_desc':
+          // We'll sort after calculating carbon footprint  
+          sort = { score: { $meta: 'textScore' } };
+          break;
+        case 'relevance':
+        default:
           sort = { score: { $meta: 'textScore' } };
       }
 
-      const results = await products
+      let results = await products
         .find(filter)
         .sort(sort)
         .skip(skip)
-        .limit(limit)
+        .limit(limit * 2) // Get more results for carbon filtering
         .toArray();
 
-      return results.map(product => this.formatProduct(product));
+      // Format products and calculate carbon footprints
+      let formattedProducts = results.map(product => this.formatProduct(product));
+
+      // Apply carbon footprint filtering
+      if (minCarbon !== null || maxCarbon !== null) {
+        formattedProducts = formattedProducts.filter(product => {
+          const carbon = product.carbon_footprint;
+          if (minCarbon !== null && carbon < minCarbon) return false;
+          if (maxCarbon !== null && carbon > maxCarbon) return false;
+          return true;
+        });
+      }
+
+      // Apply carbon-based sorting
+      if (sortBy === 'carbon_asc') {
+        formattedProducts.sort((a, b) => a.carbon_footprint - b.carbon_footprint);
+      } else if (sortBy === 'carbon_desc') {
+        formattedProducts.sort((a, b) => b.carbon_footprint - a.carbon_footprint);
+      }
+
+      // Limit to requested amount after filtering
+      return formattedProducts.slice(0, limit);
     } catch (error) {
       console.error('Error searching products:', error);
       throw error;

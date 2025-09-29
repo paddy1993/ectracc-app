@@ -28,7 +28,11 @@ router.get('/search', checkMongoConnection, async (req, res) => {
       category, 
       brand, 
       ecoscore,
-      sort = 'relevance'
+      ecoScore,
+      minCarbon,
+      maxCarbon,
+      sort = 'relevance',
+      sortBy = 'relevance'
     } = req.query;
 
     if (!query || query.trim().length < 2) {
@@ -45,8 +49,10 @@ router.get('/search', checkMongoConnection, async (req, res) => {
       skip: Math.max(skip, 0),
       category,
       brand,
-      ecoScore: ecoscore,
-      sortBy: sort
+      ecoScore: ecoscore || ecoScore,
+      minCarbon: minCarbon ? parseFloat(minCarbon) : undefined,
+      maxCarbon: maxCarbon ? parseFloat(maxCarbon) : undefined,
+      sortBy: sortBy || sort
     };
 
     const products = await Product.search(query.trim(), options);
