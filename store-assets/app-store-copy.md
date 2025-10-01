@@ -9,7 +9,7 @@ ECTRACC - Carbon Footprint Tracker
 Scan barcodes, track impact, live sustainably
 
 ### **Description**
-**Track your carbon footprint effortlessly with ECTRACC!**
+**Track the carbon footprint of the products you buy effortlessly with ECTRACC!**
 
 🌱 **Scan & Discover**
 Point your camera at any product barcode to instantly see its environmental impact. Our database includes 1,000+ verified products with real carbon footprint data.
@@ -36,7 +36,7 @@ Every scan is a step toward a more sustainable future. Whether you're shopping f
 **Perfect for:**
 • Eco-conscious shoppers
 • Sustainability enthusiasts  
-• Anyone wanting to reduce their carbon footprint
+• Anyone wanting to reduce the carbon footprint of their purchases
 • Families teaching kids about environmental responsibility
 • Students and researchers tracking consumption
 

@@ -357,13 +357,18 @@ function aggregateFootprintData(footprints, period) {
     let key;
 
     if (period === 'weekly') {
-      // Group by week (Monday as start of week)
+      // Group by week (Monday as start of week) - fix date calculation
+      const dayOfWeek = date.getDay();
       const monday = new Date(date);
-      monday.setDate(date.getDate() - date.getDay() + 1);
+      // Calculate days to subtract to get to Monday (0 = Sunday, 1 = Monday, etc.)
+      const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+      monday.setDate(date.getDate() - daysToSubtract);
+      monday.setHours(0, 0, 0, 0); // Reset time to start of day
       key = monday.toISOString().split('T')[0];
     } else {
-      // Group by month
-      key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      // Group by month - use first day of month for consistency
+      const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+      key = firstOfMonth.toISOString().split('T')[0];
     }
 
     if (!aggregated[key]) {
