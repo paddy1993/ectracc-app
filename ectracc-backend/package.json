@@ -1,3 +1,4 @@
+
 {
   "name": "ectracc-backend",
   "version": "1.0.0",
@@ -11,6 +12,7 @@
     "import-open-facts": "node scripts/import-open-facts-dumps.js",
     "import-jsonl": "node scripts/import-openfoodfacts-jsonl.js",
     "reset-db": "node scripts/reset-database.js",
+   "duckdb-pipeline": "node scripts/duckdb-pipeline.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
