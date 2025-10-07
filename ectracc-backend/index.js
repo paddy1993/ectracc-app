@@ -188,7 +188,7 @@ const startServer = async () => {
       logger.info(`✅ Server running on port ${PORT}`);
       logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`📊 Health check: http://localhost:${PORT}/api/healthcheck`);
-      logger.info(`🎯 Week 2: Real Product Database Integration - COMPLETE`);
+      logger.info(`🎯 Week 2: Real Product Database Integration with Carbon Data - COMPLETE`);
     });
     
     // Handle server errors
