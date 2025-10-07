@@ -225,8 +225,8 @@ class Product {
   formatProduct(product) {
     if (!product) return null;
 
-    // Calculate carbon footprint estimate based on available data
-    const carbonFootprint = this.calculateCarbonFootprint(product);
+    // Use real carbon footprint data if available, otherwise calculate estimate
+    const carbonFootprint = product.co2_total || this.calculateCarbonFootprint(product);
 
     return {
       id: product._id,
@@ -236,14 +236,29 @@ class Product {
               (product.brands ? [product.brands] : []),
       categories: Array.isArray(product.categories) ? product.categories : 
                   (product.categories ? [product.categories] : []),
+      categories_hierarchy: product.categories_hierarchy || [],
       ecoscore_grade: product.ecoscore_grade || null,
+      environmental_score_grade: product.environmental_score_grade || null,
       nutriscore_grade: product.nutriscore_grade || null,
       nutrition_info: this.formatNutrition(product.nutriments),
+      ingredients_text: product.ingredients_text || null,
       ingredients_count: product.ingredients ? product.ingredients.length : 0,
+      labels: product.labels || null,
       carbon_footprint: carbonFootprint,
+      // Detailed carbon footprint breakdown (if available)
+      carbon_footprint_details: product.co2_total ? {
+        total: product.co2_total,
+        agriculture: product.co2_agriculture || null,
+        processing: product.co2_processing || null,
+        transportation: product.co2_transportation || null,
+        packaging: product.co2_packaging || null,
+        distribution: product.co2_distribution || null
+      } : null,
+      product_type: product.product_type || 'food',
+      source_database: product.source_database || 'openfoodfacts',
       last_updated: product.last_modified_t ? 
                    new Date(product.last_modified_t * 1000).toISOString() : 
-                   new Date().toISOString(),
+                   (product.imported_at || new Date().toISOString()),
       // Remove image data to save bandwidth
       image_url: null, // We're not storing images
       packaging: product.packaging || null,
@@ -347,16 +362,31 @@ class Product {
       const withNutrition = await products.countDocuments({ 
         'nutriments.energy-kcal_100g': { $exists: true } 
       });
+      const withCarbonData = await products.countDocuments({
+        co2_total: { $ne: null, $exists: true }
+      });
+      const foodProducts = await products.countDocuments({ product_type: 'food' });
+      const beautyProducts = await products.countDocuments({ product_type: 'beauty' });
+      const petfoodProducts = await products.countDocuments({ product_type: 'petfood' });
+      const generalProducts = await products.countDocuments({ product_type: 'product' });
       
       return {
         totalProducts,
         withBarcodes,
         withEcoScore,
         withNutrition,
+        withCarbonData,
+        productTypes: {
+          food: foodProducts,
+          beauty: beautyProducts,
+          petfood: petfoodProducts,
+          general: generalProducts
+        },
         coverage: {
           barcodes: Math.round((withBarcodes / totalProducts) * 100),
           ecoScore: Math.round((withEcoScore / totalProducts) * 100),
-          nutrition: Math.round((withNutrition / totalProducts) * 100)
+          nutrition: Math.round((withNutrition / totalProducts) * 100),
+          carbonData: Math.round((withCarbonData / totalProducts) * 100)
         }
       };
     } catch (error) {
