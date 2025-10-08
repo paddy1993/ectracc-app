@@ -11,6 +11,8 @@ const productsRouter = require('./routes/products');
 const betaRouter = require('./routes/beta');
 const analyticsRouter = require('./routes/analytics');
 const feedbackRouter = require('./routes/feedback');
+const baseComponentsRouter = require('./routes/base-components');
+const userFootprintsRouter = require('./routes/user-footprints');
 const logger = require('./utils/logger');
 
 const app = express();
@@ -119,6 +121,8 @@ app.use('/api/products', productsRouter);
 app.use('/api/beta', betaRouter);
 app.use('/api/analytics', analyticsRouter);
 app.use('/api/feedback', feedbackRouter);
+app.use('/api/base-components', baseComponentsRouter);
+app.use('/api/user-footprints', userFootprintsRouter);
 
 // Root endpoint
 app.get('/', (req, res) => {

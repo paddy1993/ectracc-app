@@ -1,4 +1,3 @@
-
 {
   "name": "ectracc-backend",
   "version": "1.0.0",
@@ -12,8 +11,10 @@
     "import-open-facts": "node scripts/import-open-facts-dumps.js",
     "import-jsonl": "node scripts/import-openfoodfacts-jsonl.js",
     "reset-db": "node scripts/reset-database.js",
-   "duckdb-pipeline": "node scripts/duckdb-pipeline.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "duckdb-pipeline": "node scripts/duckdb-pipeline.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [
     "carbon",
@@ -38,12 +39,16 @@
     "zod": "^4.1.1"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.2.3",
     "nodemon": "^3.1.9",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.4"
   }
 }

@@ -34,16 +34,16 @@ class Product {
   async search(query, options = {}) {
     try {
       const products = this.getCollection();
-      const {
+    const {
         limit = 20,
         skip = 0,
-        category = null,
+      category = null,
         brand = null,
-        ecoScore = null,
+      ecoScore = null,
         minCarbon = null,
         maxCarbon = null,
-        sortBy = 'relevance'
-      } = options;
+      sortBy = 'relevance'
+    } = options;
 
       // Build search filter
       const filter = {
@@ -83,23 +83,23 @@ class Product {
 
       // Build sort options
       let sort = {};
-      switch (sortBy) {
+    switch (sortBy) {
         case 'name_asc':
           sort = { product_name: 1 };
           break;
         case 'eco_best':
           sort = { ecoscore_grade: 1 }; // A comes before E
           break;
-        case 'carbon_asc':
+      case 'carbon_asc':
           // We'll sort after calculating carbon footprint
           sort = { score: { $meta: 'textScore' } };
-          break;
-        case 'carbon_desc':
+        break;
+      case 'carbon_desc':
           // We'll sort after calculating carbon footprint  
           sort = { score: { $meta: 'textScore' } };
-          break;
-        case 'relevance':
-        default:
+        break;
+      case 'relevance':
+      default:
           sort = { score: { $meta: 'textScore' } };
       }
 
@@ -227,6 +227,21 @@ class Product {
 
     // Use real carbon footprint data if available, otherwise calculate estimate
     const carbonFootprint = product.co2_total || this.calculateCarbonFootprint(product);
+    
+    // Determine carbon footprint source
+    let carbonFootprintSource = 'estimated';
+    let carbonFootprintReference = null;
+    
+    if (product.co2_total) {
+      carbonFootprintSource = 'agribalyse';
+      carbonFootprintReference = 'Agribalyse (French Environmental Agency)';
+    } else if (product.carbon_footprint_source) {
+      carbonFootprintSource = product.carbon_footprint_source;
+      carbonFootprintReference = product.carbon_footprint_reference;
+    } else if (product.is_base_component) {
+      carbonFootprintSource = 'base_component';
+      carbonFootprintReference = product.carbon_footprint_reference || 'Research average from multiple studies';
+    }
 
     return {
       id: product._id,
@@ -245,6 +260,9 @@ class Product {
       ingredients_count: product.ingredients ? product.ingredients.length : 0,
       labels: product.labels || null,
       carbon_footprint: carbonFootprint,
+      // Carbon footprint source information
+      carbon_footprint_source: carbonFootprintSource,
+      carbon_footprint_reference: carbonFootprintReference,
       // Detailed carbon footprint breakdown (if available)
       carbon_footprint_details: product.co2_total ? {
         total: product.co2_total,
@@ -256,6 +274,8 @@ class Product {
       } : null,
       product_type: product.product_type || 'food',
       source_database: product.source_database || 'openfoodfacts',
+      has_barcode: product.has_barcode !== false, // Default to true for existing products
+      is_base_component: product.is_base_component || false,
       last_updated: product.last_modified_t ? 
                    new Date(product.last_modified_t * 1000).toISOString() : 
                    (product.imported_at || new Date().toISOString()),
