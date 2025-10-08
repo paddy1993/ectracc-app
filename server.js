@@ -1,5 +1,5 @@
 // Root server that starts the backend
-require('dotenv').config();
+require('dotenv').config({ path: './ectracc-backend/.env.development' });
 
 // Set the working directory environment for the backend
 process.env.NODE_PATH = __dirname;
