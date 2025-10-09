@@ -1,0 +1,104 @@
+{
+  "type": "MOBILE_TESTING",
+  "approach": "Cross-device, screen size, and network testing",
+  "summary": {
+    "totalTests": 7,
+    "passed": 6,
+    "failed": 1,
+    "successRate": "85.71",
+    "totalDuration": "232.67s",
+    "mobileReady": false
+  },
+  "tests": [
+    {
+      "name": "Responsive Design",
+      "status": "FAILED",
+      "error": "Frontend index.html not found"
+    },
+    {
+      "name": "Screen Size Compatibility",
+      "status": "PASSED",
+      "duration": "101027ms",
+      "details": "Screen Size Compatibility: 6/6 device configurations working\n✅ iPhone SE (375x667)\n✅ iPhone 12 (390x844)\n✅ iPad (768x1024)\n✅ Samsung Galaxy S21 (360x800)\n✅ Samsung Galaxy Tab (800x1280)\n✅ Desktop (1920x1080)"
+    },
+    {
+      "name": "Mobile Network Conditions",
+      "status": "PASSED",
+      "duration": "26159ms",
+      "details": "Mobile Network Conditions: 3/3 network conditions handled\n✅ Fast Network (WiFi) (9161ms)\n✅ Slow Network (3G) (8712ms)\n✅ Intermittent Network (8286ms)"
+    },
+    {
+      "name": "Touch/Gesture Support",
+      "status": "PASSED",
+      "duration": "33377ms",
+      "details": "Touch/Gesture Support: 4/4 gesture-triggered API calls working"
+    },
+    {
+      "name": "Mobile Performance",
+      "status": "PASSED",
+      "duration": "27338ms",
+      "details": "Mobile Performance: 0/3 performance tests acceptable for mobile\n⚠️ Mobile API Response Time (8198ms - slow for mobile)\n⚠️ Mobile Search Performance (8390ms - slow for mobile)\n⚠️ Mobile Concurrent Requests (10749ms - slow for mobile)"
+    },
+    {
+      "name": "Cross-Device Compatibility",
+      "status": "PASSED",
+      "duration": "35996ms",
+      "details": "Cross-Device Compatibility: 4/4 device types compatible"
+    },
+    {
+      "name": "PWA/Mobile App Features",
+      "status": "PASSED",
+      "duration": "8766ms",
+      "details": "PWA/Mobile App Features: 4/4 PWA features available\n✅ PWA Manifest Availability\n✅ Service Worker Support\n✅ Offline Capability Indicators\n✅ Mobile-Optimized API Responses"
+    }
+  ],
+  "testCategories": [
+    "Responsive Design",
+    "Screen Size Compatibility",
+    "Mobile Network Conditions",
+    "Touch/Gesture Support",
+    "Mobile Performance",
+    "Cross-Device Compatibility",
+    "PWA/Mobile App Features"
+  ],
+  "deviceConfigurations": [
+    {
+      "name": "iPhone SE",
+      "width": 375,
+      "height": 667,
+      "userAgent": "iPhone"
+    },
+    {
+      "name": "iPhone 12",
+      "width": 390,
+      "height": 844,
+      "userAgent": "iPhone"
+    },
+    {
+      "name": "iPad",
+      "width": 768,
+      "height": 1024,
+      "userAgent": "iPad"
+    },
+    {
+      "name": "Samsung Galaxy S21",
+      "width": 360,
+      "height": 800,
+      "userAgent": "Android"
+    },
+    {
+      "name": "Samsung Galaxy Tab",
+      "width": 800,
+      "height": 1280,
+      "userAgent": "Android"
+    },
+    {
+      "name": "Desktop",
+      "width": 1920,
+      "height": 1080,
+      "userAgent": "Desktop"
+    }
+  ],
+  "timestamp": "2025-10-09T00:35:25.383Z",
+  "verdict": "MOBILE_ISSUES_DETECTED"
+}
