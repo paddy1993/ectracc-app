@@ -1,0 +1,65 @@
+{
+  "pipeline": {
+    "started": 1759967982657,
+    "completed": 1759968236177,
+    "duration": 253520,
+    "status": "FAILED"
+  },
+  "configuration": {
+    "triggerType": "manual",
+    "testSuite": "full",
+    "parallel": false,
+    "timeout": 300000
+  },
+  "stages": [
+    {
+      "name": "Pre-Checks",
+      "status": "PASSED",
+      "duration": 20,
+      "details": {
+        "checks": "Pre-flight checks completed successfully"
+      }
+    },
+    {
+      "name": "Environment Setup",
+      "status": "PASSED",
+      "duration": 92630,
+      "details": {
+        "environment": "Test environment ready"
+      }
+    },
+    {
+      "name": "Smoke Tests",
+      "status": "PASSED",
+      "duration": 51042,
+      "details": {
+        "suite": "Smoke Tests",
+        "status": "PASSED",
+        "duration": 51041,
+        "output": "💨 [2025-10-09T00:01:15.439Z] 💨 Starting Automated Smoke Testing Suite\n💨 [2025-10-09T00:01:15.447Z] 🎯 Quick stability check for build verification\n💨 [2025-10-09T00:01:15.447Z] NaN\n💨 [2025-10-09T00:01:15.447Z] Smoke Test: Server Startup\n✅ [2025-10-09T00:01:24.119Z] ✅ SMOKE PASSED: Server Startup (8672ms)\n💨 [2025-10-09T00:01:24.119Z] Smoke Test: Frontend Build\n✅ [2025-10-09T00:01:24.120Z] ✅ SMOKE PASSED: Frontend Build (1ms)\n💨 [2025-10-09T00:01:24.121Z] Smoke Test: Database Connectivity\n✅ [2025-10-09T00:01:32.301Z] ✅ SMOKE PASSED: Database Connectivity (8180ms)\n💨 [2025-10-09T00:01:32.301Z] Smoke Test: Critical Endpoints\n✅ [2025-10-09T00:01:49.642Z] ✅ SMOKE PASSED: Critical Endpoints (17341ms)\n💨 [2025-10-09T00:01:49.642Z] Smoke Test: Basic Security\n✅ [2025-10-09T00:01:58.101Z] ✅ SMOKE PASSED: Basic Security (8459ms)\n💨 [2025-10-09T00:01:58.102Z] Smoke Test: Environment Configuration\n✅ [2025-10-09T00:02:06.346Z] ✅ SMOKE PASSED: Environment Configuration (8244ms)\n💨 [2025-10-09T00:02:06.348Z] NaN\n💨 [2025-10-09T00:02:06.348Z] 💨 SMOKE TESTING COMPLETE\n✅ [2025-10-09T00:02:06.348Z] Build Status: BUILD_STABLE\n💨 [2025-10-09T00:02:06.348Z] Tests: 6/6 passed\n💨 [2025-10-09T00:02:06.348Z] Success Rate: 100.00%\n💨 [2025-10-09T00:02:06.348Z] Duration: 50.91s\n✅ [2025-10-09T00:02:06.348Z] 🎉 Build is stable - Ready for further testing!\n"
+      }
+    },
+    {
+      "name": "Sanity Tests",
+      "status": "FAILED",
+      "duration": 109819,
+      "error": "Sanity Tests failed with exit code 1"
+    }
+  ],
+  "summary": {
+    "totalStages": 4,
+    "passedStages": 3,
+    "failedStages": 1,
+    "successRate": "75.00"
+  },
+  "recommendations": [
+    {
+      "type": "CRITICAL",
+      "message": "1 stage(s) failed. Review and fix before deployment.",
+      "stages": [
+        "Sanity Tests"
+      ]
+    }
+  ],
+  "timestamp": "2025-10-09T00:03:56.178Z"
+}
