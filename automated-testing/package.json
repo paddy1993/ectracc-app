@@ -8,10 +8,14 @@
     "test:sanity": "node sanity-tests.js",
     "test:regression": "node regression-tests.js",
     "test:continuous": "node continuous-testing.js",
+    "test:black-box": "node black-box-tests.js",
+    "test:white-box": "node white-box-tests.js",
+    "test:gray-box": "node gray-box-tests.js",
     "test:all": "node continuous-testing.js --test-suite=full",
     "test:parallel": "node continuous-testing.js --test-suite=full --parallel=true",
     "test:ci": "node continuous-testing.js --trigger-type=commit --test-suite=smoke",
-    "test:deploy": "node continuous-testing.js --trigger-type=deploy --test-suite=full"
+    "test:deploy": "node continuous-testing.js --trigger-type=deploy --test-suite=full",
+    "test:box-testing": "npm run test:black-box && npm run test:white-box && npm run test:gray-box"
   },
   "keywords": [
     "testing",
