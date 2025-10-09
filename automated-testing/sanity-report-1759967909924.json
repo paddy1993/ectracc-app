@@ -1,0 +1,70 @@
+{
+  "type": "SANITY_TEST",
+  "focusArea": "all",
+  "summary": {
+    "totalTests": 8,
+    "passed": 5,
+    "failed": 3,
+    "skipped": 0,
+    "successRate": "62.50",
+    "totalDuration": "57.51s",
+    "changesValid": false
+  },
+  "tests": [
+    {
+      "name": "Frontend Component Syntax",
+      "status": "FAILED",
+      "area": "frontend",
+      "error": "Frontend syntax check failed: Command failed: cd ectracc-frontend && npm run build\n/bin/sh: line 0: cd: ectracc-frontend: No such file or directory\n"
+    },
+    {
+      "name": "Frontend Test Suite",
+      "status": "FAILED",
+      "area": "frontend",
+      "error": "Frontend test execution failed: Command failed: cd ectracc-frontend && npm test -- --watchAll=false --passWithNoTests\n/bin/sh: line 0: cd: ectracc-frontend: No such file or directory\n"
+    },
+    {
+      "name": "Backend API Responses",
+      "status": "PASSED",
+      "area": "backend",
+      "duration": "16364ms",
+      "details": "2/2 backend endpoints responding"
+    },
+    {
+      "name": "Backend Database Connection",
+      "status": "PASSED",
+      "area": "backend",
+      "duration": "8119ms",
+      "details": "Database services - MongoDB: connected, Supabase: connected"
+    },
+    {
+      "name": "Database Data Integrity",
+      "status": "FAILED",
+      "area": "database",
+      "error": "Database data integrity check failed: Database data retrieval not working properly"
+    },
+    {
+      "name": "Authentication Endpoints",
+      "status": "PASSED",
+      "area": "auth",
+      "duration": "8181ms",
+      "details": "Authentication service status: connected"
+    },
+    {
+      "name": "API Response Format",
+      "status": "PASSED",
+      "area": "api",
+      "duration": "8105ms",
+      "details": "API response format is consistent"
+    },
+    {
+      "name": "Basic Security Headers",
+      "status": "PASSED",
+      "area": "security",
+      "duration": "8224ms",
+      "details": "Basic security headers check completed"
+    }
+  ],
+  "timestamp": "2025-10-08T23:58:29.924Z",
+  "verdict": "CHANGES_INVALID"
+}

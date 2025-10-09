@@ -1,0 +1,45 @@
+{
+  "type": "SMOKE_TEST",
+  "summary": {
+    "totalTests": 6,
+    "passed": 6,
+    "failed": 0,
+    "successRate": "100.00",
+    "totalDuration": "50.38s",
+    "buildStable": true
+  },
+  "tests": [
+    {
+      "name": "Server Startup",
+      "status": "PASSED",
+      "duration": "9431ms"
+    },
+    {
+      "name": "Frontend Build",
+      "status": "PASSED",
+      "duration": "1ms"
+    },
+    {
+      "name": "Database Connectivity",
+      "status": "PASSED",
+      "duration": "8160ms"
+    },
+    {
+      "name": "Critical Endpoints",
+      "status": "PASSED",
+      "duration": "16231ms"
+    },
+    {
+      "name": "Basic Security",
+      "status": "PASSED",
+      "duration": "8257ms"
+    },
+    {
+      "name": "Environment Configuration",
+      "status": "PASSED",
+      "duration": "8295ms"
+    }
+  ],
+  "timestamp": "2025-10-08T23:57:25.311Z",
+  "verdict": "BUILD_STABLE"
+}
