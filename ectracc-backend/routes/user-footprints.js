@@ -5,9 +5,6 @@ const { requireAuth } = require('../middleware/auth');
 const UserFootprint = require('../models/UserFootprint');
 const Product = require('../models/Product');
 
-// Initialize Product model instance
-const productModel = new Product();
-
 const router = express.Router();
 
 // Rate limiting for footprint tracking
@@ -51,7 +48,7 @@ router.post('/add', trackingLimiter, async (req, res) => {
     let productDetails = null;
     if (product_id) {
       try {
-        productDetails = await productModel.findById(product_id);
+        productDetails = await Product.findById(product_id);
       } catch (error) {
         console.log('Product not found, using provided data');
       }
@@ -298,10 +295,7 @@ router.post('/add-from-product', trackingLimiter, async (req, res) => {
     const userId = 'test-user-123';
 
     // Fetch product details
-    console.log('About to call productModel.findById with:', product_id);
-    console.log('productModel type:', typeof productModel);
-    console.log('productModel.findById type:', typeof productModel.findById);
-    const product = await productModel.findById(product_id);
+    const product = await Product.findById(product_id);
     if (!product) {
       return res.status(404).json({
         success: false,
