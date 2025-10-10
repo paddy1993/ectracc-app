@@ -18,8 +18,7 @@ const trackingLimiter = rateLimit({
 });
 
 // POST /api/user-footprints/add - Add product to user's footprint
-// TEMPORARY: Auth disabled for testing
-router.post('/add', trackingLimiter, async (req, res) => {
+router.post('/add', trackingLimiter, requireAuth, async (req, res) => {
   try {
     const {
       product_id,
@@ -41,8 +40,7 @@ router.post('/add', trackingLimiter, async (req, res) => {
       });
     }
 
-    // TEMPORARY: Use test user ID since auth is disabled
-    const userId = 'test-user-123';
+    const userId = req.user.id;
 
     // If product_id is provided, fetch additional details from database
     let productDetails = null;
@@ -279,8 +277,7 @@ router.delete('/entry/:id', requireAuth, async (req, res) => {
 });
 
 // POST /api/user-footprints/add-from-product - Add product from product database
-// TEMPORARY: Auth disabled for testing
-router.post('/add-from-product', trackingLimiter, async (req, res) => {
+router.post('/add-from-product', trackingLimiter, requireAuth, async (req, res) => {
   try {
     const { product_id, quantity = 1, unit = 'item' } = req.body;
 
@@ -291,8 +288,7 @@ router.post('/add-from-product', trackingLimiter, async (req, res) => {
       });
     }
 
-    // TEMPORARY: Use test user ID since auth is disabled
-    const userId = 'test-user-123';
+    const userId = req.user.id;
 
     // Fetch product details
     const product = await Product.findById(product_id);
