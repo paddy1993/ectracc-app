@@ -298,6 +298,9 @@ router.post('/add-from-product', trackingLimiter, async (req, res) => {
     const userId = 'test-user-123';
 
     // Fetch product details
+    console.log('About to call productModel.findById with:', product_id);
+    console.log('productModel type:', typeof productModel);
+    console.log('productModel.findById type:', typeof productModel.findById);
     const product = await productModel.findById(product_id);
     if (!product) {
       return res.status(404).json({
