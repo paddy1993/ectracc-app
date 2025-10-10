@@ -30,6 +30,19 @@ class Product {
     }
   }
 
+  // Find product by MongoDB _id
+  async findById(id) {
+    try {
+      const products = this.getCollection();
+      const { ObjectId } = require('mongodb');
+      const product = await products.findOne({ _id: new ObjectId(id) });
+      return product;
+    } catch (error) {
+      console.error('Error finding product by ID:', error);
+      return null;
+    }
+  }
+
   // Search products by name or brand
   async search(query, options = {}) {
     try {
