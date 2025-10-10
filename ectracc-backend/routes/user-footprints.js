@@ -326,9 +326,16 @@ router.post('/add-from-product', trackingLimiter, async (req, res) => {
     });
   } catch (error) {
     console.error('Error adding product to footprint:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      productId: req.body.product_id,
+      userId: 'test-user-123'
+    });
     res.status(500).json({
       success: false,
-      message: 'Failed to add product to footprint'
+      message: 'Failed to add product to footprint',
+      error: error.message // TEMPORARY: Include error details for debugging
     });
   }
 });
