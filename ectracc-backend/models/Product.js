@@ -36,7 +36,7 @@ class Product {
       const products = this.getCollection();
       const { ObjectId } = require('mongodb');
       const product = await products.findOne({ _id: new ObjectId(id) });
-      return product;
+      return product ? this.formatProduct(product) : null;
     } catch (error) {
       console.error('Error finding product by ID:', error);
       return null;
