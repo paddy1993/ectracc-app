@@ -124,7 +124,15 @@ class UserFootprint {
         }
       ];
 
+      // Debug: Log the pipeline and some sample data
+      console.log('Summary aggregation pipeline:', JSON.stringify(pipeline, null, 2));
+      
+      // Get a few sample documents to see what data looks like
+      const sampleDocs = await footprints.find(filter).limit(3).toArray();
+      console.log('Sample footprint documents:', JSON.stringify(sampleDocs, null, 2));
+      
       const result = await footprints.aggregate(pipeline).toArray();
+      console.log('Aggregation result:', JSON.stringify(result, null, 2));
       
       if (result.length === 0) {
         return {
