@@ -291,9 +291,12 @@ router.post('/add-from-product', trackingLimiter, requireAuth, async (req, res) 
     const userId = req.user.id;
 
     // Fetch product details
+    console.log('Looking for product with ID:', product_id, 'type:', typeof product_id);
     const product = await Product.findById(product_id);
+    console.log('Raw product from DB:', product);
     console.log('Product found:', {
       id: product?.id,
+      _id: product?._id,
       product_name: product?.product_name,
       carbon_footprint: product?.carbon_footprint,
       carbon_footprint_type: typeof product?.carbon_footprint,
