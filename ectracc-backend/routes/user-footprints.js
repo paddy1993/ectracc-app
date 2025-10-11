@@ -336,6 +336,52 @@ router.post('/add-from-product', trackingLimiter, requireAuth, async (req, res) 
   }
 });
 
+// GET /api/user-footprints/debug - Debug endpoint to check raw data
+router.get('/debug', requireAuth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const userFootprint = new UserFootprint();
+    const footprints = userFootprint.getCollection();
+    
+    // Get all user's footprint entries
+    const entries = await footprints.find({ user_id: userId }).toArray();
+    
+    console.log(`Found ${entries.length} entries for user ${userId}`);
+    entries.forEach((entry, index) => {
+      console.log(`Entry ${index + 1}:`, {
+        product_name: entry.product_name,
+        carbon_footprint: entry.carbon_footprint,
+        carbon_footprint_type: typeof entry.carbon_footprint,
+        quantity: entry.quantity,
+        quantity_type: typeof entry.quantity,
+        calculated: entry.carbon_footprint * entry.quantity
+      });
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        totalEntries: entries.length,
+        entries: entries.map(entry => ({
+          product_name: entry.product_name,
+          carbon_footprint: entry.carbon_footprint,
+          carbon_footprint_type: typeof entry.carbon_footprint,
+          quantity: entry.quantity,
+          quantity_type: typeof entry.quantity,
+          calculated: entry.carbon_footprint * entry.quantity
+        }))
+      }
+    });
+  } catch (error) {
+    console.error('Debug endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Debug failed',
+      error: error.message
+    });
+  }
+});
+
 // GET /api/user-footprints/stats - Get global statistics (for admin)
 router.get('/stats', async (req, res) => {
   try {
