@@ -292,6 +292,14 @@ router.post('/add-from-product', trackingLimiter, requireAuth, async (req, res) 
 
     // Fetch product details
     const product = await Product.findById(product_id);
+    console.log('Product found:', {
+      id: product?.id,
+      product_name: product?.product_name,
+      carbon_footprint: product?.carbon_footprint,
+      carbon_footprint_type: typeof product?.carbon_footprint,
+      carbon_footprint_source: product?.carbon_footprint_source
+    });
+    
     if (!product) {
       return res.status(404).json({
         success: false,
