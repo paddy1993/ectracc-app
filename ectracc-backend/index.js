@@ -28,6 +28,7 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
   ? [
       'https://ectracc.com',
       'https://www.ectracc.com',
+      'https://ectracc-fresh-8sc40ob13-patricks-projects-4f53934e.vercel.app',
       process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
     ].filter(Boolean)
   : [
