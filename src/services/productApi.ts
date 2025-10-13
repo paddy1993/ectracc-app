@@ -180,7 +180,6 @@ class ProductApiService {
     const requestPromise = this.makeRequest<any>(`/products/search?${queryString}`, {}, 15000, this.currentSearchController.signal)
       .then(response => {
         const result: ProductSearchResult = {
-          success: true,
           data: response.data || [],
           meta: {
             pagination: response.pagination || {
@@ -263,26 +262,37 @@ class ProductApiService {
       const response = await this.makeRequest<any>(`/products/random?count=${params.limit || 20}`);
       
       return {
-        success: true,
         data: response.data || [],
-        pagination: {
-          page: params.page || 1,
-          limit: params.limit || 20,
-          total: response.data?.length || 0,
-          hasMore: false
+        meta: {
+          pagination: {
+            page: params.page || 1,
+            limit: params.limit || 20,
+            total: response.data?.length || 0,
+            hasMore: false,
+            totalPages: Math.ceil((response.data?.length || 0) / (params.limit || 20))
+          },
+          query: {
+            category: params.category,
+            sortBy: 'relevance'
+          }
         }
       };
     } catch (error: any) {
       console.error('Error fetching products:', error);
       return {
-        success: false,
         data: [],
-        error: error.message || 'Failed to fetch products',
-        pagination: {
-          page: 1,
-          limit: 20,
-          total: 0,
-          hasMore: false
+        meta: {
+          pagination: {
+            page: 1,
+            limit: 20,
+            total: 0,
+            hasMore: false,
+            totalPages: 0
+          },
+          query: {
+            category: params.category,
+            sortBy: 'relevance'
+          }
         }
       };
     }
@@ -350,27 +360,37 @@ class ProductApiService {
       const response = await this.makeRequest<any>(`/products/category/${encodeURIComponent(category)}?${queryString}`);
       
       return {
-        success: true,
         data: response.data || [],
-        pagination: response.pagination || {
-          page: params.page || 1,
-          limit: params.limit || 20,
-          total: response.data?.length || 0,
-          hasMore: false
-        },
-        category: response.category
+        meta: {
+          pagination: response.pagination || {
+            page: params.page || 1,
+            limit: params.limit || 20,
+            total: response.data?.length || 0,
+            hasMore: false,
+            totalPages: Math.ceil((response.data?.length || 0) / (params.limit || 20))
+          },
+          query: {
+            category: category,
+            sortBy: 'relevance'
+          }
+        }
       };
     } catch (error: any) {
       console.error('Error fetching products by category:', error);
       return {
-        success: false,
         data: [],
-        error: error.message || 'Failed to fetch products',
-        pagination: {
-          page: 1,
-          limit: 20,
-          total: 0,
-          hasMore: false
+        meta: {
+          pagination: {
+            page: 1,
+            limit: 20,
+            total: 0,
+            hasMore: false,
+            totalPages: 0
+          },
+          query: {
+            category: category,
+            sortBy: 'relevance'
+          }
         }
       };
     }
@@ -400,21 +420,19 @@ class ProductApiService {
       const response = await this.makeRequest<any>('/products/stats');
       
       return {
-        success: true,
         ...response.data
       };
     } catch (error: any) {
       console.error('Error fetching stats:', error);
       return {
-        success: false,
         totalProducts: 0,
-        withBarcodes: 0,
-        withEcoScore: 0,
-        withNutrition: 0,
-        coverage: {
-          barcodes: 0,
-          ecoScore: 0,
-          nutrition: 0
+        ecoScoreDistribution: [],
+        topCategories: [],
+        carbonFootprintStats: {
+          avg: 0,
+          min: 0,
+          max: 0,
+          count: 0
         }
       };
     }

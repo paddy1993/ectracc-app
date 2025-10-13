@@ -162,6 +162,8 @@ class UserFootprintApiService {
           totalFootprint: 0,
           totalEntries: 0,
           avgFootprint: 0,
+          maxFootprint: 0,
+          minFootprint: 0,
           timeframe: timeframe || 'week'
         };
       }

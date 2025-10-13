@@ -308,7 +308,7 @@ export const highContrastTheme = enhanceThemeForAccessibility(createTheme({
       styleOverrides: {
         ...baseTheme.components?.MuiButton?.styleOverrides,
         root: {
-          ...baseTheme.components?.MuiButton?.styleOverrides?.root,
+          ...(baseTheme.components?.MuiButton?.styleOverrides?.root as any || {}),
           border: '2px solid',
           '&:hover': {
             backgroundColor: 'rgba(0, 0, 0, 0.04)'
@@ -321,7 +321,7 @@ export const highContrastTheme = enhanceThemeForAccessibility(createTheme({
       styleOverrides: {
         ...baseTheme.components?.MuiCard?.styleOverrides,
         root: {
-          ...baseTheme.components?.MuiCard?.styleOverrides?.root,
+          ...(baseTheme.components?.MuiCard?.styleOverrides?.root as any || {}),
           border: '1px solid #000000',
           boxShadow: 'none'
         }

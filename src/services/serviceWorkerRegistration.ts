@@ -177,7 +177,7 @@ export class PWAUtils {
     return {
       serviceWorker: 'serviceWorker' in navigator,
       pushNotifications: 'PushManager' in window,
-      backgroundSync: 'serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype,
+      backgroundSync: 'serviceWorker' in navigator && 'sync' in (window as any).ServiceWorkerRegistration.prototype,
       webShare: 'share' in navigator,
       installPrompt: 'BeforeInstallPromptEvent' in window,
       fullscreen: 'requestFullscreen' in document.documentElement,

@@ -254,7 +254,7 @@ export const enhanceThemeForAccessibility = (theme: Theme): Theme => {
         styleOverrides: {
           ...theme.components?.MuiButton?.styleOverrides,
           root: {
-            ...(theme.components?.MuiButton?.styleOverrides?.root || {}),
+            ...(theme.components?.MuiButton?.styleOverrides?.root as any || {}),
             minHeight: '44px',
             '&:focus-visible': focusStyles.button,
             [motionPreferences.respectsReducedMotion]: motionPreferences.reducedMotion
@@ -268,7 +268,7 @@ export const enhanceThemeForAccessibility = (theme: Theme): Theme => {
         styleOverrides: {
           ...theme.components?.MuiTextField?.styleOverrides,
           root: {
-            ...(theme.components?.MuiTextField?.styleOverrides?.root || {}),
+            ...(theme.components?.MuiTextField?.styleOverrides?.root as any || {}),
             '& .MuiOutlinedInput-root': {
               '&:focus-within': focusStyles.input,
               '&.Mui-focused': focusStyles.input
@@ -283,7 +283,7 @@ export const enhanceThemeForAccessibility = (theme: Theme): Theme => {
         styleOverrides: {
           ...theme.components?.MuiIconButton?.styleOverrides,
           root: {
-            ...(theme.components?.MuiIconButton?.styleOverrides?.root || {}),
+            ...(theme.components?.MuiIconButton?.styleOverrides?.root as any || {}),
             minHeight: '44px',
             minWidth: '44px',
             '&:focus-visible': focusStyles.button
@@ -297,7 +297,7 @@ export const enhanceThemeForAccessibility = (theme: Theme): Theme => {
         styleOverrides: {
           ...theme.components?.MuiChip?.styleOverrides,
           root: {
-            ...(theme.components?.MuiChip?.styleOverrides?.root || {}),
+            ...(theme.components?.MuiChip?.styleOverrides?.root as any || {}),
             '&:focus-visible': focusStyles.default,
             '&.MuiChip-clickable': {
               minHeight: '32px'

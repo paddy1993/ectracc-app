@@ -120,7 +120,7 @@ export class OfflineSyncManager {
     if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
       try {
         const registration = await navigator.serviceWorker.ready;
-        await registration.sync.register('footprint-sync');
+        await (registration as any).sync.register('footprint-sync');
         console.log('Background sync registered');
       } catch (error) {
         console.error('Background sync registration failed:', error);
