@@ -15,7 +15,7 @@ import {
   Check as CheckIcon,
   Public as GlobalIcon
 } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { supportedLanguages, getCurrentLanguageConfig } from '../i18n';
 
 interface LanguageSelectorProps {
@@ -29,7 +29,8 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   showFlag = true,
   showNativeName = true
 }) => {
-  const { i18n } = useTranslation();
+  // const { i18n } = useTranslation();
+  const i18n = { language: 'en-US', changeLanguage: (lng: string) => Promise.resolve() };
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   

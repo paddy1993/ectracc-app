@@ -160,7 +160,7 @@ const i18n = {
 
 // Language change handler - disabled
 // i18n.on('languageChanged', (lng) => {
-  const config = supportedLanguages[lng as keyof typeof supportedLanguages];
+//   const config = supportedLanguages[lng as keyof typeof supportedLanguages];
   
   if (config) {
     // Update document direction for RTL languages
