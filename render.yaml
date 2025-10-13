@@ -3,8 +3,8 @@ services:
     name: ectracc-backend
     env: node
     plan: free
-    buildCommand: cd ectracc-backend && npm install
-    startCommand: cd ectracc-backend && npm start
+    buildCommand: npm install
+    startCommand: npm run server
     envVars:
       - key: NODE_ENV
         value: production
@@ -20,4 +20,4 @@ services:
         value: your-anon-key-here
       - key: SUPABASE_SERVICE_ROLE_KEY
         value: your-service-role-key-here
-    autoDeploy: false
+    autoDeploy: true
