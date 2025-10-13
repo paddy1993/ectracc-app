@@ -191,13 +191,12 @@ class ProductApiService {
               hasMore: response.pagination?.hasMore || false
             },
             query: {
-              search: params.q,
-              filters: {
-                category: params.category,
-                brand: params.brand,
-                carbonRange: params.minCarbon || params.maxCarbon ? [params.minCarbon || 0, params.maxCarbon || 10] : undefined
-              },
-              sort: params.sortBy || 'relevance'
+              q: params.q,
+              category: params.category,
+              brand: params.brand,
+              minCarbon: params.minCarbon,
+              maxCarbon: params.maxCarbon,
+              sortBy: params.sortBy || 'relevance'
             }
           }
         };
