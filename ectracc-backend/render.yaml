@@ -3,9 +3,8 @@ services:
     name: ectracc-backend
     env: node
     plan: free
-    rootDir: ./ectracc-backend
-    buildCommand: npm install
-    startCommand: node --max-old-space-size=400 index.js
+    buildCommand: cd ectracc-backend && npm install
+    startCommand: cd ectracc-backend && npm run start:prod
     envVars:
       - key: NODE_ENV
         value: production

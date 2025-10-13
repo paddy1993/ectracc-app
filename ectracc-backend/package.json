@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "start:prod": "node --max-old-space-size=400 index.js",
     "dev": "nodemon index.js",
     "import-data": "node scripts/import-openfoodfacts.js",
     "seed-data": "node scripts/seed-sample-data.js",
