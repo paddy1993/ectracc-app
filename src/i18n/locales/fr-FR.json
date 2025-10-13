@@ -1,0 +1,161 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "clear": "Effacer",
+    "apply": "Appliquer",
+    "confirm": "Confirmer",
+    "retry": "Réessayer",
+    "refresh": "Actualiser",
+    "export": "Exporter",
+    "import": "Importer",
+    "share": "Partager",
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "logout": "Se déconnecter"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "products": "Produits",
+    "search": "Recherche",
+    "tracker": "Suivi",
+    "history": "Historique",
+    "analytics": "Analyses",
+    "goals": "Objectifs",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "help": "Aide",
+    "about": "À propos",
+    "contact": "Contact",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "cookies": "Cookies"
+  },
+  "auth": {
+    "login": {
+      "title": "Se connecter à ECTRACC",
+      "subtitle": "Suivez votre empreinte carbone et faites des choix durables",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "loginButton": "Se connecter",
+      "googleLogin": "Continuer avec Google",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "signUpLink": "Inscrivez-vous ici"
+    },
+    "register": {
+      "title": "Créer votre compte ECTRACC",
+      "subtitle": "Créez votre compte pour commencer à suivre votre empreinte carbone",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "acceptTerms": "J'accepte les {{termsLink}} et la {{privacyLink}}",
+      "termsOfService": "Conditions de service",
+      "privacyPolicy": "Politique de confidentialité",
+      "registerButton": "Créer un compte",
+      "googleRegister": "Continuer avec Google"
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de bord de l'empreinte carbone",
+    "subtitle": "Suivez l'empreinte carbone des produits que vous achetez et travaillez vers vos objectifs de durabilité",
+    "currentFootprint": "Empreinte actuelle",
+    "weeklyFootprint": "Cette semaine",
+    "monthlyFootprint": "Ce mois",
+    "yearlyFootprint": "Cette année",
+    "averagePerEntry": "Moyenne par entrée",
+    "totalEntries": "Entrées totales",
+    "quickActions": "Actions rapides",
+    "recentProducts": "Produits récents",
+    "noDataYet": "Aucune donnée pour le moment",
+    "startTracking": "Commencez à suivre votre empreinte carbone en ajoutant des produits !",
+    "addFirstProduct": "Ajouter votre premier produit"
+  },
+  "products": {
+    "search": {
+      "title": "Rechercher des produits",
+      "subtitle": "Trouvez des produits pour suivre leur empreinte carbone",
+      "searchPlaceholder": "Rechercher des produits...",
+      "searchButton": "Rechercher",
+      "scanBarcode": "Scanner le code-barres",
+      "filters": "Filtres",
+      "category": "Catégorie",
+      "brand": "Marque",
+      "carbonFootprint": "Empreinte carbone",
+      "dataSource": "Source de données",
+      "clearFilters": "Effacer tous les filtres",
+      "noResults": "Aucun produit trouvé",
+      "addToFootprint": "Ajouter à mon empreinte"
+    },
+    "categories": {
+      "food": "Alimentation",
+      "beverages": "Boissons",
+      "household": "Ménage",
+      "personalCare": "Soins personnels",
+      "other": "Autre",
+      "dairy": "Produits laitiers",
+      "meat": "Viande",
+      "fruits": "Fruits",
+      "vegetables": "Légumes",
+      "organic": "Bio"
+    }
+  },
+  "tracker": {
+    "title": "Suivre votre empreinte",
+    "subtitle": "Ajoutez des produits pour suivre votre empreinte carbone",
+    "tabs": {
+      "manualEntry": "Saisie manuelle",
+      "baseComponents": "Composants de base",
+      "barcodeScanning": "Scan de code-barres"
+    },
+    "manualEntry": {
+      "productName": "Nom du produit",
+      "productNamePlaceholder": "Entrez le nom du produit...",
+      "category": "Catégorie",
+      "quantity": "Quantité",
+      "unit": "Unité",
+      "addEntry": "Ajouter l'entrée"
+    }
+  },
+  "offline": {
+    "title": "Vous êtes hors ligne",
+    "message": "Ne vous inquiétez pas ! ECTRACC fonctionne aussi hors ligne. Vous pouvez toujours suivre votre empreinte carbone et consulter vos données.",
+    "connectionStatus": {
+      "online": "🟢 Connecté à internet",
+      "offline": "🔴 Pas de connexion internet"
+    },
+    "actions": {
+      "tryAgain": "Réessayer",
+      "continueOffline": "Continuer hors ligne"
+    }
+  },
+  "units": {
+    "weight": {
+      "kg": "kg",
+      "g": "g",
+      "lb": "lb",
+      "oz": "oz"
+    },
+    "volume": {
+      "l": "L",
+      "ml": "mL"
+    },
+    "carbon": {
+      "kgCO2e": "kg CO₂e",
+      "gCO2e": "g CO₂e",
+      "tCO2e": "t CO₂e"
+    }
+  }
+}

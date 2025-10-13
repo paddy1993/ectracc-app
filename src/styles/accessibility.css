@@ -1,0 +1,327 @@
+/* ECTRACC Accessibility Styles */
+
+/* High Contrast Mode */
+.high-contrast {
+  --primary-color: #0066CC;
+  --secondary-color: #8B5A2B;
+  --success-color: #2E7D32;
+  --warning-color: #ED6C02;
+  --error-color: #D32F2F;
+  --info-color: #0288D1;
+  
+  --text-primary: #000000;
+  --text-secondary: #424242;
+  --background-primary: #FFFFFF;
+  --background-secondary: #F5F5F5;
+  
+  --border-color: #000000;
+  --focus-color: #005A9F;
+}
+
+.high-contrast * {
+  border-color: var(--border-color) !important;
+}
+
+.high-contrast .MuiButton-root {
+  border: 2px solid var(--border-color) !important;
+}
+
+.high-contrast .MuiCard-root {
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+}
+
+/* Reduced Motion */
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.reduced-motion *:before,
+.reduced-motion *:after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Large Text */
+.large-text {
+  font-size: 120% !important;
+}
+
+.large-text .MuiTypography-body1 {
+  font-size: 1.2rem !important;
+}
+
+.large-text .MuiTypography-body2 {
+  font-size: 1.1rem !important;
+}
+
+.large-text .MuiTypography-caption {
+  font-size: 0.9rem !important;
+}
+
+.large-text .MuiButton-root {
+  font-size: 1.1rem !important;
+  padding: 12px 24px !important;
+}
+
+/* Keyboard Navigation */
+.keyboard-navigation *:focus {
+  outline: 2px solid var(--focus-color, #005A9F) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+.keyboard-navigation .MuiButton-root:focus-visible {
+  outline: 2px solid var(--focus-color, #005A9F) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(0, 90, 159, 0.25) !important;
+}
+
+.keyboard-navigation .MuiIconButton-root:focus-visible {
+  outline: 2px solid var(--focus-color, #005A9F) !important;
+  outline-offset: 2px !important;
+  background-color: rgba(0, 90, 159, 0.1) !important;
+}
+
+.keyboard-navigation .MuiTextField-root .MuiOutlinedInput-root:focus-within {
+  outline: 2px solid var(--focus-color, #005A9F) !important;
+  outline-offset: 1px !important;
+}
+
+/* Skip Links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-color, #0066CC);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+  font-weight: 600;
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 6px;
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Focus Trap */
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap::before,
+.focus-trap::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Touch Target Minimum Size */
+.touch-target {
+  min-height: 44px !important;
+  min-width: 44px !important;
+}
+
+/* Error States with Better Contrast */
+.error-state {
+  border: 2px solid var(--error-color, #D32F2F) !important;
+  background-color: rgba(211, 47, 47, 0.05) !important;
+}
+
+.error-text {
+  color: var(--error-color, #D32F2F) !important;
+  font-weight: 600 !important;
+}
+
+/* Success States with Better Contrast */
+.success-state {
+  border: 2px solid var(--success-color, #2E7D32) !important;
+  background-color: rgba(46, 125, 50, 0.05) !important;
+}
+
+.success-text {
+  color: var(--success-color, #2E7D32) !important;
+  font-weight: 600 !important;
+}
+
+/* Loading States */
+.loading-state {
+  position: relative;
+}
+
+.loading-state::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* High Contrast Media Query Support */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #0066CC;
+    --secondary-color: #8B5A2B;
+    --text-primary: #000000;
+    --background-primary: #FFFFFF;
+    --border-color: #000000;
+  }
+  
+  * {
+    border-color: var(--border-color) !important;
+  }
+  
+  .MuiButton-root {
+    border: 2px solid var(--border-color) !important;
+  }
+  
+  .MuiCard-root {
+    border: 1px solid var(--border-color) !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Reduced Motion Media Query Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  *:before,
+  *:after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus Visible Polyfill Support */
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
+
+/* Dark Mode Accessibility */
+@media (prefers-color-scheme: dark) {
+  .high-contrast {
+    --text-primary: #FFFFFF;
+    --text-secondary: #E0E0E0;
+    --background-primary: #121212;
+    --background-secondary: #1E1E1E;
+    --border-color: #FFFFFF;
+  }
+}
+
+/* Print Styles for Accessibility */
+@media print {
+  .skip-link,
+  .sr-only {
+    display: none !important;
+  }
+  
+  * {
+    color: black !important;
+    background: white !important;
+    box-shadow: none !important;
+  }
+  
+  .MuiButton-root {
+    border: 1px solid black !important;
+  }
+}
+
+/* Animation Utilities */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Respect reduced motion for animations */
+@media (prefers-reduced-motion: no-preference) {
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .slide-in {
+    animation: slideIn 0.3s ease-in-out;
+  }
+}
+
+/* Custom Focus Indicators for Different Components */
+.custom-focus-button:focus-visible {
+  outline: 2px solid var(--focus-color, #005A9F);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 90, 159, 0.25);
+  border-radius: 4px;
+}
+
+.custom-focus-input:focus-within {
+  outline: 2px solid var(--focus-color, #005A9F);
+  outline-offset: 1px;
+  border-color: var(--focus-color, #005A9F);
+}
+
+.custom-focus-card:focus-within {
+  outline: 2px solid var(--focus-color, #005A9F);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* Ensure sufficient color contrast for interactive elements */
+.interactive-element {
+  position: relative;
+}
+
+.interactive-element:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.04);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.high-contrast .interactive-element:hover::before {
+  background: rgba(0, 0, 0, 0.1);
+}

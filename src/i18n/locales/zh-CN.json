@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "save": "保存",
+    "search": "搜索",
+    "login": "登录",
+    "register": "注册",
+    "logout": "退出"
+  },
+  "navigation": {
+    "dashboard": "仪表板",
+    "products": "产品",
+    "search": "搜索",
+    "tracker": "追踪器",
+    "history": "历史",
+    "profile": "个人资料",
+    "settings": "设置"
+  },
+  "dashboard": {
+    "title": "碳足迹仪表板",
+    "subtitle": "追踪您购买产品的碳足迹",
+    "currentFootprint": "当前足迹",
+    "weeklyFootprint": "本周",
+    "monthlyFootprint": "本月"
+  },
+  "offline": {
+    "title": "您处于离线状态",
+    "message": "别担心！ECTRACC 也可以离线工作。"
+  }
+}

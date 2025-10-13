@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "search": "検索",
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト"
+  },
+  "navigation": {
+    "dashboard": "ダッシュボード",
+    "products": "製品",
+    "search": "検索",
+    "tracker": "トラッカー",
+    "history": "履歴",
+    "profile": "プロフィール",
+    "settings": "設定"
+  },
+  "dashboard": {
+    "title": "カーボンフットプリント ダッシュボード",
+    "subtitle": "購入する製品のカーボンフットプリントを追跡する",
+    "currentFootprint": "現在のフットプリント",
+    "weeklyFootprint": "今週",
+    "monthlyFootprint": "今月"
+  },
+  "offline": {
+    "title": "オフラインです",
+    "message": "心配ありません！ECTRACCはオフラインでも動作します。"
+  }
+}

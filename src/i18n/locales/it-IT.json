@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "search": "Cerca",
+    "login": "Accedi",
+    "register": "Registrati",
+    "logout": "Esci"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "products": "Prodotti",
+    "search": "Cerca",
+    "tracker": "Tracker",
+    "history": "Cronologia",
+    "profile": "Profilo",
+    "settings": "Impostazioni"
+  },
+  "dashboard": {
+    "title": "Dashboard Impronta di Carbonio",
+    "subtitle": "Traccia l'impronta di carbonio dei prodotti che acquisti",
+    "currentFootprint": "Impronta Attuale",
+    "weeklyFootprint": "Questa Settimana",
+    "monthlyFootprint": "Questo Mese"
+  },
+  "offline": {
+    "title": "Sei offline",
+    "message": "Non preoccuparti! ECTRACC funziona anche offline."
+  }
+}

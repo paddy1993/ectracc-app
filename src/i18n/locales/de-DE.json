@@ -1,0 +1,40 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "search": "Suchen",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "products": "Produkte",
+    "search": "Suche",
+    "tracker": "Tracker",
+    "history": "Verlauf",
+    "profile": "Profil",
+    "settings": "Einstellungen"
+  },
+  "dashboard": {
+    "title": "CO₂-Fußabdruck Dashboard",
+    "subtitle": "Verfolgen Sie den CO₂-Fußabdruck der Produkte, die Sie kaufen",
+    "currentFootprint": "Aktueller Fußabdruck",
+    "weeklyFootprint": "Diese Woche",
+    "monthlyFootprint": "Dieser Monat"
+  },
+  "products": {
+    "search": {
+      "title": "Produkte suchen",
+      "searchPlaceholder": "Produkte suchen...",
+      "searchButton": "Suchen"
+    }
+  },
+  "offline": {
+    "title": "Sie sind offline",
+    "message": "Keine Sorge! ECTRACC funktioniert auch offline."
+  }
+}

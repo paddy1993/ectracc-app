@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "search": "بحث",
+    "login": "تسجيل الدخول",
+    "register": "التسجيل",
+    "logout": "تسجيل الخروج"
+  },
+  "navigation": {
+    "dashboard": "لوحة التحكم",
+    "products": "المنتجات",
+    "search": "البحث",
+    "tracker": "المتتبع",
+    "history": "التاريخ",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "dashboard": {
+    "title": "لوحة تحكم البصمة الكربونية",
+    "subtitle": "تتبع البصمة الكربونية للمنتجات التي تشتريها",
+    "currentFootprint": "البصمة الحالية",
+    "weeklyFootprint": "هذا الأسبوع",
+    "monthlyFootprint": "هذا الشهر"
+  },
+  "offline": {
+    "title": "أنت غير متصل",
+    "message": "لا تقلق! يعمل ECTRACC أيضاً في وضع عدم الاتصال."
+  }
+}

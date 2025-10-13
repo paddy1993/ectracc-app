@@ -1,0 +1,462 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Alert,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  LinearProgress,
+  ToggleButton,
+  ToggleButtonGroup
+} from '@mui/material';
+import Grid from '@mui/material/Grid';
+import {
+  Add as AddIcon,
+  QrCodeScanner,
+  Search,
+  TrendingUp,
+  EmojiNature as Eco,
+  Flag as GoalIcon,
+  History as HistoryIcon
+} from '@mui/icons-material';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { DashboardStats } from '../types';
+import userFootprintApi, { UserFootprintEntry, UserFootprintSummary, UserFootprintHistory } from '../services/userFootprintApi';
+
+type TimeFilter = 'day' | 'week' | 'month' | 'ytd' | 'year';
+
+export default function DashboardPage() {
+  const navigate = useNavigate();
+  const [summary, setSummary] = useState<UserFootprintSummary | null>(null);
+  const [recentEntries, setRecentEntries] = useState<UserFootprintEntry[]>([]);
+  const [historyData, setHistoryData] = useState<UserFootprintHistory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('week');
+
+  // Prepare chart data from history data
+  const chartData = historyData
+    .slice(-7) // Last 7 data points
+    .map((dataPoint) => {
+      const date = new Date(dataPoint.date);
+      return {
+        day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        carbon: dataPoint.totalFootprint,
+        entries: dataPoint.entryCount
+      };
+    }) || [];
+
+  // Get display values based on time filter
+  const getDisplayValues = () => {
+    if (!summary) return { current: 0, label: 'No Data' };
+    
+    return { 
+      current: summary.totalFootprint || 0, 
+      label: summary.timeframe === 'day' ? 'Today' :
+             summary.timeframe === 'week' ? 'This Week' :
+             summary.timeframe === 'month' ? 'This Month' :
+             summary.timeframe === 'ytd' ? 'Year to Date' :
+             summary.timeframe === 'year' ? 'This Year' :
+             'All Time'
+    };
+  };
+
+  // Load dashboard data
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Load data in parallel
+        const [summaryData, entriesData, historyDataResult] = await Promise.all([
+          userFootprintApi.getSummary(timeFilter),
+          userFootprintApi.getEntries({ limit: 10, sort_by: 'date_added', sort_order: 'desc' }),
+          userFootprintApi.getHistory({ period: 'day', limit: 30 })
+        ]);
+
+        setSummary(summaryData);
+        setRecentEntries(entriesData.entries);
+        setHistoryData(historyDataResult);
+      } catch (error: any) {
+        console.error('Failed to load dashboard data:', error);
+        setError(error.message || 'Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, [timeFilter]); // Reload when time filter changes
+
+  // Quick actions
+  const quickActions = [
+    {
+      label: 'Scan Product',
+      icon: QrCodeScanner,
+      color: 'primary' as const,
+      path: '/scanner'
+    },
+    {
+      label: 'Search Products',
+      icon: Search,
+      color: 'secondary' as const,
+      path: '/products/search'
+    },
+    {
+      label: 'Manual Entry',
+      icon: AddIcon,
+      color: 'success' as const,
+      path: '/tracker'
+    },
+    {
+      label: 'View History',
+      icon: HistoryIcon,
+      color: 'info' as const,
+      path: '/history'
+    }
+  ];
+
+  // Format time ago
+  const formatTimeAgo = (dateString: string): string => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.round((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}d ago`;
+    return date.toLocaleDateString();
+  };
+
+  if (loading) {
+    return (
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+          <CircularProgress size={48} />
+          <Typography variant="h6" sx={{ ml: 2 }}>
+            Loading your carbon footprint data...
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+        <Button variant="contained" onClick={() => window.location.reload()}>
+          Retry
+        </Button>
+      </Container>
+    );
+  }
+
+  const hasData = summary && summary.totalEntries > 0;
+
+  return (
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      {/* Header */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 600 }}>
+          Carbon Footprint Dashboard
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Track the carbon footprint of the products you buy and work towards your sustainability goals
+        </Typography>
+        
+        {/* Time Filter Controls */}
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+          <ToggleButtonGroup
+            value={timeFilter}
+            exclusive
+            onChange={(_, newFilter) => newFilter && setTimeFilter(newFilter)}
+            aria-label="time filter"
+            size="small"
+          >
+            <ToggleButton value="day" aria-label="day">
+              Day
+            </ToggleButton>
+            <ToggleButton value="week" aria-label="week">
+              Week
+            </ToggleButton>
+            <ToggleButton value="month" aria-label="month">
+              Month
+            </ToggleButton>
+            <ToggleButton value="ytd" aria-label="year to date">
+              YTD
+            </ToggleButton>
+            <ToggleButton value="year" aria-label="year">
+              Year
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+      </Box>
+
+      {/* Main Stats Grid */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        {/* Current Footprint */}
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card>
+            <CardContent sx={{ textAlign: 'center' }}>
+              <Eco sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
+              <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
+                {userFootprintApi.formatCarbonFootprint(getDisplayValues().current)}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {getDisplayValues().label}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Comparison Total */}
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card>
+            <CardContent sx={{ textAlign: 'center' }}>
+              <TrendingUp sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
+              <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
+                {userFootprintApi.formatCarbonFootprint(summary?.avgFootprint || 0)}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Average per Entry
+              </Typography>
+            </CardContent           </Card         </Grid>
+
+        {/* Weekly Goal Progress */}
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card             <CardContent               <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <GoalIcon sx={{ fontSize: 24, color: 'warning.main', mr: 1 }} />
+                <Typography variant="h6" component="div">
+                  Weekly Goal
+                </Typography>
+              </Box>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => navigate('/goals')}
+                fullWidth
+              >
+                Set Goal
+              </Button>
+            </CardContent           </Card         </Grid>
+
+        {/* Entries Count */}
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card             <CardContent sx={{ textAlign: 'center' }}               <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
+                {summary?.totalEntries || 0}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Total Entries
+              </Typography>
+              <Button
+                size="small"
+                variant="text"
+                onClick={() => navigate('/history')}
+                sx={{ mt: 1 }}
+              >
+                View All
+              </Button>
+            </CardContent           </Card         </Grid>
+      </Grid>
+
+      {/* Main Content Grid */}
+      <Grid container spacing={3}>
+        {/* Quick Actions */}
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Card             <CardContent               <Typography variant="h6" gutterBottom>
+                Quick Actions
+              </Typography>
+              <Grid container spacing={2}>
+                {quickActions.map((action) => (
+                  <Grid size={{ xs: 6 }} key={action.label}>
+                    <Button
+                      variant="contained"
+                      color={action.color}
+                      startIcon={<action.icon />}
+                      onClick={() => navigate(action.path)}
+                      fullWidth
+                      sx={{ py: 1.5 }}
+                    >
+                      {action.label}
+                    </Button>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent           </Card         </Grid>
+
+        {/* Recent Activity */}
+        <Grid size={{ xs: 12, lg: 6 }}>
+          <Card             <CardContent               <Typography variant="h6" gutterBottom>
+                Recent Products
+              </Typography>
+              {recentEntries.length > 0 ? (
+                <List sx={{ maxHeight: 280, overflow: 'auto' }}>
+                  {recentEntries.map((entry, index) => (
+                    <React.Fragment key={entry.id}>
+                      <ListItem sx={{ px: 0 }}>
+                        <ListItemIcon>
+                          <Eco sx={{ color: 'success.main' }} />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={entry.product_name}
+                          secondary={
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                              <Chip
+                                label={userFootprintApi.formatCarbonFootprint(entry.total_footprint)}
+                                size="small"
+                                color="primary"
+                                variant="outlined"
+                              />
+                              <Chip
+                                label={`${entry.quantity} ${entry.unit}`}
+                                size="small"
+                                variant="outlined"
+                                sx={{ fontSize: '0.7rem' }}
+                              />
+                              <Typography variant="caption" color="text.secondary">
+                                {new Date(entry.date_added).toLocaleDateString()}
+                              </Typography>
+                            </Box>
+                          }
+                        />
+                      </ListItem>
+                      {index < recentEntries.length - 1 && <Divider />}
+                    </React.Fragment>
+                  ))}
+                </List>
+              ) : (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Eco sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+                  <Typography variant="h6" gutterBottom>
+                    No entries yet
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" paragraph>
+                    Start tracking your carbon footprint by scanning products or adding manual entries
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    startIcon={<QrCodeScanner />}
+                    onClick={() => navigate('/scanner')}
+                  >
+                    Scan Your First Product
+                  </Button>
+                </Box>
+              )}
+            </CardContent           </Card         </Grid>
+
+        {/* Trend Chart */}
+        {hasData && chartData.length > 0 && (
+          <Grid size={{ xs: 12 }}>
+            <Card               <CardContent                 <Typography variant="h6" gutterBottom>
+                  Recent Activity Trend
+                </Typography>
+                <Box sx={{ height: 250, mt: 2 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="date"
+                        tick={{ fontSize: 12 }}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12 }}
+                        tickFormatter={(value) => carbonApi.formatCarbonFootprint(value)}
+                      />
+                      <Tooltip 
+                        formatter={(value: number) => [carbonApi.formatCarbonFootprint(value), 'Carbon Footprint']}
+                        labelFormatter={(label) => `Date: ${label}`}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="carbon" 
+                        stroke="#4CAF50"
+                        strokeWidth={3}
+                        dot={{ fill: '#4CAF50', strokeWidth: 2, r: 6 }}
+                        activeDot={{ r: 8 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Box>
+              </CardContent             </Card           </Grid>
+        )}
+
+        {/* Goals Summary */}
+        {(stats?.weeklyGoal || stats?.monthlyGoal) && (
+          <Grid size={{ xs: 12 }}>
+            <Card               <CardContent                 <Typography variant="h6" gutterBottom>
+                  Your Goals
+                </Typography>
+                <Grid container spacing={2}>
+                  {stats.weeklyGoal && (
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Box sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Weekly Goal
+                        </Typography>
+                        <Typography variant="h6" color="primary.main">
+                          {carbonApi.formatCarbonFootprint(stats.weeklyGoal.target_value)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Progress: {carbonApi.formatCarbonFootprint(stats.weeklyTotal)} / {carbonApi.formatCarbonFootprint(stats.weeklyGoal.target_value)}
+                        </Typography>
+                        <LinearProgress
+                          variant="determinate"
+                          value={carbonApi.calculateProgress(stats.weeklyTotal, stats.weeklyGoal.target_value)}
+                          sx={{ mt: 1 }}
+                          color={
+                            carbonApi.calculateProgress(stats.weeklyTotal, stats.weeklyGoal.target_value) > 80
+                              ? 'error'
+                              : 'primary'
+                          }
+                        />
+                      </Box>
+                    </Grid>
+                  )}
+                  {stats.monthlyGoal && (
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Box sx={{ p: 2, border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Monthly Goal
+                        </Typography>
+                        <Typography variant="h6" color="secondary.main">
+                          {carbonApi.formatCarbonFootprint(stats.monthlyGoal.target_value)}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Progress: {carbonApi.formatCarbonFootprint(stats.monthlyTotal)} / {carbonApi.formatCarbonFootprint(stats.monthlyGoal.target_value)}
+                        </Typography>
+                        <LinearProgress
+                          variant="determinate"
+                          value={carbonApi.calculateProgress(stats.monthlyTotal, stats.monthlyGoal.target_value)}
+                          sx={{ mt: 1 }}
+                          color={
+                            carbonApi.calculateProgress(stats.monthlyTotal, stats.monthlyGoal.target_value) > 80
+                              ? 'error'
+                              : 'secondary'
+                          }
+                        />
+                      </Box>
+                    </Grid>
+                  )}
+                </Grid>
+              </CardContent             </Card           </Grid>
+        )}
+      </Grid>
+    </Container>
+  );
+}

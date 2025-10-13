@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "search": "Pesquisar",
+    "login": "Entrar",
+    "register": "Registrar",
+    "logout": "Sair"
+  },
+  "navigation": {
+    "dashboard": "Painel",
+    "products": "Produtos",
+    "search": "Pesquisar",
+    "tracker": "Rastreador",
+    "history": "Histórico",
+    "profile": "Perfil",
+    "settings": "Configurações"
+  },
+  "dashboard": {
+    "title": "Painel de Pegada de Carbono",
+    "subtitle": "Rastreie a pegada de carbono dos produtos que você compra",
+    "currentFootprint": "Pegada Atual",
+    "weeklyFootprint": "Esta Semana",
+    "monthlyFootprint": "Este Mês"
+  },
+  "offline": {
+    "title": "Você está offline",
+    "message": "Não se preocupe! ECTRACC funciona offline também."
+  }
+}

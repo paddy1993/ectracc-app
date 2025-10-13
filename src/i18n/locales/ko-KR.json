@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "로딩 중...",
+    "error": "오류",
+    "success": "성공",
+    "cancel": "취소",
+    "save": "저장",
+    "search": "검색",
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃"
+  },
+  "navigation": {
+    "dashboard": "대시보드",
+    "products": "제품",
+    "search": "검색",
+    "tracker": "추적기",
+    "history": "기록",
+    "profile": "프로필",
+    "settings": "설정"
+  },
+  "dashboard": {
+    "title": "탄소 발자국 대시보드",
+    "subtitle": "구매하는 제품의 탄소 발자국을 추적하세요",
+    "currentFootprint": "현재 발자국",
+    "weeklyFootprint": "이번 주",
+    "monthlyFootprint": "이번 달"
+  },
+  "offline": {
+    "title": "오프라인 상태입니다",
+    "message": "걱정하지 마세요! ECTRACC는 오프라인에서도 작동합니다."
+  }
+}
