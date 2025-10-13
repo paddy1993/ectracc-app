@@ -162,23 +162,23 @@ const i18n = {
 // i18n.on('languageChanged', (lng) => {
 //   const config = supportedLanguages[lng as keyof typeof supportedLanguages];
   
-  if (config) {
-    // Update document direction for RTL languages
-    document.documentElement.dir = config.rtl ? 'rtl' : 'ltr';
-    document.documentElement.lang = lng;
-    
-    // Update theme for RTL
-    if (config.rtl) {
-      document.body.classList.add('rtl');
-    } else {
-      document.body.classList.remove('rtl');
-    }
-    
-    // Store user preference
-    localStorage.setItem('ectracc-language', lng);
-    localStorage.setItem('ectracc-language-config', JSON.stringify(config));
-  }
-});
+//   if (config) {
+//     // Update document direction for RTL languages
+//     document.documentElement.dir = config.rtl ? 'rtl' : 'ltr';
+//     document.documentElement.lang = lng;
+//     
+//     // Update theme for RTL
+//     if (config.rtl) {
+//       document.body.classList.add('rtl');
+//     } else {
+//       document.body.classList.remove('rtl');
+//     }
+//     
+//     // Store user preference
+//     localStorage.setItem('ectracc-language', lng);
+//     localStorage.setItem('ectracc-language-config', JSON.stringify(config));
+//   }
+// });
 
 // Utility functions
 export const getCurrentLanguageConfig = () => {
