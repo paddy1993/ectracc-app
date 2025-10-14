@@ -72,6 +72,7 @@ export interface RegisterForm {
   confirmPassword: string;
 }
 
+// DEPRECATED: Only used by deprecated ProfileSetupPage
 export interface ProfileSetupForm {
   display_name: string;
   country: string;

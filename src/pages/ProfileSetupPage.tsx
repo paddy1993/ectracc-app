@@ -29,7 +29,12 @@ import {
   EmojiNature as Eco
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
-import { ProfileSetupForm } from '../types';
+// DEPRECATED: Local interface definition since this page is deprecated
+interface ProfileSetupForm {
+  display_name: string;
+  country: string;
+  sustainability_goal: string;
+}
 import analytics, { EVENTS, USER_PROPERTIES } from '../services/analytics';
 import { APP_NAME } from '../constants';
 
