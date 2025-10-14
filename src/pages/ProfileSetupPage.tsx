@@ -351,16 +351,25 @@ export default function ProfileSetupPage() {
   };
 
   const handleSubmit = async () => {
+    console.log('🔄 handleSubmit called');
+    
     if (!user) {
+      console.error('❌ No user found');
       setError('User not found. Please sign in again.');
       return;
     }
 
     if (!formData.display_name.trim() || !formData.country || !formData.sustainability_goal) {
+      console.error('❌ Missing required fields:', { 
+        display_name: formData.display_name.trim(), 
+        country: formData.country, 
+        sustainability_goal: formData.sustainability_goal 
+      });
       setError('Please complete all required fields');
       return;
     }
 
+    console.log('✅ Starting profile submission...');
     setIsSubmitting(true);
     setError(null);
 
@@ -405,15 +414,44 @@ export default function ProfileSetupPage() {
       
       console.log('✅ Profile setup completed successfully! Redirecting to dashboard...');
       
+      // Show user feedback immediately
+      setError(null);
+      
+      // Add a visible success message
+      const successMessage = document.createElement('div');
+      successMessage.innerHTML = '✅ Profile completed! Redirecting to dashboard...';
+      successMessage.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: green; color: white; padding: 10px 20px; border-radius: 5px; z-index: 10000; font-weight: bold;';
+      document.body.appendChild(successMessage);
+      
       // AGGRESSIVE APPROACH: Force immediate navigation using window.location
       // This bypasses React Router entirely and forces a fresh page load
       const dashboardUrl = window.location.origin + '/dashboard';
       console.log('🚀 Force redirecting to:', dashboardUrl);
       
-      // Use window.location.replace to avoid back button issues
-      window.location.replace(dashboardUrl);
+      // Add a small delay to show the success message, then redirect
+      setTimeout(() => {
+        console.log('🔄 Executing window.location.replace now...');
+        try {
+          window.location.replace(dashboardUrl);
+        } catch (error) {
+          console.error('❌ Error during redirect:', error);
+          // Fallback: try window.location.href
+          window.location.href = dashboardUrl;
+        }
+      }, 1000);
     } catch (error: any) {
+      console.error('❌ Profile setup error:', error);
       setError(error.message || 'Failed to set up profile');
+      
+      // Show error message to user
+      const errorMessage = document.createElement('div');
+      errorMessage.innerHTML = `❌ Error: ${error.message || 'Failed to set up profile'}`;
+      errorMessage.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: red; color: white; padding: 10px 20px; border-radius: 5px; z-index: 10000; font-weight: bold;';
+      document.body.appendChild(errorMessage);
+      
+      setTimeout(() => {
+        document.body.removeChild(errorMessage);
+      }, 5000);
     } finally {
       setIsSubmitting(false);
     }
