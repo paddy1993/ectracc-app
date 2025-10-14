@@ -268,6 +268,17 @@ export default function ProfileSetupPage() {
     if (!loading && profile) {
       navigate('/dashboard', { replace: true });
     }
+    
+    // Also check if profile setup was recently completed
+    const profileSetupCompleted = localStorage.getItem('profileSetupCompleted') === 'true';
+    const profileSetupCompletedAt = localStorage.getItem('profileSetupCompletedAt');
+    const recentlyCompleted = profileSetupCompletedAt && 
+      (Date.now() - parseInt(profileSetupCompletedAt)) < 60000; // 60 seconds
+    
+    if (recentlyCompleted && !loading) {
+      console.log('🔄 Profile setup was recently completed, redirecting to dashboard...');
+      navigate('/dashboard', { replace: true });
+    }
   }, [loading, profile, navigate]);
 
   // Handle navigation after profile update completion with fallback timer
@@ -388,13 +399,27 @@ export default function ProfileSetupPage() {
       // Set flag to indicate profile update is completed
       setProfileUpdateCompleted(true);
       
+      // Set localStorage flag to prevent redirect loops
+      localStorage.setItem('profileSetupCompleted', 'true');
+      localStorage.setItem('profileSetupCompletedAt', Date.now().toString());
+      
       // Immediate navigation attempt - don't wait for context update
       console.log('Attempting immediate navigation to dashboard...');
       
-      // Small delay to ensure state updates, then navigate
+      // For mobile, we need to ensure the profile context is updated before navigation
+      // Use a longer delay and force a page reload if needed
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const navigationDelay = isMobile ? 1500 : 500;
+      
       setTimeout(() => {
-        navigate('/dashboard', { replace: true });
-      }, 500);
+        console.log('🚀 Navigating to dashboard after profile update...');
+        
+        // Force navigation with state to indicate profile was just completed
+        navigate('/dashboard', { 
+          replace: true, 
+          state: { profileJustCompleted: true } 
+        });
+      }, navigationDelay);
     } catch (error: any) {
       setError(error.message || 'Failed to set up profile');
     } finally {

@@ -11,6 +11,15 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children, requireProfile = false }: ProtectedRouteProps) {
   const { user, profile, loading } = useAuth();
   const location = useLocation();
+  
+  // Check if user just completed profile setup
+  const profileJustCompleted = location.state?.profileJustCompleted;
+  
+  // Check localStorage for recent profile completion (within last 30 seconds)
+  const profileSetupCompleted = localStorage.getItem('profileSetupCompleted') === 'true';
+  const profileSetupCompletedAt = localStorage.getItem('profileSetupCompletedAt');
+  const recentlyCompleted = profileSetupCompletedAt && 
+    (Date.now() - parseInt(profileSetupCompletedAt)) < 30000; // 30 seconds
 
   // Debug logging for mobile routing issues
   console.log('🛡️ ProtectedRoute check:', {
@@ -48,9 +57,23 @@ export default function ProtectedRoute({ children, requireProfile = false }: Pro
   }
 
   // If profile is required but doesn't exist, redirect to profile setup
-  if (requireProfile && !profile) {
+  // UNLESS the user just completed profile setup (to prevent redirect loops)
+  if (requireProfile && !profile && !profileJustCompleted && !recentlyCompleted) {
     console.log('👤 ProtectedRoute: User exists but no profile, redirecting to profile setup');
     return <Navigate to="/profile-setup" replace />;
+  }
+  
+  // If profile was just completed, allow access even if profile context hasn't updated yet
+  if (requireProfile && !profile && (profileJustCompleted || recentlyCompleted)) {
+    console.log('✅ ProtectedRoute: Profile just completed, allowing access while context updates');
+    
+    // Clear the localStorage flag after successful access
+    if (recentlyCompleted) {
+      setTimeout(() => {
+        localStorage.removeItem('profileSetupCompleted');
+        localStorage.removeItem('profileSetupCompletedAt');
+      }, 5000);
+    }
   }
 
   console.log('✅ ProtectedRoute: Access granted');
