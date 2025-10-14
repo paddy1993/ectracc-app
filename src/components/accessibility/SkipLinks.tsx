@@ -53,7 +53,7 @@ export default function SkipLinks() {
         zIndex: 9999,
         '& a': {
           position: 'absolute',
-          top: '-40px',
+          top: '-100px', // Hide further off-screen
           left: '6px',
           background: theme.palette.primary.main,
           color: theme.palette.primary.contrastText,
@@ -64,8 +64,12 @@ export default function SkipLinks() {
           fontSize: '0.875rem',
           transition: 'top 0.3s ease',
           border: `2px solid ${theme.palette.primary.main}`,
+          opacity: 0, // Hide by default
+          visibility: 'hidden', // Ensure completely hidden
           '&:focus': {
             top: '6px',
+            opacity: 1,
+            visibility: 'visible',
             outline: `2px solid ${theme.palette.primary.contrastText}`,
             outlineOffset: '2px'
           },
