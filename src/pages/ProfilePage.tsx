@@ -45,7 +45,10 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { ProfileSetupForm } from '../types';
+// Simple form type for profile editing
+interface ProfileEditForm {
+  display_name: string;
+}
 import { useApp } from '../contexts/AppContext';
 import { APP_VERSION } from '../constants';
 import OfflineSyncManager, { getAppEnvironment, isStandalone } from '../utils/offlineSync';
@@ -65,7 +68,7 @@ export default function ProfilePage() {
   const { theme, isOnline, toggleTheme } = useApp();
   
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editData, setEditData] = useState<ProfileSetupForm>({
+  const [editData, setEditData] = useState<ProfileEditForm>({
     display_name: profile?.full_name || ''
   });
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +82,7 @@ export default function ProfilePage() {
 
   const appEnvironment = getAppEnvironment();
 
-  const handleEditInputChange = (field: keyof ProfileSetupForm) => (
+  const handleEditInputChange = (field: keyof ProfileEditForm) => (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setEditData(prev => ({
