@@ -352,6 +352,7 @@ export default function ProfileSetupPage() {
 
   const handleSubmit = async () => {
     console.log('🔄 handleSubmit called');
+    alert('handleSubmit function started!');
     
     if (!user) {
       console.error('❌ No user found');
@@ -638,7 +639,11 @@ export default function ProfileSetupPage() {
               </Button>
               <Button
                 variant="contained"
-                onClick={handleSubmit}
+                onClick={() => {
+                  console.log('🔘 Complete Setup button clicked!');
+                  alert('Complete Setup button clicked! Check console for details.');
+                  handleSubmit();
+                }}
                 disabled={loading || isSubmitting}
                 size="large"
               >
