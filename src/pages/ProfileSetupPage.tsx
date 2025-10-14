@@ -1,3 +1,7 @@
+// DEPRECATED: This page is now replaced by ProfileSetupModal in DashboardPage
+// Users are no longer redirected here - the modal appears on dashboard instead
+// This file is kept for backward compatibility but should not be used
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {

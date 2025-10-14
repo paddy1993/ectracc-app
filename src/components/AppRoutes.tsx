@@ -69,11 +69,11 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Protected routes with layout */}
+      {/* Protected routes with layout - profile setup handled by dashboard modal */}
       <Route
         path="/"
         element={
-          <ProtectedRoute requireProfile>
+          <ProtectedRoute>
             <Layout />
           </ProtectedRoute>
         }
@@ -135,7 +135,7 @@ export default function AppRoutes() {
       <Route
         path="/scanner"
         element={
-          <ProtectedRoute requireProfile>
+          <ProtectedRoute>
             <Suspense fallback={<PageLoader />}>
               <ScannerPage />
             </Suspense>

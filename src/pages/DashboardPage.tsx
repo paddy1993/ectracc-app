@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Container,
   Card,
@@ -39,6 +40,7 @@ import userFootprintApi, { UserFootprintEntry, UserFootprintSummary, UserFootpri
 import carbonApi from '../services/carbonApi';
 import analytics, { EVENTS } from '../services/analytics';
 import SkeletonLoader from '../components/SkeletonLoader';
+import ProfileSetupModal from '../components/ProfileSetupModal';
 import { 
   useOptimizedApiCall, 
   usePrefetch, 
@@ -74,11 +76,38 @@ type TimeFilter = 'day' | 'week' | 'month' | 'ytd' | 'year';
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const { user, profile, loading: authLoading } = useAuth();
 
   // Track page view
   useEffect(() => {
     analytics.trackPageView('Dashboard');
   }, []);
+
+  // Profile setup modal state
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  // Check if user needs to complete profile setup
+  useEffect(() => {
+    console.log('🔍 [DASHBOARD] Checking profile setup status:', {
+      authLoading,
+      hasUser: !!user,
+      hasProfile: !!profile,
+      profileDisplayName: profile?.display_name
+    });
+
+    if (!authLoading && user && !profile) {
+      console.log('📋 [DASHBOARD] User needs to complete profile, showing modal');
+      setShowProfileModal(true);
+    } else if (!authLoading && user && profile) {
+      console.log('✅ [DASHBOARD] User has complete profile');
+      setShowProfileModal(false);
+    }
+  }, [authLoading, user, profile]);
+
+  const handleProfileModalClose = () => {
+    console.log('🔄 [DASHBOARD] Profile modal closed');
+    setShowProfileModal(false);
+  };
   const [summary, setSummary] = useState<UserFootprintSummary | null>(null);
   const [recentEntries, setRecentEntries] = useState<UserFootprintEntry[]>([]);
   const [historyData, setHistoryData] = useState<UserFootprintHistory[]>([]);
@@ -519,11 +548,18 @@ export default function DashboardPage() {
   const hasEntries = summary && summary.totalEntries > 0;
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 1, mb: 2 }}>
-      {/* Header */}
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 1 }}>
-          Carbon Footprint Dashboard
+    <>
+      {/* Profile Setup Modal */}
+      <ProfileSetupModal 
+        open={showProfileModal}
+        onClose={handleProfileModalClose}
+      />
+      
+      <Container maxWidth="xl" sx={{ mt: 1, mb: 2 }}>
+        {/* Header */}
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 1 }}>
+            Carbon Footprint Dashboard
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           Track the carbon footprint of the products you buy and work towards your sustainability goals
@@ -750,5 +786,6 @@ export default function DashboardPage() {
         </>
       )}
     </Container>
+    </>
   );
 }

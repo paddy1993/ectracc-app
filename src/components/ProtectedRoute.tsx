@@ -56,24 +56,14 @@ export default function ProtectedRoute({ children, requireProfile = false }: Pro
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If profile is required but doesn't exist, redirect to profile setup
-  // UNLESS the user just completed profile setup (to prevent redirect loops)
-  if (requireProfile && !profile && !profileJustCompleted && !recentlyCompleted) {
-    console.log('👤 ProtectedRoute: User exists but no profile, redirecting to profile setup');
-    return <Navigate to="/profile-setup" replace />;
+  // Profile setup is now handled by modal on dashboard - no redirect needed
+  // Just log the profile status for debugging
+  if (requireProfile && !profile) {
+    console.log('👤 ProtectedRoute: User exists but no profile - dashboard will show setup modal');
   }
   
-  // If profile was just completed, allow access even if profile context hasn't updated yet
-  if (requireProfile && !profile && (profileJustCompleted || recentlyCompleted)) {
-    console.log('✅ ProtectedRoute: Profile just completed, allowing access while context updates');
-    
-    // Clear the localStorage flag after successful access
-    if (recentlyCompleted) {
-      setTimeout(() => {
-        localStorage.removeItem('profileSetupCompleted');
-        localStorage.removeItem('profileSetupCompletedAt');
-      }, 5000);
-    }
+  if (requireProfile && profile) {
+    console.log('✅ ProtectedRoute: User has complete profile');
   }
 
   console.log('✅ ProtectedRoute: Access granted');
