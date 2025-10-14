@@ -272,7 +272,7 @@ export default function ProfileSetupPage() {
     console.log('🔍 [PROFILE SETUP] Checking redirect conditions:', {
       loading,
       hasProfile: !!profile,
-      profileDisplayName: profile?.display_name
+      profileFullName: profile?.full_name
     });
     
     if (!loading && profile) {
