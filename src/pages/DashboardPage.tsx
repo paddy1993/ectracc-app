@@ -40,7 +40,7 @@ import userFootprintApi, { UserFootprintEntry, UserFootprintSummary, UserFootpri
 import carbonApi from '../services/carbonApi';
 import analytics, { EVENTS } from '../services/analytics';
 import SkeletonLoader from '../components/SkeletonLoader';
-import ProfileSetupModal from '../components/ProfileSetupModal';
+// ProfileSetupModal removed - users go directly to dashboard
 import { 
   useOptimizedApiCall, 
   usePrefetch, 
@@ -83,31 +83,7 @@ export default function DashboardPage() {
     analytics.trackPageView('Dashboard');
   }, []);
 
-  // Profile setup modal state
-  const [showProfileModal, setShowProfileModal] = useState(false);
-
-  // Check if user needs to complete profile setup
-  useEffect(() => {
-    console.log('🔍 [DASHBOARD] Checking profile setup status:', {
-      authLoading,
-      hasUser: !!user,
-      hasProfile: !!profile,
-      profileFullName: profile?.full_name
-    });
-
-    if (!authLoading && user && !profile) {
-      console.log('📋 [DASHBOARD] User needs to complete profile, showing modal');
-      setShowProfileModal(true);
-    } else if (!authLoading && user && profile) {
-      console.log('✅ [DASHBOARD] User has complete profile');
-      setShowProfileModal(false);
-    }
-  }, [authLoading, user, profile]);
-
-  const handleProfileModalClose = () => {
-    console.log('🔄 [DASHBOARD] Profile modal closed');
-    setShowProfileModal(false);
-  };
+  // Profile setup modal removed - users go directly to dashboard
   const [summary, setSummary] = useState<UserFootprintSummary | null>(null);
   const [recentEntries, setRecentEntries] = useState<UserFootprintEntry[]>([]);
   const [historyData, setHistoryData] = useState<UserFootprintHistory[]>([]);
@@ -548,14 +524,7 @@ export default function DashboardPage() {
   const hasEntries = summary && summary.totalEntries > 0;
 
   return (
-    <>
-      {/* Profile Setup Modal */}
-      <ProfileSetupModal 
-        open={showProfileModal}
-        onClose={handleProfileModalClose}
-      />
-      
-      <Container maxWidth="xl" sx={{ mt: 1, mb: 2 }}>
+    <Container maxWidth="xl" sx={{ mt: 1, mb: 2 }}>
         {/* Header */}
         <Box sx={{ mb: 2 }}>
           <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 1 }}>
@@ -786,6 +755,5 @@ export default function DashboardPage() {
         </>
       )}
     </Container>
-    </>
   );
 }
