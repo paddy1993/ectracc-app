@@ -45,7 +45,7 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-// Simple form type for profile editing
+// Simple form type for profile editing (updated for schema fix)
 interface ProfileEditForm {
   display_name: string;
 }
