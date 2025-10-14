@@ -403,23 +403,15 @@ export default function ProfileSetupPage() {
       localStorage.setItem('profileSetupCompleted', 'true');
       localStorage.setItem('profileSetupCompletedAt', Date.now().toString());
       
-      // Immediate navigation attempt - don't wait for context update
-      console.log('Attempting immediate navigation to dashboard...');
+      console.log('✅ Profile setup completed successfully! Redirecting to dashboard...');
       
-      // For mobile, we need to ensure the profile context is updated before navigation
-      // Use a longer delay and force a page reload if needed
-      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const navigationDelay = isMobile ? 1500 : 500;
+      // AGGRESSIVE APPROACH: Force immediate navigation using window.location
+      // This bypasses React Router entirely and forces a fresh page load
+      const dashboardUrl = window.location.origin + '/dashboard';
+      console.log('🚀 Force redirecting to:', dashboardUrl);
       
-      setTimeout(() => {
-        console.log('🚀 Navigating to dashboard after profile update...');
-        
-        // Force navigation with state to indicate profile was just completed
-        navigate('/dashboard', { 
-          replace: true, 
-          state: { profileJustCompleted: true } 
-        });
-      }, navigationDelay);
+      // Use window.location.replace to avoid back button issues
+      window.location.replace(dashboardUrl);
     } catch (error: any) {
       setError(error.message || 'Failed to set up profile');
     } finally {

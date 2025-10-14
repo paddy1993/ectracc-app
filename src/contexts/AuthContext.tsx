@@ -166,9 +166,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Force a re-render by updating loading state
         setLoading(false);
         
-        // Double-check the profile was set
-        setTimeout(() => {
+        // Double-check the profile was set and force a context refresh
+        setTimeout(async () => {
           console.log('🔍 Profile context check after update:', result.profile);
+          
+          // Force refresh the profile from database to ensure it's current
+          try {
+            const freshProfile = await AuthService.getUserProfile(user.id);
+            if (freshProfile) {
+              console.log('🔄 Refreshing profile context with fresh data:', freshProfile);
+              setProfile(freshProfile);
+            }
+          } catch (error) {
+            console.error('❌ Error refreshing profile:', error);
+          }
         }, 100);
         
         return { error: null };
