@@ -5,7 +5,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
 
-const { connectMongoDB, initializeSupabase } = require('./config/database');
+const { connectMongoDB, initializeSupabase, supabaseHealthCheck } = require('./config/database');
 const { mongoHealthCheck } = require('./config/mongodb');
 const productsRouter = require('./routes/products');
 const betaRouter = require('./routes/beta');
@@ -62,10 +62,20 @@ app.use(express.urlencoded({ extended: true }));
 // Logging middleware
 app.use(morgan('combined'));
 
-// Health check endpoint with real service status
+// Health check endpoint with comprehensive service status
 app.get('/api/healthcheck', async (req, res) => {
+  const startTime = Date.now();
+  
   try {
+    console.log('🔍 [HEALTH CHECK] Starting comprehensive health check...');
+    
+    // Check MongoDB health
     const mongoHealth = await mongoHealthCheck();
+    console.log('📊 [HEALTH CHECK] MongoDB status:', mongoHealth.status);
+    
+    // Check Supabase health
+    const supabaseHealth = await supabaseHealthCheck();
+    console.log('📊 [HEALTH CHECK] Supabase status:', supabaseHealth.status);
     
     const healthStatus = {
       status: 'OK',
@@ -74,28 +84,47 @@ app.get('/api/healthcheck', async (req, res) => {
       version: '2.0.0',
       environment: process.env.NODE_ENV || 'development',
       services: {
-        mongodb: mongoHealth.status,
-        supabase: 'connected' // Placeholder for now
+        mongodb: {
+          status: mongoHealth.status,
+          details: mongoHealth.stats || mongoHealth.error || null
+        },
+        supabase: {
+          status: supabaseHealth.status,
+          details: supabaseHealth.profilesTable || supabaseHealth.error || null
+        }
       },
-      database: mongoHealth.stats || null,
+      database: {
+        mongodb: mongoHealth.stats || null,
+        supabase: supabaseHealth.profilesTable ? 'profiles table accessible' : 'profiles table not accessible'
+      },
       memory: {
         used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + ' MB',
         total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024) + ' MB'
-      }
+      },
+      responseTime: Date.now() - startTime + 'ms'
     };
 
-    const overallStatus = mongoHealth.status === 'connected' ? 200 : 503;
+    // Determine overall status based on both services
+    const mongoOk = mongoHealth.status === 'connected';
+    const supabaseOk = supabaseHealth.status === 'connected';
+    const overallStatus = mongoOk && supabaseOk ? 200 : 503;
+    
+    console.log(`📊 [HEALTH CHECK] Overall status: ${overallStatus} (MongoDB: ${mongoOk}, Supabase: ${supabaseOk})`);
 
     res.status(overallStatus).json({
       success: overallStatus === 200,
-      message: 'ECTRACC API with Real Product Database',
+      message: 'ECTRACC API with MongoDB and Supabase',
       data: healthStatus
     });
   } catch (error) {
+    const duration = Date.now() - startTime;
+    console.error(`❌ [HEALTH CHECK] Health check failed after ${duration}ms:`, error);
+    
     res.status(500).json({
       success: false,
       message: 'Health check failed',
-      error: error.message
+      error: error.message,
+      responseTime: duration + 'ms'
     });
   }
 });
@@ -184,8 +213,12 @@ const startServer = async () => {
     logger.info('✅ MongoDB connected successfully');
     
     logger.info('🔐 Initializing Supabase...');
-    initializeSupabase();
-    logger.info('✅ Supabase initialized');
+    const supabaseConnected = await initializeSupabase();
+    if (supabaseConnected) {
+      logger.info('✅ Supabase connected successfully');
+    } else {
+      logger.warn('⚠️ Supabase connection failed - some features may not work');
+    }
     
     // Start the server
     logger.info(`🚀 Starting server on port ${PORT}...`);

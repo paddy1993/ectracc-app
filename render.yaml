@@ -15,9 +15,9 @@ services:
       - key: MONGODB_DATABASE
         value: ectracc
       - key: SUPABASE_URL
-        value: https://your-project-id.supabase.co
+        value: https://irebylncovkdrthnovth.supabase.co
       - key: SUPABASE_ANON_KEY
-        value: your-anon-key-here
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZWJ5bG5jb3ZrZHJ0aG5vdnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwNjQxMjksImV4cCI6MjA3MzY0MDEyOX0.pjv3QL70AyTsIcyLpEO3mLLUzcpJ9QF67Uhgtv1MkII
       - key: SUPABASE_SERVICE_ROLE_KEY
-        value: your-service-role-key-here
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZWJ5bG5jb3ZrZHJ0aG5vdnRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODA2NDEyOSwiZXhwIjoyMDczNjQwMTI5fQ.REPLACE_WITH_ACTUAL_SERVICE_ROLE_KEY
     autoDeploy: true

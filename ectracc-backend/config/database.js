@@ -23,19 +23,23 @@ const getMongoDb = () => {
   return mongoConnected;
 };
 
-// Supabase connection (placeholder for Phase 1)
+// Supabase connection with enhanced error handling
 let supabase;
+let supabaseConnected = false;
 
-const initializeSupabase = () => {
+const initializeSupabase = async () => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_ANON_KEY;
   
   console.log('🔐 Initializing Supabase...');
+  console.log('🔧 Supabase URL configured:', supabaseUrl ? 'YES' : 'NO');
+  console.log('🔧 Supabase Key configured:', supabaseKey ? 'YES' : 'NO');
   
   if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('placeholder')) {
     console.log('⚠️ Supabase not configured - using placeholder mode');
     console.log('📝 Set SUPABASE_URL and SUPABASE_ANON_KEY environment variables to enable Supabase');
-    return;
+    supabaseConnected = false;
+    return false;
   }
   
   try {
@@ -45,9 +49,26 @@ const initializeSupabase = () => {
         persistSession: false // Server-side doesn't need session persistence
       }
     });
-    console.log('✅ Supabase connected successfully');
+    
+    // Test the connection by trying to access the profiles table
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('count', { count: 'exact', head: true });
+    
+    if (error) {
+      console.log('❌ Supabase connection test failed:', error.message);
+      console.log('📝 Make sure the profiles table exists and RLS policies are configured');
+      supabaseConnected = false;
+      return false;
+    }
+    
+    console.log('✅ Supabase connected and profiles table accessible');
+    supabaseConnected = true;
+    return true;
   } catch (error) {
     console.log('❌ Supabase connection failed:', error.message);
+    supabaseConnected = false;
+    return false;
   }
 };
 
@@ -58,9 +79,51 @@ const getSupabase = () => {
   return supabase;
 };
 
+const getSupabaseStatus = () => {
+  return supabaseConnected;
+};
+
+const supabaseHealthCheck = async () => {
+  if (!supabase || !supabaseConnected) {
+    return {
+      status: 'disconnected',
+      error: 'Supabase not connected',
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('count', { count: 'exact', head: true });
+
+    if (error) {
+      return {
+        status: 'error',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    return {
+      status: 'connected',
+      profilesTable: 'accessible',
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    return {
+      status: 'error',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    };
+  }
+};
+
 module.exports = {
   connectMongoDB,
   getMongoDb,
   initializeSupabase,
-  getSupabase
+  getSupabase,
+  getSupabaseStatus,
+  supabaseHealthCheck
 };

@@ -265,38 +265,29 @@ export default function ProfileSetupPage() {
 
   // Redirect to dashboard if user already has a profile
   React.useEffect(() => {
+    console.log('🔍 [PROFILE SETUP] Checking redirect conditions:', {
+      loading,
+      hasProfile: !!profile,
+      profileDisplayName: profile?.display_name
+    });
+    
     if (!loading && profile) {
+      console.log('✅ [PROFILE SETUP] User already has profile, redirecting to dashboard');
       navigate('/dashboard', { replace: true });
+      return;
     }
     
-    // Also check if profile setup was recently completed
+    // Check if profile setup was recently completed (within last 5 minutes)
     const profileSetupCompleted = localStorage.getItem('profileSetupCompleted') === 'true';
     const profileSetupCompletedAt = localStorage.getItem('profileSetupCompletedAt');
-    const recentlyCompleted = profileSetupCompletedAt && 
-      (Date.now() - parseInt(profileSetupCompletedAt)) < 60000; // 60 seconds
+    const recentlyCompleted = profileSetupCompleted && profileSetupCompletedAt && 
+      (Date.now() - parseInt(profileSetupCompletedAt)) < 300000; // 5 minutes
     
     if (recentlyCompleted && !loading) {
-      console.log('🔄 Profile setup was recently completed, redirecting to dashboard...');
+      console.log('🔄 [PROFILE SETUP] Profile setup was recently completed, redirecting to dashboard');
       navigate('/dashboard', { replace: true });
     }
   }, [loading, profile, navigate]);
-
-  // Handle navigation after profile update completion with fallback timer
-  React.useEffect(() => {
-    if (profileUpdateCompleted && profile && !loading) {
-      console.log('Profile update completed and context updated, navigating to dashboard...');
-      navigate('/dashboard', { replace: true });
-    } else if (profileUpdateCompleted && !profile && !loading) {
-      // Fallback: if profile update completed but context hasn't updated after 5 seconds
-      console.log('Profile update completed but context not updated, setting fallback timer...');
-      const fallbackTimer = setTimeout(() => {
-        console.log('Fallback timer triggered, forcing navigation to dashboard...');
-        navigate('/dashboard', { replace: true });
-      }, 5000);
-      
-      return () => clearTimeout(fallbackTimer);
-    }
-  }, [profileUpdateCompleted, profile, loading, navigate]);
 
   const handleInputChange = (field: keyof ProfileSetupForm) => (
     event: React.ChangeEvent<HTMLInputElement>
@@ -351,17 +342,16 @@ export default function ProfileSetupPage() {
   };
 
   const handleSubmit = async () => {
-    console.log('🔄 handleSubmit called');
-    alert('handleSubmit function started!');
+    console.log('🔄 [PROFILE SETUP] handleSubmit called');
     
     if (!user) {
-      console.error('❌ No user found');
+      console.error('❌ [PROFILE SETUP] No user found');
       setError('User not found. Please sign in again.');
       return;
     }
 
     if (!formData.display_name.trim() || !formData.country || !formData.sustainability_goal) {
-      console.error('❌ Missing required fields:', { 
+      console.error('❌ [PROFILE SETUP] Missing required fields:', { 
         display_name: formData.display_name.trim(), 
         country: formData.country, 
         sustainability_goal: formData.sustainability_goal 
@@ -370,7 +360,7 @@ export default function ProfileSetupPage() {
       return;
     }
 
-    console.log('✅ Starting profile submission...');
+    console.log('✅ [PROFILE SETUP] Starting profile submission...');
     setIsSubmitting(true);
     setError(null);
 
@@ -383,16 +373,16 @@ export default function ProfileSetupPage() {
         avatar_url: avatarUrl || undefined
       };
 
-      console.log('Updating profile with data:', profileData);
+      console.log('📝 [PROFILE SETUP] Updating profile with data:', profileData);
       const { error: updateError } = await updateProfile(profileData);
       
       if (updateError) {
-        console.error('Profile update error:', updateError);
+        console.error('❌ [PROFILE SETUP] Profile update error:', updateError);
         setError(updateError);
         return;
       }
 
-      console.log('Profile updated successfully!');
+      console.log('✅ [PROFILE SETUP] Profile updated successfully!');
       
       // Track profile completion
       analytics.track(EVENTS.PROFILE_COMPLETED, {
@@ -406,54 +396,32 @@ export default function ProfileSetupPage() {
         [USER_PROPERTIES.SUSTAINABILITY_GOAL]: profileData.sustainability_goal
       });
       
-      // Set flag to indicate profile update is completed
-      setProfileUpdateCompleted(true);
-      
-      // Set localStorage flag to prevent redirect loops
+      // Set localStorage flags to prevent redirect loops
       localStorage.setItem('profileSetupCompleted', 'true');
       localStorage.setItem('profileSetupCompletedAt', Date.now().toString());
       
-      console.log('✅ Profile setup completed successfully! Redirecting to dashboard...');
+      console.log('🎯 [PROFILE SETUP] Profile setup completed successfully! Navigating to dashboard...');
       
-      // Show user feedback immediately
+      // Clear any existing error state
       setError(null);
+      setIsSubmitting(false);
       
-      // Add a visible success message
-      const successMessage = document.createElement('div');
-      successMessage.innerHTML = '✅ Profile completed! Redirecting to dashboard...';
-      successMessage.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: green; color: white; padding: 10px 20px; border-radius: 5px; z-index: 10000; font-weight: bold;';
-      document.body.appendChild(successMessage);
+      // IMMEDIATE NAVIGATION: Navigate directly without waiting for context updates
+      // This prevents race conditions with useEffect hooks
+      console.log('🚀 [PROFILE SETUP] Executing immediate navigation to dashboard');
+      navigate('/dashboard', { replace: true });
       
-      // AGGRESSIVE APPROACH: Force immediate navigation using window.location
-      // This bypasses React Router entirely and forces a fresh page load
-      const dashboardUrl = window.location.origin + '/dashboard';
-      console.log('🚀 Force redirecting to:', dashboardUrl);
-      
-      // Add a small delay to show the success message, then redirect
+      // Fallback: If React Router navigation fails, use window.location as backup
       setTimeout(() => {
-        console.log('🔄 Executing window.location.replace now...');
-        try {
-          window.location.replace(dashboardUrl);
-        } catch (error) {
-          console.error('❌ Error during redirect:', error);
-          // Fallback: try window.location.href
-          window.location.href = dashboardUrl;
+        if (window.location.pathname !== '/dashboard') {
+          console.log('🔄 [PROFILE SETUP] React Router navigation may have failed, using window.location fallback');
+          window.location.replace('/dashboard');
         }
-      }, 1000);
+      }, 2000);
+      
     } catch (error: any) {
-      console.error('❌ Profile setup error:', error);
+      console.error('❌ [PROFILE SETUP] Profile setup error:', error);
       setError(error.message || 'Failed to set up profile');
-      
-      // Show error message to user
-      const errorMessage = document.createElement('div');
-      errorMessage.innerHTML = `❌ Error: ${error.message || 'Failed to set up profile'}`;
-      errorMessage.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: red; color: white; padding: 10px 20px; border-radius: 5px; z-index: 10000; font-weight: bold;';
-      document.body.appendChild(errorMessage);
-      
-      setTimeout(() => {
-        document.body.removeChild(errorMessage);
-      }, 5000);
-    } finally {
       setIsSubmitting(false);
     }
   };

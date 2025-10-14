@@ -67,6 +67,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Listen for auth state changes
   useEffect(() => {
     const { data: { subscription } } = AuthService.onAuthStateChange(async (user) => {
+      console.log('🔄 [AUTH CONTEXT] Auth state change detected:', { 
+        hasUser: !!user, 
+        userEmail: user?.email,
+        userId: user?.id 
+      });
+      
       setUser(user);
       
       if (user) {
@@ -74,7 +80,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         analytics.trackLogin(user.id);
         
         // Load user profile when user signs in
+        console.log('📋 [AUTH CONTEXT] Loading profile for authenticated user:', user.id);
         const userProfile = await AuthService.getUserProfile(user.id);
+        console.log('📊 [AUTH CONTEXT] Profile loaded:', { 
+          hasProfile: !!userProfile,
+          displayName: userProfile?.display_name 
+        });
+        
         setProfile(userProfile);
         
         // Update user properties
@@ -86,6 +98,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           });
         }
       } else {
+        console.log('👋 [AUTH CONTEXT] User signed out, clearing profile');
+        
         // Track user logout and reset analytics
         analytics.track(EVENTS.USER_SIGNED_OUT);
         analytics.reset();
@@ -144,51 +158,51 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  // Update profile function
+  // Update profile function with enhanced reliability
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (!user) {
-      console.error('❌ No user logged in for profile update');
+      console.error('❌ [AUTH CONTEXT] No user logged in for profile update');
       return { error: 'No user logged in' };
     }
 
-    console.log('🔄 Starting profile update...', { userId: user.id, updates });
+    const startTime = Date.now();
+    console.log('🔄 [AUTH CONTEXT] Starting profile update...', { 
+      userId: user.id, 
+      updates,
+      currentProfile: profile ? 'exists' : 'null'
+    });
+    
     setLoading(true);
     
     try {
+      // Call the AuthService to update the profile
       const result = await AuthService.updateUserProfile(user.id, updates);
       
       if (!result.error && result.profile) {
-        console.log('✅ Profile update successful, updating context immediately:', result.profile);
+        const duration = Date.now() - startTime;
+        console.log(`✅ [AUTH CONTEXT] Profile update successful in ${duration}ms:`, result.profile);
         
-        // Force immediate state update
+        // Immediately update the context state
         setProfile(result.profile);
         
-        // Force a re-render by updating loading state
-        setLoading(false);
+        // Update analytics with new profile data
+        if (result.profile.display_name) {
+          analytics.setUserProperties({
+            [USER_PROPERTIES.DISPLAY_NAME]: result.profile.display_name,
+            [USER_PROPERTIES.SUSTAINABILITY_GOAL]: result.profile.sustainability_goal
+          });
+        }
         
-        // Double-check the profile was set and force a context refresh
-        setTimeout(async () => {
-          console.log('🔍 Profile context check after update:', result.profile);
-          
-          // Force refresh the profile from database to ensure it's current
-          try {
-            const freshProfile = await AuthService.getUserProfile(user.id);
-            if (freshProfile) {
-              console.log('🔄 Refreshing profile context with fresh data:', freshProfile);
-              setProfile(freshProfile);
-            }
-          } catch (error) {
-            console.error('❌ Error refreshing profile:', error);
-          }
-        }, 100);
-        
-        return { error: null };
+        console.log('🎯 [AUTH CONTEXT] Profile context updated successfully');
+        return { error: null, profile: result.profile };
       } else {
-        console.error('❌ Failed to update profile:', result.error);
-        return { error: result.error };
+        const duration = Date.now() - startTime;
+        console.error(`❌ [AUTH CONTEXT] Failed to update profile after ${duration}ms:`, result.error);
+        return { error: result.error || 'Unknown error occurred' };
       }
     } catch (error: any) {
-      console.error('❌ Profile update exception:', error);
+      const duration = Date.now() - startTime;
+      console.error(`❌ [AUTH CONTEXT] Profile update exception after ${duration}ms:`, error);
       return { error: error.message || 'Failed to update profile' };
     } finally {
       setLoading(false);
