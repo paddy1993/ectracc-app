@@ -44,21 +44,28 @@ export class AuthService {
   // Sign in with Google OAuth
   static async signInWithGoogle() {
     try {
+      console.log('🔄 Starting Google OAuth sign-in...');
+      console.log('📍 Redirect URL:', AUTH_CONFIG.redirectTo);
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: AUTH_CONFIG.redirectTo,
-          scopes: AUTH_CONFIG.providers.google.scopes
+          scopes: AUTH_CONFIG.providers.google.scopes,
+          queryParams: AUTH_CONFIG.providers.google.queryParams
         }
       });
 
       if (error) {
+        console.error('❌ Google OAuth error:', error);
         return { user: null, error: error.message };
       }
 
+      console.log('✅ Google OAuth initiated successfully');
       // OAuth redirect - user will be null initially
       return { user: null, error: null };
     } catch (error: any) {
+      console.error('❌ Google OAuth exception:', error);
       return { user: null, error: error.message || 'Failed to sign in with Google' };
     }
   }

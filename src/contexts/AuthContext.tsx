@@ -147,21 +147,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Update profile function
   const updateProfile = async (updates: Partial<UserProfile>) => {
     if (!user) {
+      console.error('❌ No user logged in for profile update');
       return { error: 'No user logged in' };
     }
 
+    console.log('🔄 Starting profile update...', { userId: user.id, updates });
     setLoading(true);
+    
     try {
       const result = await AuthService.updateUserProfile(user.id, updates);
       
       if (!result.error && result.profile) {
-        console.log('Setting profile in context:', result.profile);
+        console.log('✅ Profile update successful, updating context immediately:', result.profile);
+        
+        // Force immediate state update
         setProfile(result.profile);
+        
+        // Force a re-render by updating loading state
+        setLoading(false);
+        
+        // Double-check the profile was set
+        setTimeout(() => {
+          console.log('🔍 Profile context check after update:', result.profile);
+        }, 100);
+        
+        return { error: null };
       } else {
-        console.error('Failed to update profile:', result.error);
+        console.error('❌ Failed to update profile:', result.error);
+        return { error: result.error };
       }
-      
-      return { error: result.error };
+    } catch (error: any) {
+      console.error('❌ Profile update exception:', error);
+      return { error: error.message || 'Failed to update profile' };
     } finally {
       setLoading(false);
     }

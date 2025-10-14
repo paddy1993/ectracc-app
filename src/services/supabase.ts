@@ -21,14 +21,26 @@ export const TABLES = {
   NOTIFICATIONS: 'notifications'
 } as const;
 
-// Auth configuration
+// Auth configuration with mobile-specific handling
+const getRedirectUrl = () => {
+  if (process.env.REACT_APP_ENV === 'production') {
+    // Use the current domain to ensure consistency
+    const currentDomain = typeof window !== 'undefined' ? window.location.origin : 'https://ectracc.com';
+    return `${currentDomain}/auth/callback`;
+  }
+  return 'http://localhost:3000/auth/callback';
+};
+
 export const AUTH_CONFIG = {
-  redirectTo: process.env.REACT_APP_ENV === 'production' 
-    ? 'https://ectracc.com/auth/callback'
-    : 'http://localhost:3000/auth/callback',
+  redirectTo: getRedirectUrl(),
   providers: {
     google: {
-      scopes: 'email profile'
+      scopes: 'email profile',
+      // Mobile-specific options
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent'
+      }
     }
   }
 };

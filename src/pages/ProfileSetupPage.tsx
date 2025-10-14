@@ -270,11 +270,20 @@ export default function ProfileSetupPage() {
     }
   }, [loading, profile, navigate]);
 
-  // Handle navigation after profile update completion
+  // Handle navigation after profile update completion with fallback timer
   React.useEffect(() => {
     if (profileUpdateCompleted && profile && !loading) {
       console.log('Profile update completed and context updated, navigating to dashboard...');
       navigate('/dashboard', { replace: true });
+    } else if (profileUpdateCompleted && !profile && !loading) {
+      // Fallback: if profile update completed but context hasn't updated after 5 seconds
+      console.log('Profile update completed but context not updated, setting fallback timer...');
+      const fallbackTimer = setTimeout(() => {
+        console.log('Fallback timer triggered, forcing navigation to dashboard...');
+        navigate('/dashboard', { replace: true });
+      }, 5000);
+      
+      return () => clearTimeout(fallbackTimer);
     }
   }, [profileUpdateCompleted, profile, loading, navigate]);
 
@@ -362,7 +371,7 @@ export default function ProfileSetupPage() {
         return;
       }
 
-      console.log('Profile updated successfully, waiting for context update...');
+      console.log('Profile updated successfully!');
       
       // Track profile completion
       analytics.track(EVENTS.PROFILE_COMPLETED, {
@@ -377,8 +386,15 @@ export default function ProfileSetupPage() {
       });
       
       // Set flag to indicate profile update is completed
-      // The useEffect will handle navigation when profile state is updated
       setProfileUpdateCompleted(true);
+      
+      // Immediate navigation attempt - don't wait for context update
+      console.log('Attempting immediate navigation to dashboard...');
+      
+      // Small delay to ensure state updates, then navigate
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true });
+      }, 500);
     } catch (error: any) {
       setError(error.message || 'Failed to set up profile');
     } finally {
@@ -553,18 +569,31 @@ export default function ProfileSetupPage() {
           </Button>
 
           {currentStep === steps.length - 1 ? (
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              disabled={loading || isSubmitting}
-              size="large"
-            >
-              {isSubmitting ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                'Complete Setup'
-              )}
-            </Button>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  console.log('User chose to skip profile setup');
+                  navigate('/dashboard', { replace: true });
+                }}
+                disabled={loading || isSubmitting}
+                size="large"
+              >
+                Skip for Now
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleSubmit}
+                disabled={loading || isSubmitting}
+                size="large"
+              >
+                {isSubmitting ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Complete Setup'
+                )}
+              </Button>
+            </Box>
           ) : (
             <Button
               variant="contained"
