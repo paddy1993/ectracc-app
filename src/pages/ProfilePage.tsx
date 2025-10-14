@@ -66,9 +66,7 @@ export default function ProfilePage() {
   
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editData, setEditData] = useState<ProfileSetupForm>({
-    display_name: profile?.display_name || '',
-    sustainability_goal: profile?.sustainability_goal || '',
-    country: 'US' // Default country since profile doesn't have this field
+    display_name: profile?.full_name || ''
   });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -91,17 +89,11 @@ export default function ProfilePage() {
     if (error) setError(null);
   };
 
-  const handleEditGoalChange = (event: any) => {
-    setEditData(prev => ({
-      ...prev,
-      sustainability_goal: event.target.value as string
-    }));
-    if (error) setError(null);
-  };
+  // Simplified profile editing - removed sustainability_goal for now
 
   const handleEditSubmit = async () => {
     if (!editData.display_name.trim()) {
-      setError('Display name is required');
+      setError('Name is required');
       return;
     }
 
@@ -110,8 +102,7 @@ export default function ProfilePage() {
 
     try {
       const { error: updateError } = await updateProfile({
-        display_name: editData.display_name.trim(),
-        sustainability_goal: editData.sustainability_goal
+        full_name: editData.display_name.trim()
       });
 
       if (updateError) {
@@ -138,9 +129,7 @@ export default function ProfilePage() {
 
   const openEditDialog = () => {
     setEditData({
-      display_name: profile?.display_name || '',
-      sustainability_goal: profile?.sustainability_goal || '',
-      country: 'US' // Default country since profile doesn't have this field
+      display_name: profile?.full_name || ''
     });
     setError(null);
     setEditDialogOpen(true);
@@ -222,7 +211,7 @@ export default function ProfilePage() {
           </Avatar>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h5" gutterBottom>
-              {profile?.display_name || 'No name set'}
+              {profile?.full_name || 'No name set'}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
               <Email sx={{ fontSize: 16, mr: 1, color: 'text.secondary' }} />
@@ -258,20 +247,7 @@ export default function ProfilePage() {
           </Box>
         </Box>
 
-        {profile?.sustainability_goal && (
-          <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-              <Eco sx={{ mr: 1, color: 'primary.main' }} />
-              Learning Goal
-            </Typography>
-            <Chip
-              label={profile.sustainability_goal}
-              color="primary"
-              variant="outlined"
-              sx={{ fontSize: '0.9rem', py: 2 }}
-            />
-          </Box>
-        )}
+        {/* Sustainability goal removed until table schema is updated */}
       </Paper>
 
       {/* Settings Section */}
@@ -454,20 +430,7 @@ export default function ProfilePage() {
             required
           />
 
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Learning Goal</InputLabel>
-            <Select
-              value={editData.sustainability_goal}
-              onChange={handleEditGoalChange}
-              label="Learning Goal"
-            >
-              {sustainabilityGoals.map((goal) => (
-                <MenuItem key={goal} value={goal}>
-                  {goal}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          {/* Learning goal removed until table schema is updated */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditDialogOpen(false)} disabled={isSubmitting}>
