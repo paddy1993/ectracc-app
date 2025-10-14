@@ -13,11 +13,11 @@ export interface User {
 
 export interface UserProfile {
   user_id: string;
-  display_name?: string;
+  full_name?: string; // Changed from display_name to match Supabase schema
   avatar_url?: string;
-  sustainability_goal?: string;
   created_at: string;
   updated_at: string;
+  // Note: sustainability_goal and country removed until table schema is updated
 }
 
 export interface AppState {

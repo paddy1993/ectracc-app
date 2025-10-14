@@ -35,8 +35,6 @@ import analytics, { EVENTS, USER_PROPERTIES } from '../services/analytics';
 
 interface ProfileSetupForm {
   display_name: string;
-  country: string;
-  sustainability_goal: string;
 }
 
 interface ProfileSetupModalProps {
@@ -53,38 +51,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-// Country options (same as ProfileSetupPage)
-const englishSpeakingCountries = [
-  'United States', 'United Kingdom', 'Canada', 'Australia', 'New Zealand', 'Ireland'
-];
-
-const otherCountries = [
-  'Germany', 'France', 'Spain', 'Italy', 'Netherlands', 'Belgium', 'Switzerland',
-  'Austria', 'Sweden', 'Norway', 'Denmark', 'Finland', 'Poland', 'Czech Republic',
-  'Portugal', 'Greece', 'Hungary', 'Romania', 'Bulgaria', 'Croatia', 'Slovenia',
-  'Slovakia', 'Estonia', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Cyprus',
-  'Japan', 'South Korea', 'Singapore', 'Hong Kong', 'Taiwan', 'India', 'China',
-  'Brazil', 'Mexico', 'Argentina', 'Chile', 'Colombia', 'Peru', 'Venezuela',
-  'South Africa', 'Nigeria', 'Kenya', 'Ghana', 'Egypt', 'Morocco', 'Tunisia',
-  'Israel', 'Turkey', 'Saudi Arabia', 'UAE', 'Qatar', 'Kuwait', 'Bahrain',
-  'Russia', 'Ukraine', 'Belarus', 'Kazakhstan', 'Uzbekistan', 'Georgia',
-  'Thailand', 'Vietnam', 'Philippines', 'Indonesia', 'Malaysia', 'Myanmar',
-  'Cambodia', 'Laos', 'Bangladesh', 'Pakistan', 'Sri Lanka', 'Nepal',
-  'Afghanistan', 'Iran', 'Iraq', 'Jordan', 'Lebanon', 'Syria', 'Yemen',
-  'Oman', 'Ethiopia', 'Tanzania', 'Uganda', 'Rwanda', 'Botswana', 'Namibia',
-  'Zambia', 'Zimbabwe', 'Mozambique', 'Madagascar', 'Mauritius', 'Seychelles'
-];
-
-const countries = [...englishSpeakingCountries, ...otherCountries];
-
-const sustainabilityGoals = [
-  { value: 'reduce_waste', label: 'Reduce Waste & Packaging' },
-  { value: 'eat_local', label: 'Eat More Local & Seasonal Food' },
-  { value: 'plant_based', label: 'Increase Plant-Based Eating' },
-  { value: 'carbon_footprint', label: 'Lower My Carbon Footprint' },
-  { value: 'ethical_brands', label: 'Support Ethical Brands' },
-  { value: 'learn_impact', label: 'Learn About Environmental Impact' }
-];
+// Simplified profile setup - just name and avatar for now
 
 export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalProps) {
   const { user, updateProfile } = useAuth();
@@ -95,12 +62,10 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   
   const [formData, setFormData] = useState<ProfileSetupForm>({
-    display_name: '',
-    country: '',
-    sustainability_goal: ''
+    display_name: ''
   });
 
-  const steps = ['Basic Info', 'Sustainability Goal', 'Complete Setup'];
+  const steps = ['Basic Info', 'Complete Setup'];
 
   const handleInputChange = (field: keyof ProfileSetupForm) => (
     event: React.ChangeEvent<HTMLInputElement>
@@ -112,33 +77,12 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
     if (error) setError(null);
   };
 
-  const handleGoalChange = (event: any) => {
-    setFormData(prev => ({
-      ...prev,
-      sustainability_goal: event.target.value as string
-    }));
-    if (error) setError(null);
-  };
-
-  const handleCountryChange = (event: any) => {
-    setFormData(prev => ({
-      ...prev,
-      country: event.target.value as string
-    }));
-    if (error) setError(null);
-  };
+  // Simplified handlers for basic profile setup
 
   const handleNext = () => {
     if (currentStep === 0) {
-      if (!formData.display_name.trim() || !formData.country) {
-        setError('Please complete all required fields');
-        return;
-      }
-    }
-    
-    if (currentStep === 1) {
-      if (!formData.sustainability_goal) {
-        setError('Please select a sustainability goal');
+      if (!formData.display_name.trim()) {
+        setError('Please enter your name');
         return;
       }
     }
@@ -161,9 +105,9 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
       return;
     }
 
-    if (!formData.display_name.trim() || !formData.country || !formData.sustainability_goal) {
+    if (!formData.display_name.trim()) {
       console.error('❌ [PROFILE MODAL] Missing required fields');
-      setError('Please complete all required fields');
+      setError('Please enter your name');
       return;
     }
 
@@ -173,10 +117,9 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
     try {
       const profileData = {
         user_id: user.id,
-        display_name: formData.display_name.trim(),
-        country: formData.country,
-        sustainability_goal: formData.sustainability_goal,
+        full_name: formData.display_name.trim(), // Map display_name to full_name for Supabase
         avatar_url: avatarUrl || undefined
+        // Note: country and sustainability_goal removed until table schema is updated
       };
 
       console.log('📝 [PROFILE MODAL] Updating profile with data:', profileData);
@@ -192,15 +135,13 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
       
       // Track profile completion
       analytics.track(EVENTS.PROFILE_COMPLETED, {
-        display_name: profileData.display_name,
-        sustainability_goal: profileData.sustainability_goal,
+        full_name: profileData.full_name,
         completion_method: 'modal'
       });
       
       // Update user properties
       analytics.setUserProperties({
-        [USER_PROPERTIES.DISPLAY_NAME]: profileData.display_name,
-        [USER_PROPERTIES.SUSTAINABILITY_GOAL]: profileData.sustainability_goal
+        [USER_PROPERTIES.DISPLAY_NAME]: profileData.full_name
       });
       
       // Show success state
@@ -255,61 +196,18 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
             
             <TextField
               fullWidth
-              label="Display Name"
+              label="Your Name"
               value={formData.display_name}
               onChange={handleInputChange('display_name')}
               margin="normal"
               required
               placeholder="How should we call you?"
+              helperText="This will be displayed on your profile"
             />
-            
-            <FormControl fullWidth margin="normal" required>
-              <InputLabel>Country</InputLabel>
-              <Select
-                value={formData.country}
-                onChange={handleCountryChange}
-                label="Country"
-              >
-                {countries.map((country) => (
-                  <MenuItem key={country} value={country}>
-                    {country}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
           </Box>
         );
 
       case 1:
-        return (
-          <Box>
-            <Typography variant="h6" gutterBottom>
-              What's your main sustainability goal?
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              This helps us personalize your experience and recommendations.
-            </Typography>
-            
-            <FormControl component="fieldset" fullWidth>
-              <RadioGroup
-                value={formData.sustainability_goal}
-                onChange={handleGoalChange}
-              >
-                {sustainabilityGoals.map((goal) => (
-                  <FormControlLabel
-                    key={goal.value}
-                    value={goal.value}
-                    control={<Radio />}
-                    label={goal.label}
-                    sx={{ mb: 1 }}
-                  />
-                ))}
-              </RadioGroup>
-            </FormControl>
-          </Box>
-        );
-
-      case 2:
         return (
           <Box sx={{ textAlign: 'center' }}>
             {success ? (
@@ -337,12 +235,6 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
                   </Typography>
                   <Typography variant="body2">
                     <strong>Name:</strong> {formData.display_name}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Country:</strong> {formData.country}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Goal:</strong> {sustainabilityGoals.find(g => g.value === formData.sustainability_goal)?.label}
                   </Typography>
                 </Paper>
               </Box>

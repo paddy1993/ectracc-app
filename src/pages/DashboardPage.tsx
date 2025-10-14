@@ -92,7 +92,7 @@ export default function DashboardPage() {
       authLoading,
       hasUser: !!user,
       hasProfile: !!profile,
-      profileDisplayName: profile?.display_name
+      profileFullName: profile?.full_name
     });
 
     if (!authLoading && user && !profile) {

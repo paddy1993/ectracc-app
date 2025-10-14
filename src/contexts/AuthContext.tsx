@@ -48,8 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           // Track user properties if profile exists
           if (userProfile) {
             analytics.setUserProperties({
-              [USER_PROPERTIES.DISPLAY_NAME]: userProfile.display_name,
-              [USER_PROPERTIES.SUSTAINABILITY_GOAL]: userProfile.sustainability_goal
+              [USER_PROPERTIES.DISPLAY_NAME]: userProfile.full_name
             });
           }
         }
@@ -84,7 +83,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const userProfile = await AuthService.getUserProfile(user.id);
         console.log('📊 [AUTH CONTEXT] Profile loaded:', { 
           hasProfile: !!userProfile,
-          displayName: userProfile?.display_name 
+          fullName: userProfile?.full_name 
         });
         
         setProfile(userProfile);
@@ -92,8 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Update user properties
         if (userProfile) {
           analytics.setUserProperties({
-            [USER_PROPERTIES.DISPLAY_NAME]: userProfile.display_name,
-            [USER_PROPERTIES.SUSTAINABILITY_GOAL]: userProfile.sustainability_goal,
+            [USER_PROPERTIES.DISPLAY_NAME]: userProfile.full_name,
             [USER_PROPERTIES.LAST_ACTIVE]: new Date().toISOString()
           });
         }
@@ -186,10 +184,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setProfile(result.profile);
         
         // Update analytics with new profile data
-        if (result.profile.display_name) {
+        if (result.profile.full_name) {
           analytics.setUserProperties({
-            [USER_PROPERTIES.DISPLAY_NAME]: result.profile.display_name,
-            [USER_PROPERTIES.SUSTAINABILITY_GOAL]: result.profile.sustainability_goal
+            [USER_PROPERTIES.DISPLAY_NAME]: result.profile.full_name
           });
         }
         

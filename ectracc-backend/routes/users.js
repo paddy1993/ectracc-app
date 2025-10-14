@@ -75,31 +75,27 @@ router.get('/profile', requireAuth, async (req, res) => {
 router.put('/profile', requireAuth, async (req, res) => {
   const startTime = Date.now();
   const userId = req.user.id;
-  const { display_name, avatar_url, sustainability_goal, country } = req.body;
+  const { full_name, avatar_url } = req.body;
 
   console.log(`🔄 [PROFILE UPDATE] Starting profile update for user: ${userId}`);
   console.log(`📝 [PROFILE UPDATE] Request data:`, {
-    display_name,
-    sustainability_goal,
-    country,
+    full_name,
     has_avatar_url: !!avatar_url
   });
 
   try {
     // Validate required fields
-    if (!display_name || !display_name.trim()) {
-      console.log(`❌ [PROFILE UPDATE] Validation failed: display_name is required`);
+    if (!full_name || !full_name.trim()) {
+      console.log(`❌ [PROFILE UPDATE] Validation failed: full_name is required`);
       return res.status(400).json({
         success: false,
-        error: 'Display name is required'
+        error: 'Full name is required'
       });
     }
 
     const profileData = {
       user_id: userId,
-      display_name: display_name.trim(),
-      sustainability_goal: sustainability_goal || null,
-      country: country || null,
+      full_name: full_name.trim(),
       avatar_url: avatar_url || null,
       updated_at: new Date().toISOString()
     };
