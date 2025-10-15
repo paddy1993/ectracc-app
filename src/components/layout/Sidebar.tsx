@@ -19,6 +19,7 @@ import {
   Add,
   Timeline,
   Person,
+  Info,
   ChevronLeft,
   ChevronRight
 } from '@mui/icons-material';
@@ -28,6 +29,7 @@ const navigationItems = [
   { path: '/products/search', label: 'Products', icon: Search },
   { path: '/tracker', label: 'Manual Entry', icon: Add },
   { path: '/history', label: 'History', icon: Timeline },
+  { path: '/about', label: 'About', icon: Info },
   { path: '/profile', label: 'Profile', icon: Person }
 ];
 
