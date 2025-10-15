@@ -34,8 +34,8 @@ export default function DashboardSummaryCard({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const getTrendIcon = () => {
-    if (!trend) return null;
+  const getTrendIcon = (): React.ReactElement | undefined => {
+    if (!trend) return undefined;
     
     switch (trend.direction) {
       case 'up':
