@@ -27,8 +27,10 @@ const requireAuth = async (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
     
-    // Debug: Log token info (remove in production)
-    console.log('Auth token received:', token ? `${token.substring(0, 20)}...` : 'null');
+    // Log token presence only (no token content for security)
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Auth token received:', token ? 'present' : 'null');
+    }
     
     // Verify the JWT token with Supabase
     const { data: { user }, error } = await supabase.auth.getUser(token);

@@ -1,6 +1,7 @@
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const { requireAuth } = require('../middleware/auth');
+const Joi = require('joi');
 
 const router = express.Router();
 
@@ -9,6 +10,59 @@ const supabase = createClient(
   process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
   process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_key'
 );
+
+// Validation schemas
+const profileUpdateSchema = Joi.object({
+  full_name: Joi.string()
+    .trim()
+    .min(1)
+    .max(100)
+    .pattern(/^[a-zA-Z\s'-]+$/)
+    .required()
+    .messages({
+      'string.empty': 'Full name is required',
+      'string.min': 'Full name must be at least 1 character',
+      'string.max': 'Full name must not exceed 100 characters',
+      'string.pattern.base': 'Full name can only contain letters, spaces, hyphens, and apostrophes'
+    }),
+  avatar_url: Joi.string()
+    .uri()
+    .allow(null, '')
+    .optional()
+    .messages({
+      'string.uri': 'Avatar URL must be a valid URL'
+    })
+});
+
+// Standardized error response helper
+const sendErrorResponse = (res, statusCode, message, details = null) => {
+  const response = {
+    success: false,
+    error: message,
+    timestamp: new Date().toISOString()
+  };
+  
+  if (details && process.env.NODE_ENV !== 'production') {
+    response.details = details;
+  }
+  
+  return res.status(statusCode).json(response);
+};
+
+// Standardized success response helper
+const sendSuccessResponse = (res, data, message = null) => {
+  const response = {
+    success: true,
+    data,
+    timestamp: new Date().toISOString()
+  };
+  
+  if (message) {
+    response.message = message;
+  }
+  
+  return res.json(response);
+};
 
 // GET /api/users/profile - Get authenticated user profile
 router.get('/profile', requireAuth, async (req, res) => {
@@ -28,7 +82,7 @@ router.get('/profile', requireAuth, async (req, res) => {
 
     if (error && error.code !== 'PGRST116') { // PGRST116 = not found
       console.error(`❌ [PROFILE GET] Supabase error for user ${userId}:`, error);
-      throw error;
+      return sendErrorResponse(res, 500, 'Failed to fetch user profile', error.message);
     }
 
     const hasProfile = !!profile;
@@ -43,31 +97,25 @@ router.get('/profile', requireAuth, async (req, res) => {
     }
 
     // Return user data with profile
-    const response = {
-      success: true,
-      data: {
-        user: {
-          id: req.user.id,
-          email: req.user.email,
-          email_confirmed_at: req.user.email_confirmed_at,
-          created_at: req.user.created_at,
-          updated_at: req.user.updated_at,
-          last_sign_in_at: req.user.last_sign_in_at
-        },
-        profile: profile || null
-      }
+    const responseData = {
+      user: {
+        id: req.user.id,
+        email: req.user.email,
+        email_confirmed_at: req.user.email_confirmed_at,
+        created_at: req.user.created_at,
+        updated_at: req.user.updated_at,
+        last_sign_in_at: req.user.last_sign_in_at
+      },
+      profile: profile || null
     };
 
     const duration = Date.now() - startTime;
     console.log(`✅ [PROFILE GET] Successfully fetched profile for user ${userId} in ${duration}ms`);
-    res.json(response);
+    return sendSuccessResponse(res, responseData);
   } catch (error) {
     const duration = Date.now() - startTime;
     console.error(`❌ [PROFILE GET] Error getting user profile for ${userId} after ${duration}ms:`, error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get user profile'
-    });
+    return sendErrorResponse(res, 500, 'Failed to get user profile', error.message);
   }
 });
 
@@ -75,27 +123,31 @@ router.get('/profile', requireAuth, async (req, res) => {
 router.put('/profile', requireAuth, async (req, res) => {
   const startTime = Date.now();
   const userId = req.user.id;
-  const { full_name, avatar_url } = req.body;
 
   console.log(`🔄 [PROFILE UPDATE] Starting profile update for user: ${userId}`);
   console.log(`📝 [PROFILE UPDATE] Request data:`, {
-    full_name,
-    has_avatar_url: !!avatar_url
+    full_name: req.body.full_name,
+    has_avatar_url: !!req.body.avatar_url
   });
 
   try {
-    // Validate required fields
-    if (!full_name || !full_name.trim()) {
-      console.log(`❌ [PROFILE UPDATE] Validation failed: full_name is required`);
-      return res.status(400).json({
-        success: false,
-        error: 'Full name is required'
-      });
+    // Validate request body
+    const { error: validationError, value: validatedData } = profileUpdateSchema.validate(req.body, {
+      abortEarly: false,
+      stripUnknown: true
+    });
+
+    if (validationError) {
+      const errorMessages = validationError.details.map(detail => detail.message);
+      console.log(`❌ [PROFILE UPDATE] Validation failed:`, errorMessages);
+      return sendErrorResponse(res, 400, 'Validation failed', errorMessages);
     }
+
+    const { full_name, avatar_url } = validatedData;
 
     const profileData = {
       user_id: userId,
-      full_name: full_name.trim(),
+      full_name: full_name,
       avatar_url: avatar_url || null,
       updated_at: new Date().toISOString()
     };
@@ -112,7 +164,7 @@ router.put('/profile', requireAuth, async (req, res) => {
 
     if (checkError && checkError.code !== 'PGRST116') {
       console.error(`❌ [PROFILE UPDATE] Error checking existing profile:`, checkError);
-      throw checkError;
+      return sendErrorResponse(res, 500, 'Failed to check existing profile', checkError.message);
     }
 
     let result;
@@ -153,19 +205,14 @@ router.put('/profile', requireAuth, async (req, res) => {
 
     if (result.error) {
       console.error(`❌ [PROFILE UPDATE] Supabase operation failed:`, result.error);
-      throw result.error;
+      return sendErrorResponse(res, 500, 'Failed to save profile', result.error.message);
     }
 
     const duration = Date.now() - startTime;
     console.log(`✅ [PROFILE UPDATE] Successfully ${profileExists ? 'updated' : 'created'} profile for user ${userId} in ${duration}ms`);
     console.log(`📋 [PROFILE UPDATE] Final profile data:`, result.data);
 
-    res.json({
-      success: true,
-      data: {
-        profile: result.data
-      }
-    });
+    return sendSuccessResponse(res, { profile: result.data }, `Profile ${profileExists ? 'updated' : 'created'} successfully`);
   } catch (error) {
     const duration = Date.now() - startTime;
     console.error(`❌ [PROFILE UPDATE] Error updating user profile for ${userId} after ${duration}ms:`, error);
@@ -176,11 +223,7 @@ router.put('/profile', requireAuth, async (req, res) => {
       hint: error.hint
     });
     
-    res.status(500).json({
-      success: false,
-      error: 'Failed to update user profile',
-      details: error.message
-    });
+    return sendErrorResponse(res, 500, 'Failed to update user profile', error.message);
   }
 });
 

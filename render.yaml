@@ -10,14 +10,16 @@ services:
         value: production
       - key: PORT
         generateValue: true
+      # SECURITY NOTE: These values should be set in Render dashboard as environment variables
+      # DO NOT commit actual credentials to version control
       - key: MONGODB_URI
-        value: mongodb+srv://patrickahern93_db_user:MxRIg6Jop0nK6qay@cluster0.wxqzvqa.mongodb.net/ectracc?retryWrites=true&w=majority&appName=Cluster0
+        value: SET_IN_RENDER_DASHBOARD
       - key: MONGODB_DATABASE
         value: ectracc
       - key: SUPABASE_URL
-        value: https://irebylncovkdrthnovth.supabase.co
+        value: SET_IN_RENDER_DASHBOARD
       - key: SUPABASE_ANON_KEY
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZWJ5bG5jb3ZrZHJ0aG5vdnRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgwNjQxMjksImV4cCI6MjA3MzY0MDEyOX0.pjv3QL70AyTsIcyLpEO3mLLUzcpJ9QF67Uhgtv1MkII
+        value: SET_IN_RENDER_DASHBOARD
       - key: SUPABASE_SERVICE_ROLE_KEY
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlyZWJ5bG5jb3ZrZHJ0aG5vdnRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODA2NDEyOSwiZXhwIjoyMDczNjQwMTI5fQ.REPLACE_WITH_ACTUAL_SERVICE_ROLE_KEY
+        value: SET_IN_RENDER_DASHBOARD
     autoDeploy: true

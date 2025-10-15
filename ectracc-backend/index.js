@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet');
 const morgan = require('morgan');
 const compression = require('compression');
+const { createSecurityMiddleware, corsOptions, validateEnvironment } = require('./config/security');
 
 const { connectMongoDB, initializeSupabase, supabaseHealthCheck } = require('./config/database');
 const { mongoHealthCheck } = require('./config/mongodb');
@@ -18,41 +18,20 @@ const logger = require('./utils/logger');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Security middleware
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
+// Validate environment variables on startup
+try {
+  validateEnvironment();
+  logger.info('✅ Environment validation passed');
+} catch (error) {
+  logger.error('❌ Environment validation failed:', error.message);
+  process.exit(1);
+}
+
+// Apply security middleware (includes helmet, rate limiting, input sanitization)
+app.use(createSecurityMiddleware('general'));
 
 // CORS configuration
-const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? [
-      'https://ectracc.com',
-      'https://www.ectracc.com',
-      'https://ectracc-fresh-8sc40ob13-patricks-projects-4f53934e.vercel.app',
-      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
-    ].filter(Boolean)
-  : [
-      'http://localhost:3000',
-      'http://localhost:3050',
-      'http://localhost:3051',
-      'http://localhost:3052'
-    ];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(compression());
