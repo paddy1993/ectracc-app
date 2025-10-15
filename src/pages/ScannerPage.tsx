@@ -28,13 +28,16 @@ const ScannerPage: React.FC = () => {
 
   // Handle barcode scan result
   const handleScan = async (barcode: string) => {
+    if (loading) return; // Prevent multiple simultaneous scans
+    
     setLoading(true);
     setError('');
+    setIsScanning(false); // Stop the scanner UI
     
     try {
-      console.log('Scanned barcode:', barcode);
+      console.log('🔍 Scanned barcode:', barcode);
       
-      // Haptic feedback for successful scan
+      // Additional haptic feedback for successful scan
       if ('vibrate' in navigator) {
         navigator.vibrate([100, 50, 100]);
       }
@@ -44,6 +47,7 @@ const ScannerPage: React.FC = () => {
       
       if (response.success && response.data) {
         setScannedProduct(response.data);
+        console.log('✅ Product found:', response.data.product_name);
         
         // Show success notification
         // TODO: Fix notification service templates
@@ -55,14 +59,14 @@ const ScannerPage: React.FC = () => {
         //   }
         // );
       } else {
-        setError('Product not found. Try scanning again or search manually.');
+        console.log('❌ Product not found for barcode:', barcode);
+        setError('Product not found in our database. Try scanning again or search manually.');
       }
     } catch (err) {
-      console.error('Error looking up product:', err);
-      setError('Failed to look up product. Please try again.');
+      console.error('❌ Error looking up product:', err);
+      setError('Failed to look up product. Please check your connection and try again.');
     } finally {
       setLoading(false);
-      setIsScanning(false);
     }
   };
 
@@ -135,22 +139,22 @@ const ScannerPage: React.FC = () => {
             {/* Instructions */}
       <Paper sx={{ p: 3, mb: 3, textAlign: 'center' }}>
         <ScannerIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
-                  <Typography variant="h6" gutterBottom>
-          Scan Product Barcode
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paragraph>
-          Point your camera at a product barcode to instantly get carbon footprint information
-                  </Typography>
+        <Typography variant="h6" gutterBottom>
+          Automatic Barcode Scanner
+        </Typography>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          Point your camera at a product barcode - scanning happens automatically when the barcode is properly aligned
+        </Typography>
         
-                  <Button
-                    variant="contained"
-                    size="large"
+        <Button
+          variant="contained"
+          size="large"
           startIcon={<ScannerIcon />}
           onClick={startScanning}
           sx={{ mt: 2 }}
-                  >
-                    Start Scanning
-                  </Button>
+        >
+          Start Camera Scanner
+        </Button>
       </Paper>
 
       {/* Loading State */}
@@ -244,30 +248,35 @@ const ScannerPage: React.FC = () => {
         </Paper>
       )}
 
-      {/* Tips */}
+      {/* Enhanced Tips */}
       <Paper sx={{ p: 3, bgcolor: 'grey.50' }}>
         <Typography variant="h6" gutterBottom>
-          Scanning Tips
+          Auto-Scanning Tips
         </Typography>
         <Box component="ul" sx={{ pl: 2, m: 0 }}>
           <li>
             <Typography variant="body2" paragraph>
-              Hold your phone steady and ensure good lighting
+              <strong>Automatic Detection:</strong> No need to tap - scanning starts automatically when barcode is aligned
             </Typography>
           </li>
           <li>
             <Typography variant="body2" paragraph>
-              Position the barcode within the scanning frame
+              <strong>Steady Position:</strong> Hold your phone steady and keep the barcode centered in the frame
             </Typography>
           </li>
           <li>
             <Typography variant="body2" paragraph>
-              Try different angles if the barcode isn't scanning
+              <strong>Good Lighting:</strong> Ensure adequate lighting or use the flash toggle for better results
+            </Typography>
+          </li>
+          <li>
+            <Typography variant="body2" paragraph>
+              <strong>Distance:</strong> Position your phone 4-8 inches away from the barcode for optimal focus
             </Typography>
           </li>
           <li>
             <Typography variant="body2">
-              Use the flash button for better visibility in low light
+              <strong>Multiple Formats:</strong> Supports UPC, EAN, Code 128, and other common barcode formats
             </Typography>
           </li>
         </Box>
