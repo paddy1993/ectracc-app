@@ -29,8 +29,8 @@ const navigationItems = [
   { path: '/products/search', label: 'Products', icon: Search },
   { path: '/tracker', label: 'Manual Entry', icon: Add },
   { path: '/history', label: 'History', icon: Timeline },
-  { path: '/about', label: 'About', icon: Info },
-  { path: '/profile', label: 'Profile', icon: Person }
+  { path: '/profile', label: 'Profile', icon: Person },
+  { path: '/about', label: 'About', icon: Info }
 ];
 
 const SIDEBAR_WIDTH = 240;
