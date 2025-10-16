@@ -13,6 +13,9 @@ const analyticsRouter = require('./routes/analytics');
 const feedbackRouter = require('./routes/feedback');
 const baseComponentsRouter = require('./routes/base-components');
 const userFootprintsRouter = require('./routes/user-footprints');
+const pendingProductsRouter = require('./routes/pending-products');
+const adminRouter = require('./routes/admin');
+const notificationsRouter = require('./routes/notifications');
 const logger = require('./utils/logger');
 
 const app = express();
@@ -132,6 +135,9 @@ app.use('/api/analytics', analyticsRouter);
 app.use('/api/feedback', feedbackRouter);
 app.use('/api/base-components', baseComponentsRouter);
 app.use('/api/user-footprints', userFootprintsRouter);
+app.use('/api/pending-products', pendingProductsRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/notifications', notificationsRouter);
 
 // Root endpoint
 app.get('/', (req, res) => {

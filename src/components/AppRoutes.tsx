@@ -21,6 +21,7 @@ const TrackerPage = lazy(() => import('../pages/TrackerPage'));
 const HistoryPage = lazy(() => import('../pages/HistoryPage'));
 const AboutDataPage = lazy(() => import('../pages/AboutDataPage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
+const AdminDashboardPage = lazy(() => import('../pages/AdminDashboardPage'));
 const AccessibilitySettings = lazy(() => import('../components/accessibility/AccessibilitySettings'));
 
 // Loading component for different page types
@@ -133,6 +134,11 @@ export default function AppRoutes() {
         <Route path="accessibility" element={
           <Suspense fallback={<PageLoader />}>
             <AccessibilitySettings />
+          </Suspense>
+        } />
+        <Route path="admin" element={
+          <Suspense fallback={<PageLoader />}>
+            <AdminDashboardPage />
           </Suspense>
         } />
       </Route>

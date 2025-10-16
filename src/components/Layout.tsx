@@ -19,6 +19,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { APP_NAME } from '../constants';
 import ResponsiveNav from './layout/ResponsiveNav';
 import ScanFab from './actions/ScanFab';
+import NotificationBell from './NotificationBell';
 
 export default function Layout() {
   const theme = useTheme();
@@ -71,6 +72,8 @@ export default function Layout() {
             >
               {appTheme === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
+
+            {user && <NotificationBell />}
 
             {user && (
               <IconButton 

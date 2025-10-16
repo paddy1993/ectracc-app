@@ -31,9 +31,11 @@ import LivePreview from '../components/tracker/LivePreview';
 import StickyCTA from '../components/tracker/StickyCTA';
 import SmartSuggestions from '../components/tracker/SmartSuggestions';
 import EmptyState from '../components/ui/EmptyState';
+import ProductSubmissionForm from '../components/tracker/ProductSubmissionForm';
 import { TrackFootprintForm } from '../types';
 import carbonApi from '../services/carbonApi';
 import { useApp } from '../contexts/AppContext';
+import { useProductDetection } from '../hooks/useProductDetection';
 
 export default function TrackerPage() {
   const navigate = useNavigate();
@@ -81,6 +83,11 @@ export default function TrackerPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [calculated, setCalculated] = useState(false);
+  
+  // Product detection and submission
+  const { detectionResult, checkProduct, resetDetection } = useProductDetection();
+  const [showSubmissionForm, setShowSubmissionForm] = useState(false);
+  const [lastFootprintEntryId, setLastFootprintEntryId] = useState<string | null>(null);
 
   // Validation and preview logic
   const isValidForm = useMemo(() => {
@@ -213,6 +220,16 @@ export default function TrackerPage() {
       setCalculated(false);
     }
     
+    // Check for existing products when user types product name
+    if (field === 'manual_item' && value.trim().length > 2) {
+      // Debounce the product check
+      setTimeout(() => {
+        checkProduct(value.trim());
+      }, 500);
+    } else if (field === 'manual_item') {
+      resetDetection();
+    }
+    
     if (error) setError(null);
     if (success) setSuccess(false);
   };
@@ -319,6 +336,11 @@ export default function TrackerPage() {
       
       const result = await carbonApi.trackFootprint(submitData);
       
+      // Store the footprint entry ID for potential product submission
+      if (result.id) {
+        setLastFootprintEntryId(result.id);
+      }
+      
       // Check if request was queued for offline sync
       if (result.id?.startsWith('offline-')) {
         setSubmitStatus('queued');
@@ -344,6 +366,13 @@ export default function TrackerPage() {
         setSnackbarMessage('✅ Footprint logged successfully');
         setSnackbarOpen(true);
         
+        // Check if product doesn't exist and offer submission
+        if (!detectionResult.exists && !detectionResult.isLoading) {
+          setTimeout(() => {
+            setShowSubmissionForm(true);
+          }, 1000);
+        }
+        
         // Reset form after successful submission
         setTimeout(() => {
           setFormData({
@@ -357,6 +386,7 @@ export default function TrackerPage() {
           setCalculated(false);
           setSuccess(false);
           setSubmitStatus('idle');
+          resetDetection();
         }, 2000);
       }
       
@@ -366,6 +396,19 @@ export default function TrackerPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle product submission form
+  const handleProductSubmitted = (submissionId: string) => {
+    setSnackbarMessage('🎉 Product submitted for review! You\'ll be notified when it\'s approved.');
+    setSnackbarOpen(true);
+    setShowSubmissionForm(false);
+    setLastFootprintEntryId(null);
+  };
+
+  const handleCloseSubmissionForm = () => {
+    setShowSubmissionForm(false);
+    setLastFootprintEntryId(null);
   };
 
   const currentPresets = carbonPresets[formData.category as keyof typeof carbonPresets] || {};
@@ -445,6 +488,49 @@ export default function TrackerPage() {
                   }
                 }}
               />
+
+              {/* Product Detection Status */}
+              {formData.manual_item.trim().length > 2 && (
+                <Box sx={{ mt: 1, mb: 2 }}>
+                  {detectionResult.isLoading && (
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <CircularProgress size={16} />
+                      <Typography variant="body2" color="text.secondary">
+                        Checking if product exists...
+                      </Typography>
+                    </Box>
+                  )}
+                  
+                  {detectionResult.exists && detectionResult.product && (
+                    <Alert severity="info" sx={{ py: 1 }}>
+                      <Typography variant="body2">
+                        <strong>Found existing product:</strong> {detectionResult.product.product_name}
+                        <br />
+                        <small>Carbon footprint: {detectionResult.product.carbon_footprint} kg CO₂e</small>
+                      </Typography>
+                    </Alert>
+                  )}
+                  
+                  {detectionResult.exists && detectionResult.pendingSubmission && (
+                    <Alert severity="warning" sx={{ py: 1 }}>
+                      <Typography variant="body2">
+                        <strong>Pending Review:</strong> You've already submitted this product for review.
+                        <br />
+                        <small>Status: {detectionResult.pendingSubmission.status}</small>
+                      </Typography>
+                    </Alert>
+                  )}
+                  
+                  {!detectionResult.exists && !detectionResult.isLoading && formData.manual_item.trim().length > 2 && (
+                    <Alert severity="info" sx={{ py: 1 }}>
+                      <Typography variant="body2">
+                        <strong>New Product:</strong> This product isn't in our database yet. 
+                        After logging your footprint, you can help us by submitting it for review!
+                      </Typography>
+                    </Alert>
+                  )}
+                </Box>
+              )}
 
               {/* Category */}
               <FormControl fullWidth margin="normal" required>
@@ -634,6 +720,20 @@ export default function TrackerPage() {
         carbonTotal={formData.carbon_total}
         itemName={formData.manual_item}
       />
+
+      {/* Product Submission Form */}
+      {showSubmissionForm && (
+        <ProductSubmissionForm
+          open={showSubmissionForm}
+          onClose={handleCloseSubmissionForm}
+          onSubmitted={handleProductSubmitted}
+          initialData={{
+            product_name: formData.manual_item,
+            carbon_footprint: parseFloat(formData.carbon_total) || 0,
+            user_footprint_entry_id: lastFootprintEntryId || undefined
+          }}
+        />
+      )}
 
       {/* Snackbar for status messages */}
       <Snackbar
