@@ -10,10 +10,12 @@ import {
   Dashboard,
   QrCodeScanner,
   Timeline,
-  Person
+  Person,
+  AdminPanelSettings
 } from '@mui/icons-material';
+import { useAdminAuth } from '../../hooks/useAdminAuth';
 
-const navigationItems = [
+const baseNavigationItems = [
   { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
   { path: '/products/search', label: 'Scan', icon: QrCodeScanner }, // Prominent scan action
   { path: '/history', label: 'History', icon: Timeline },
@@ -24,6 +26,17 @@ export default function BottomTabs() {
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { isAdmin } = useAdminAuth();
+
+  // Build navigation items based on admin status
+  const navigationItems = React.useMemo(() => {
+    const items = [...baseNavigationItems];
+    if (isAdmin) {
+      // Insert admin before profile for better mobile layout
+      items.splice(-1, 0, { path: '/admin', label: 'Admin', icon: AdminPanelSettings });
+    }
+    return items;
+  }, [isAdmin]);
 
   const currentIndex = navigationItems.findIndex(item => 
     location.pathname === item.path || 

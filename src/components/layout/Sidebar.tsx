@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAdminAuth } from '../../hooks/useAdminAuth';
 import {
   Drawer,
   List,
@@ -21,10 +22,11 @@ import {
   Person,
   Info,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  AdminPanelSettings
 } from '@mui/icons-material';
 
-const navigationItems = [
+const baseNavigationItems = [
   { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
   { path: '/products/search', label: 'Products', icon: Search },
   { path: '/tracker', label: 'Manual Entry', icon: Add },
@@ -32,6 +34,8 @@ const navigationItems = [
   { path: '/profile', label: 'Profile', icon: Person },
   { path: '/about', label: 'About', icon: Info }
 ];
+
+const adminNavigationItem = { path: '/admin', label: 'Admin Dashboard', icon: AdminPanelSettings };
 
 const SIDEBAR_WIDTH = 240;
 const SIDEBAR_COLLAPSED_WIDTH = 64;
@@ -41,12 +45,22 @@ export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { isAdmin } = useAdminAuth();
   
   // Load collapsed state from localStorage
   const [collapsed, setCollapsed] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved ? JSON.parse(saved) : false;
   });
+
+  // Build navigation items based on admin status
+  const navigationItems = React.useMemo(() => {
+    const items = [...baseNavigationItems];
+    if (isAdmin) {
+      items.push(adminNavigationItem);
+    }
+    return items;
+  }, [isAdmin]);
 
   // Save collapsed state to localStorage
   useEffect(() => {
