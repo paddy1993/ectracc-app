@@ -45,7 +45,12 @@ export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useTheme();
-  const { isAdmin } = useAdminAuth();
+  const { isAdmin, isLoading: adminLoading, error: adminError } = useAdminAuth();
+  
+  // Debug logging for admin status
+  React.useEffect(() => {
+    console.log('🔍 [SIDEBAR] Admin auth state:', { isAdmin, adminLoading, adminError });
+  }, [isAdmin, adminLoading, adminError]);
   
   // Load collapsed state from localStorage
   const [collapsed, setCollapsed] = useState(() => {
@@ -57,7 +62,10 @@ export default function Sidebar() {
   const navigationItems = React.useMemo(() => {
     const items = [...baseNavigationItems];
     if (isAdmin) {
+      console.log('✅ [SIDEBAR] Adding admin navigation item');
       items.push(adminNavigationItem);
+    } else {
+      console.log('❌ [SIDEBAR] Not adding admin navigation - isAdmin:', isAdmin);
     }
     return items;
   }, [isAdmin]);
