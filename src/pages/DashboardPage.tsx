@@ -85,6 +85,7 @@ export default function DashboardPage() {
 
   // Profile setup modal removed - users go directly to dashboard
   const [summary, setSummary] = useState<UserFootprintSummary | null>(null);
+  const [allTimeSummary, setAllTimeSummary] = useState<UserFootprintSummary | null>(null);
   const [recentEntries, setRecentEntries] = useState<UserFootprintEntry[]>([]);
   const [historyData, setHistoryData] = useState<UserFootprintHistory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -307,9 +308,10 @@ export default function DashboardPage() {
         // Load all data in parallel for much faster performance
         const startTime = Date.now();
         
-        const [summaryResult, entriesResult] = await Promise.allSettled([
+        const [summaryResult, entriesResult, allTimeSummaryResult] = await Promise.allSettled([
           userFootprintApi.getSummary(timeFilter),
-          userFootprintApi.getEntries({ limit: 10, sort_by: 'date_added', sort_order: 'desc' })
+          userFootprintApi.getEntries({ limit: 10, sort_by: 'date_added', sort_order: 'desc' }),
+          userFootprintApi.getSummary('all')
         ]);
         
         // Generate history data from entries for better performance
@@ -326,6 +328,10 @@ export default function DashboardPage() {
         const entriesData = entriesResult.status === 'fulfilled'
           ? entriesResult.value || []
           : [];
+          
+        const allTimeSummaryData = allTimeSummaryResult.status === 'fulfilled'
+          ? allTimeSummaryResult.value
+          : { totalFootprint: 0, totalEntries: 0, avgFootprint: 0, maxFootprint: 0, minFootprint: 0, timeframe: 'all' };
 
         const loadTime = Date.now() - startTime;
         if (loadTime > 1000) {
@@ -350,6 +356,11 @@ export default function DashboardPage() {
           ...summaryData,
           maxFootprint: (summaryData as any).maxFootprint || 0,
           minFootprint: (summaryData as any).minFootprint || 0
+        });
+        setAllTimeSummary({
+          ...allTimeSummaryData,
+          maxFootprint: (allTimeSummaryData as any).maxFootprint || 0,
+          minFootprint: (allTimeSummaryData as any).minFootprint || 0
         });
         setRecentEntries(entriesData || []);
         setHistoryData(historyDataResult?.map(item => ({
@@ -522,6 +533,34 @@ export default function DashboardPage() {
   // Always show dashboard layout - only check if we have summary data
   const hasData = summary !== null;
   const hasEntries = summary && summary.totalEntries > 0;
+  const hasAllTimeEntries = allTimeSummary && allTimeSummary.totalEntries > 0;
+  
+  // Get appropriate empty state message based on time filter and history
+  const getEmptyStateMessage = () => {
+    if (!hasAllTimeEntries) {
+      // User has never tracked any products
+      return {
+        title: "Welcome to Your Carbon Footprint Journey!",
+        description: "You haven't tracked any products yet. Start building your carbon footprint awareness by scanning a barcode or adding your first product manually."
+      };
+    }
+    
+    // User has tracked products before, but not in current time period
+    const timeLabels = {
+      'day': 'today',
+      'week': 'this week',
+      'month': 'this month',
+      'ytd': 'this year',
+      'year': 'this year'
+    };
+    
+    const timeLabel = timeLabels[timeFilter] || 'in this period';
+    
+    return {
+      title: "Welcome to Your Carbon Footprint Journey!",
+      description: `You haven't tracked any products ${timeLabel}. Build your carbon footprint awareness by scanning a barcode or adding a product manually.`
+    };
+  };
 
   return (
     <Container maxWidth="xl" sx={{ mt: 1, mb: 2 }}>
@@ -571,17 +610,20 @@ export default function DashboardPage() {
       </Box>
 
       {/* Empty State for New Users */}
-      {!hasEntries && (
-        <EmptyState
-          variant="dashboard"
-          title="Welcome to Your Carbon Footprint Journey!"
-          description="You haven't tracked any products yet. Start building your carbon footprint awareness by scanning a barcode or adding your first product manually."
-          actionLabel="Scan Barcode"
-          onAction={() => navigate('/products/search?scan=true')}
-          secondaryActionLabel="Manual Entry"
-          onSecondaryAction={() => navigate('/tracker')}
-        />
-      )}
+      {!hasEntries && (() => {
+        const emptyStateMsg = getEmptyStateMessage();
+        return (
+          <EmptyState
+            variant="dashboard"
+            title={emptyStateMsg.title}
+            description={emptyStateMsg.description}
+            actionLabel="Scan Barcode"
+            onAction={() => navigate('/products/search?scan=true')}
+            secondaryActionLabel="Manual Entry"
+            onSecondaryAction={() => navigate('/tracker')}
+          />
+        );
+      })()}
 
       {/* Main Dashboard Content - Only show when user has entries */}
       {hasEntries && (

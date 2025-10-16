@@ -39,6 +39,7 @@ export default function DashboardPageEnhanced() {
 
   // State management
   const [summary, setSummary] = useState<UserFootprintSummary | null>(null);
+  const [allTimeSummary, setAllTimeSummary] = useState<UserFootprintSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('week');
@@ -64,8 +65,12 @@ export default function DashboardPageEnhanced() {
       setError(null);
 
       try {
-        const summaryResult = await userFootprintApi.getSummary(timeFilter);
+        const [summaryResult, allTimeSummaryResult] = await Promise.all([
+          userFootprintApi.getSummary(timeFilter),
+          userFootprintApi.getSummary('all')
+        ]);
         setSummary(summaryResult);
+        setAllTimeSummary(allTimeSummaryResult);
       } catch (error: any) {
         console.error('Failed to load dashboard data:', error);
         setError('Unable to load your dashboard data. Please try again.');
@@ -78,6 +83,14 @@ export default function DashboardPageEnhanced() {
           maxFootprint: 0,
           minFootprint: 0,
           timeframe: timeFilter
+        });
+        setAllTimeSummary({
+          totalFootprint: 0,
+          totalEntries: 0,
+          avgFootprint: 0,
+          maxFootprint: 0,
+          minFootprint: 0,
+          timeframe: 'all'
         });
       } finally {
         setLoading(false);
@@ -143,6 +156,34 @@ export default function DashboardPageEnhanced() {
 
   const hasData = summary !== null;
   const hasEntries = summary && summary.totalEntries > 0;
+  const hasAllTimeEntries = allTimeSummary && allTimeSummary.totalEntries > 0;
+  
+  // Get appropriate empty state message based on time filter and history
+  const getEmptyStateMessage = () => {
+    if (!hasAllTimeEntries) {
+      // User has never tracked any products
+      return {
+        title: "Welcome to Your Enhanced Carbon Footprint Journey!",
+        description: "Experience our new and improved interface. Start by scanning a barcode or adding your first product manually."
+      };
+    }
+    
+    // User has tracked products before, but not in current time period
+    const timeLabels = {
+      'day': 'today',
+      'week': 'this week',
+      'month': 'this month',
+      'ytd': 'this year',
+      'year': 'this year'
+    };
+    
+    const timeLabel = timeLabels[timeFilter] || 'in this period';
+    
+    return {
+      title: "Welcome to Your Enhanced Carbon Footprint Journey!",
+      description: `You haven't tracked any products ${timeLabel}. Experience our new interface by scanning a barcode or adding a product manually.`
+    };
+  };
 
   return (
     <>
@@ -183,17 +224,20 @@ export default function DashboardPageEnhanced() {
         </Box>
 
         {/* Empty State for New Users */}
-        {!hasEntries && (
-          <EmptyState
-            variant="dashboard"
-            title="Welcome to Your Enhanced Carbon Footprint Journey!"
-            description="Experience our new and improved interface. Start by scanning a barcode or adding your first product manually."
-            actionLabel="Scan Barcode"
-            onAction={() => navigate('/products/search?scan=true')}
-            secondaryActionLabel="Manual Entry"
-            onSecondaryAction={() => navigate('/tracker')}
-          />
-        )}
+        {!hasEntries && (() => {
+          const emptyStateMsg = getEmptyStateMessage();
+          return (
+            <EmptyState
+              variant="dashboard"
+              title={emptyStateMsg.title}
+              description={emptyStateMsg.description}
+              actionLabel="Scan Barcode"
+              onAction={() => navigate('/products/search?scan=true')}
+              secondaryActionLabel="Manual Entry"
+              onSecondaryAction={() => navigate('/tracker')}
+            />
+          );
+        })()}
 
         {/* Enhanced Dashboard Content */}
         {hasEntries && (
