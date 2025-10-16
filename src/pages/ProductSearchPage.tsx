@@ -469,7 +469,7 @@ export default function ProductSearchPage() {
       <Grid container spacing={3}>
         {/* Categories */}
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <FormControl fullWidth>
+          <FormControl fullWidth disabled={categoriesLoading}>
             <InputLabel>Categories</InputLabel>
             <Select
               multiple
@@ -491,18 +491,24 @@ export default function ProductSearchPage() {
                 </Box>
               )}
             >
-              {(availableCategories || []).map((category) => (
-                <MenuItem key={category} value={category}>
-                  {category}
-                </MenuItem>
-              ))}
+              {categoriesLoading ? (
+                <MenuItem disabled>Loading categories...</MenuItem>
+              ) : availableCategories.length === 0 ? (
+                <MenuItem disabled>No categories available</MenuItem>
+              ) : (
+                (availableCategories || []).map((category) => (
+                  <MenuItem key={category} value={category}>
+                    {category}
+                  </MenuItem>
+                ))
+              )}
             </Select>
           </FormControl>
         </Grid>
 
         {/* Brands */}
         <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-          <FormControl fullWidth>
+          <FormControl fullWidth disabled={brandsLoading}>
             <InputLabel>Brands</InputLabel>
             <Select
               multiple
@@ -525,11 +531,17 @@ export default function ProductSearchPage() {
                 </Box>
               )}
             >
-              {(availableBrands || []).slice(0, 50).map((brand) => (
-                <MenuItem key={brand} value={brand}>
-                  {brand}
-                </MenuItem>
-              ))}
+              {brandsLoading ? (
+                <MenuItem disabled>Loading brands...</MenuItem>
+              ) : availableBrands.length === 0 ? (
+                <MenuItem disabled>No brands available</MenuItem>
+              ) : (
+                (availableBrands || []).slice(0, 50).map((brand) => (
+                  <MenuItem key={brand} value={brand}>
+                    {brand}
+                  </MenuItem>
+                ))
+              )}
             </Select>
           </FormControl>
         </Grid>

@@ -33,7 +33,7 @@ export default function SheetFilters({
 
   // Only show on mobile
   if (!isMobile) {
-    return <>{children}</>;
+    return null;
   }
 
   const handleApply = () => {

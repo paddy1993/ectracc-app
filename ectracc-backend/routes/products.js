@@ -18,7 +18,7 @@ const checkMongoConnection = async (req, res, next) => {
   next();
 };
 
-// GET /api/products/search - Search products by name
+// GET /api/products/search - Search products by name (or get all with filters)
 router.get('/search', checkMongoConnection, async (req, res) => {
   try {
     const { 
@@ -35,14 +35,6 @@ router.get('/search', checkMongoConnection, async (req, res) => {
       sortBy = 'relevance'
     } = req.query;
 
-    if (!query || query.trim().length < 2) {
-      return res.status(400).json({
-        success: false,
-        error: 'Query too short',
-        message: 'Search query must be at least 2 characters long'
-      });
-    }
-
     const skip = (parseInt(page) - 1) * parseInt(limit);
     const options = {
       limit: Math.min(parseInt(limit), 100), // Max 100 results
@@ -55,7 +47,22 @@ router.get('/search', checkMongoConnection, async (req, res) => {
       sortBy: sortBy || sort
     };
 
-    const products = await Product.search(query.trim(), options);
+    let products;
+    
+    // If no query provided or query is too short, use filters or return random products
+    if (!query || query.trim().length < 2) {
+      // If there are filters (category, brand, carbon range), use them
+      if (category || brand || minCarbon || maxCarbon) {
+        // Use search with wildcard to apply filters
+        products = await Product.search('', options);
+      } else {
+        // No query and no filters - return random products for discovery
+        products = await Product.getRandom(Math.min(parseInt(limit), 50));
+      }
+    } else {
+      // Normal search with query
+      products = await Product.search(query.trim(), options);
+    }
 
     res.json({
       success: true,
@@ -67,7 +74,7 @@ router.get('/search', checkMongoConnection, async (req, res) => {
         hasMore: products.length === parseInt(limit)
       },
       query: {
-        search: query.trim(),
+        search: query ? query.trim() : null,
         filters: { category, brand, ecoscore },
         sort
       }
