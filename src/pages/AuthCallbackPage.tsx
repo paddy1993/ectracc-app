@@ -65,14 +65,9 @@ export default function AuthCallbackPage() {
         const waitTime = isMobile ? 2000 : 1000;
         
         setTimeout(() => {
-          // Check if user needs to complete profile setup
-          if (!profile) {
-            console.log('👤 No profile found, redirecting to profile setup');
-            navigate('/profile-setup', { replace: true });
-          } else {
-            console.log('🏠 Profile exists, redirecting to dashboard');
-            navigate('/dashboard', { replace: true });
-          }
+          // Always redirect to dashboard - profile setup questionnaire removed
+          console.log('🏠 Redirecting to dashboard (profile setup questionnaire disabled)');
+          navigate('/dashboard', { replace: true });
         }, waitTime);
       } else {
         console.log('❌ No session found, redirecting to login');
@@ -105,11 +100,8 @@ export default function AuthCallbackPage() {
     if (!loading && user && !error) {
       // Add a small delay to prevent race conditions on mobile
       const timeoutId = setTimeout(() => {
-        if (!profile) {
-          navigate('/profile-setup', { replace: true });
-        } else {
-          navigate('/dashboard', { replace: true });
-        }
+        // Always redirect to dashboard - profile setup questionnaire removed
+        navigate('/dashboard', { replace: true });
       }, 500);
       
       return () => clearTimeout(timeoutId);

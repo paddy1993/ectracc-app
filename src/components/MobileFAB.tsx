@@ -37,10 +37,10 @@ export default function MobileFAB({ variant = 'speedDial' }: MobileFABProps) {
     return null;
   }
 
-  // Don't show FAB until user has completed profile setup
-  if (!profile) {
-    return null;
-  }
+  // Show FAB for all authenticated users - profile setup questionnaire removed
+  // if (!profile) {
+  //   return null;
+  // }
 
   const actions = [
     {

@@ -59,16 +59,10 @@ export default function AppRoutes() {
         </Suspense>
       } />
       
-      {/* Profile setup (requires auth but not profile) */}
+      {/* Profile setup route removed - questionnaire disabled */}
       <Route
         path="/profile-setup"
-        element={
-          <ProtectedRoute>
-            <Suspense fallback={<PageLoader />}>
-              <ProfileSetupPage />
-            </Suspense>
-          </ProtectedRoute>
-        }
+        element={<Navigate to="/dashboard" replace />}
       />
 
       {/* Protected routes with layout - profile setup handled by dashboard modal */}

@@ -272,31 +272,11 @@ export default function ProfileSetupPage() {
 
   const steps = ['Basic Info', 'Sustainability Goal', 'Complete Setup'];
 
-  // Redirect to dashboard if user already has a profile
+  // Profile setup questionnaire disabled - always redirect to dashboard
   React.useEffect(() => {
-    console.log('🔍 [PROFILE SETUP] Checking redirect conditions:', {
-      loading,
-      hasProfile: !!profile,
-      profileFullName: profile?.full_name
-    });
-    
-    if (!loading && profile) {
-      console.log('✅ [PROFILE SETUP] User already has profile, redirecting to dashboard');
-      navigate('/dashboard', { replace: true });
-      return;
-    }
-    
-    // Check if profile setup was recently completed (within last 5 minutes)
-    const profileSetupCompleted = localStorage.getItem('profileSetupCompleted') === 'true';
-    const profileSetupCompletedAt = localStorage.getItem('profileSetupCompletedAt');
-    const recentlyCompleted = profileSetupCompleted && profileSetupCompletedAt && 
-      (Date.now() - parseInt(profileSetupCompletedAt)) < 300000; // 5 minutes
-    
-    if (recentlyCompleted && !loading) {
-      console.log('🔄 [PROFILE SETUP] Profile setup was recently completed, redirecting to dashboard');
-      navigate('/dashboard', { replace: true });
-    }
-  }, [loading, profile, navigate]);
+    console.log('🔍 [PROFILE SETUP] Profile setup questionnaire disabled, redirecting to dashboard');
+    navigate('/dashboard', { replace: true });
+  }, [navigate]);
 
   const handleInputChange = (field: keyof ProfileSetupForm) => (
     event: React.ChangeEvent<HTMLInputElement>
