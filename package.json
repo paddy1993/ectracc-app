@@ -42,10 +42,12 @@
     "@zxing/library": "^0.21.3",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
+    "framer-motion": "^12.23.24",
     "lucide-react": "^0.545.0",
     "mixpanel-browser": "^2.71.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.9.4",
     "recharts": "^3.2.1",
     "web-vitals": "^5.1.0"

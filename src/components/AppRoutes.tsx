@@ -17,12 +17,16 @@ const ProductSearchPage = lazy(() => import('../pages/ProductSearchPage'));
 const ProductDetailPage = lazy(() => import('../pages/ProductDetailPage'));
 const ScannerPage = lazy(() => import('../pages/ScannerPage'));
 const DashboardPage = lazy(() => import('../pages/DashboardPage'));
+const DashboardPageEnhanced = lazy(() => import('../pages/DashboardPageEnhanced'));
 const TrackerPage = lazy(() => import('../pages/TrackerPage'));
 const HistoryPage = lazy(() => import('../pages/HistoryPage'));
 const AboutDataPage = lazy(() => import('../pages/AboutDataPage'));
 const AboutPage = lazy(() => import('../pages/AboutPage'));
 const AdminDashboardPage = lazy(() => import('../pages/AdminDashboardPage'));
 const AccessibilitySettings = lazy(() => import('../components/accessibility/AccessibilitySettings'));
+const TermsOfServicePage = lazy(() => import('../pages/TermsOfServicePage'));
+const PrivacyPolicyPage = lazy(() => import('../pages/PrivacyPolicyPage'));
+const EnhancedUIDemo = lazy(() => import('../pages/EnhancedUIDemo'));
 
 // Loading component for different page types
 const PageLoader = ({ variant }: { variant?: 'dashboard' | 'history' | 'product-search' }) => (
@@ -59,6 +63,18 @@ export default function AppRoutes() {
         </Suspense>
       } />
       
+      {/* Legal document routes - public access */}
+      <Route path="/legal/terms-of-service" element={
+        <Suspense fallback={<PageLoader />}>
+          <TermsOfServicePage />
+        </Suspense>
+      } />
+      <Route path="/legal/privacy-policy" element={
+        <Suspense fallback={<PageLoader />}>
+          <PrivacyPolicyPage />
+        </Suspense>
+      } />
+      
       {/* Profile setup route removed - questionnaire disabled */}
       <Route
         path="/profile-setup"
@@ -78,6 +94,11 @@ export default function AppRoutes() {
         <Route path="dashboard" element={
           <Suspense fallback={<PageLoader variant="dashboard" />}>
             <ProtectedDashboardPage />
+          </Suspense>
+        } />
+        <Route path="dashboard-enhanced" element={
+          <Suspense fallback={<PageLoader variant="dashboard" />}>
+            <DashboardPageEnhanced />
           </Suspense>
         } />
         <Route path="home" element={
@@ -133,6 +154,11 @@ export default function AppRoutes() {
         <Route path="admin" element={
           <Suspense fallback={<PageLoader />}>
             <AdminDashboardPage />
+          </Suspense>
+        } />
+        <Route path="ui-demo" element={
+          <Suspense fallback={<PageLoader />}>
+            <EnhancedUIDemo />
           </Suspense>
         } />
       </Route>

@@ -254,11 +254,21 @@ export default function RegisterPage() {
             label={
               <Typography variant="body2" color="text.secondary">
                 I agree to the{' '}
-                <Link href="#" underline="hover">
+                <Link 
+                  href="/legal/terms-of-service" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  underline="hover"
+                >
                   Terms of Service
                 </Link>{' '}
                 and{' '}
-                <Link href="#" underline="hover">
+                <Link 
+                  href="/legal/privacy-policy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  underline="hover"
+                >
                   Privacy Policy
                 </Link>
               </Typography>
