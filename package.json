@@ -10,7 +10,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "cd ectracc-backend && node --max-old-space-size=400 index.js",
-    "postinstall": "cd ectracc-backend && npm install"
+    "postinstall": "cd ectracc-backend && npm install",
+    "add-indexes": "cd ectracc-backend && npm run add-indexes"
   },
   "engines": {
     "node": ">=18.0.0"
