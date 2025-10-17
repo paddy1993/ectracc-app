@@ -1,0 +1,323 @@
+# 🔧 Google OAuth Branding Fix Guide
+
+## Overview
+
+This guide provides step-by-step instructions to fix the Google OAuth consent screen so it displays "ECTRACC" branding instead of the Supabase subdomain ("irebylncovkdrthnovth.supabase.co"). This is a configuration change in your Google Cloud Console and Supabase dashboard - no code changes are required.
+
+## Issue Description
+
+When users click "Continue with Google" during registration or login, they see:
+- **Current**: "You're signing back in to irebylncovkdrthnovth.supabase.co"
+- **Expected**: "You're signing in to ECTRACC"
+
+Additionally, the consent screen references Supabase's Privacy Policy and Terms of Service instead of ECTRACC's own legal documents.
+
+## Root Cause
+
+The OAuth consent screen branding is controlled by the **Google Cloud Console OAuth configuration**, not by Supabase or the ECTRACC application code. When the Google OAuth integration was initially set up, the application name and branding were not properly configured.
+
+---
+
+## Fix Instructions
+
+### Part 1: Update Google Cloud Console OAuth Configuration
+
+#### Step 1: Access Google Cloud Console
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Sign in with the Google account that manages the ECTRACC OAuth app
+3. Select the project associated with ECTRACC (or the project where OAuth credentials were created)
+
+#### Step 2: Navigate to OAuth Consent Screen
+
+1. In the left sidebar, click **"APIs & Services"**
+2. Click **"OAuth consent screen"**
+3. You should see your current OAuth app configuration
+
+#### Step 3: Edit OAuth App Information
+
+Click the **"EDIT APP"** button at the top to modify the consent screen configuration.
+
+**Update the following fields:**
+
+##### App Information Section
+
+- **App name**: Change to `ECTRACC`
+  - This is what users will see: "You're signing in to ECTRACC"
+  
+- **App logo**: Upload the ECTRACC logo
+  - Recommended size: 120x120 pixels (minimum)
+  - Format: PNG or JPG
+  - The logo should be located at: `/Users/patrickahern/ectracc-fresh/public/logo192.png`
+  - Upload this file to the console
+
+- **Application home page**: `https://ectracc.com`
+  - This appears as a link users can click to learn more about your app
+
+- **Application privacy policy link**: `https://ectracc.com/legal/privacy-policy`
+  - **Critical**: This replaces the Supabase privacy policy link
+  - Verify this page exists and is accessible publicly
+
+- **Application terms of service link**: `https://ectracc.com/legal/terms-of-service`
+  - **Critical**: This replaces the Supabase terms of service link
+  - Verify this page exists and is accessible publicly
+
+##### Developer Contact Information
+
+- **Email addresses**: Add your support email (e.g., support@ectracc.com)
+
+#### Step 4: Configure Scopes (Verify)
+
+1. Click **"SAVE AND CONTINUE"** to proceed to the Scopes section
+2. Verify that the following scopes are added (should already be configured):
+   - `openid` - Required for OAuth authentication
+   - `email` - To access user's email address
+   - `profile` - To access user's basic profile information
+
+3. Click **"SAVE AND CONTINUE"**
+
+#### Step 5: Configure Test Users (if in Testing mode)
+
+If your OAuth app is still in **"Testing"** mode:
+1. Add test user email addresses who can access the OAuth flow
+2. Click **"SAVE AND CONTINUE"**
+
+**Recommendation**: If you're ready for production, consider publishing your OAuth app:
+- Go back to the OAuth consent screen
+- Click **"PUBLISH APP"** to make it available to all Google users
+- This removes the "This app isn't verified" warning during sign-in
+
+#### Step 6: Verify OAuth Client Configuration
+
+1. In the left sidebar, click **"Credentials"**
+2. Find your OAuth 2.0 Client ID (type: Web application)
+3. Click the pencil icon to edit
+
+**Verify Authorized JavaScript origins:**
+```
+https://ectracc.com
+https://www.ectracc.com
+https://irebylncovkdrthnovth.supabase.co
+```
+
+**Verify Authorized redirect URIs:**
+```
+https://ectracc.com/auth/callback
+https://www.ectracc.com/auth/callback
+https://irebylncovkdrthnovth.supabase.co/auth/v1/callback
+```
+
+⚠️ **Important**: Keep the Supabase redirect URI - it's required for Supabase's OAuth flow to work correctly.
+
+4. Click **"SAVE"** if you made any changes
+
+---
+
+### Part 2: Verify Supabase Configuration
+
+#### Step 1: Access Supabase Dashboard
+
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
+2. Sign in and select your **ECTRACC project**
+
+#### Step 2: Verify Google OAuth Provider Settings
+
+1. In the left sidebar, click **"Authentication"**
+2. Click **"Providers"**
+3. Find **"Google"** in the list and expand it
+
+**Verify the following:**
+- **Enabled**: Toggle should be ON (green)
+- **Client ID**: Should match your Google Cloud Console OAuth Client ID
+- **Client Secret**: Should match your Google Cloud Console OAuth Client Secret
+- **Redirect URL**: Should be displayed (this is auto-generated by Supabase)
+
+#### Step 3: Verify Site URL Configuration
+
+1. In the left sidebar, click **"Authentication"**
+2. Click **"URL Configuration"**
+
+**Verify the following settings:**
+
+- **Site URL**: `https://ectracc.com`
+  - This is where users will be redirected after OAuth completes
+
+- **Redirect URLs** (add if not present):
+  ```
+  https://ectracc.com/**
+  https://www.ectracc.com/**
+  https://ectracc.com/auth/callback
+  https://www.ectracc.com/auth/callback
+  ```
+
+3. Click **"Save"** if you made any changes
+
+#### Step 4: Update Email Templates (Optional but Recommended)
+
+While you're in Supabase, update the email templates to use ECTRACC branding:
+
+1. Go to **"Authentication"** → **"Email Templates"**
+2. Update these templates with ECTRACC branding:
+   - **Confirm signup**
+   - **Magic Link**
+   - **Reset Password**
+   - **Email Change**
+
+You can use the template from `/Users/patrickahern/ectracc-fresh/ECTRACC_EMAIL_TEMPLATE.html` as a reference.
+
+---
+
+### Part 3: Testing the Changes
+
+#### Step 1: Clear Browser Cache
+
+1. Open your browser in **Incognito/Private mode** (recommended)
+2. OR clear your browser cache and cookies for ectracc.com and google.com
+
+#### Step 2: Test OAuth Flow
+
+1. Navigate to `https://ectracc.com/register` or `https://ectracc.com/login`
+2. Click **"Continue with Google"**
+3. Select a Google account
+
+**Expected Behavior:**
+
+✅ The consent screen should now show:
+- App name: **"ECTRACC"** (not the Supabase subdomain)
+- App logo: ECTRACC's green logo
+- Privacy Policy link: https://ectracc.com/legal/privacy-policy
+- Terms of Service link: https://ectracc.com/legal/terms-of-service
+
+✅ After granting permission, you should be redirected to:
+- `https://ectracc.com/auth/callback` → `https://ectracc.com/dashboard`
+
+#### Step 3: Test Mobile Flow
+
+Test the same flow on mobile devices:
+1. Open the ECTRACC mobile app or mobile web browser
+2. Click "Continue with Google"
+3. Verify the branding appears correctly on mobile screens
+
+---
+
+## Troubleshooting
+
+### Issue: Still seeing Supabase subdomain
+
+**Solution:**
+- Clear all browser cookies and cache
+- Wait 5-10 minutes for Google's OAuth configuration to propagate
+- Ensure you clicked "SAVE" in all sections of the Google Cloud Console
+- Try a different browser or incognito mode
+
+### Issue: "Redirect URI mismatch" error
+
+**Solution:**
+- Verify that `https://irebylncovkdrthnovth.supabase.co/auth/v1/callback` is in your Google Cloud Console authorized redirect URIs
+- Verify that `https://ectracc.com/auth/callback` is in both Google Cloud Console AND Supabase redirect URLs
+- The Supabase OAuth flow uses BOTH URIs - one for Supabase's backend, one for your frontend
+
+### Issue: "This app isn't verified" warning
+
+**Solution:**
+- If you see a warning that "This app isn't verified", you have two options:
+  1. Click "Advanced" → "Go to ECTRACC (unsafe)" to proceed (for testing)
+  2. Publish your OAuth app in Google Cloud Console (recommended for production)
+- To publish: Go to OAuth consent screen → Click "PUBLISH APP" → Follow verification process
+
+### Issue: Privacy Policy or Terms links return 404
+
+**Solution:**
+- Verify that the following routes are accessible:
+  - https://ectracc.com/legal/privacy-policy
+  - https://ectracc.com/legal/terms-of-service
+- These are defined in `src/components/AppRoutes.tsx` (lines 67-76)
+- The pages exist at:
+  - `src/pages/PrivacyPolicyPage.tsx`
+  - `src/pages/TermsOfServicePage.tsx`
+- Redeploy the frontend if these pages were recently added
+
+### Issue: Changes not appearing immediately
+
+**Solution:**
+- Google OAuth configuration changes can take **5-15 minutes** to propagate
+- Clear browser cache and cookies
+- Test in an incognito/private browsing window
+- Sign out of all Google accounts and sign back in
+
+---
+
+## Verification Checklist
+
+Use this checklist to verify all changes are complete:
+
+### Google Cloud Console
+- [ ] OAuth app name changed to "ECTRACC"
+- [ ] ECTRACC logo uploaded (120x120px minimum)
+- [ ] Application home page set to https://ectracc.com
+- [ ] Privacy policy link set to https://ectracc.com/legal/privacy-policy
+- [ ] Terms of service link set to https://ectracc.com/legal/terms-of-service
+- [ ] Developer contact email added
+- [ ] Authorized redirect URIs include both Supabase and ECTRACC domains
+- [ ] OAuth scopes include: openid, email, profile
+
+### Supabase Dashboard
+- [ ] Google provider is enabled
+- [ ] Client ID and Secret are configured
+- [ ] Site URL is set to https://ectracc.com
+- [ ] Redirect URLs include ectracc.com URLs
+- [ ] Email templates updated with ECTRACC branding (optional)
+
+### Testing
+- [ ] Tested OAuth flow in desktop browser
+- [ ] Tested OAuth flow in mobile browser/app
+- [ ] Verified consent screen shows "ECTRACC" branding
+- [ ] Verified privacy policy and terms links work
+- [ ] Verified successful redirect to dashboard after OAuth
+- [ ] Tested with multiple Google accounts
+
+---
+
+## Additional Resources
+
+### Documentation Links
+
+- [Google OAuth 2.0 Documentation](https://developers.google.com/identity/protocols/oauth2)
+- [Supabase Auth with Google](https://supabase.com/docs/guides/auth/social-login/auth-google)
+- [OAuth Consent Screen Configuration](https://support.google.com/cloud/answer/6158849)
+
+### ECTRACC Files Referenced
+
+- Frontend OAuth flow: `src/pages/RegisterPage.tsx`, `src/pages/LoginPage.tsx`
+- OAuth callback handler: `src/pages/AuthCallbackPage.tsx`
+- Auth service: `src/services/auth.ts`
+- Privacy policy page: `src/pages/PrivacyPolicyPage.tsx`
+- Terms of service page: `src/pages/TermsOfServicePage.tsx`
+- Email template reference: `ECTRACC_EMAIL_TEMPLATE.html`
+
+---
+
+## Success Criteria
+
+When successfully implemented, users will experience:
+
+1. **Professional Branding**: Google OAuth consent screen displays "ECTRACC" with the green leaf logo
+2. **Trust & Transparency**: Privacy policy and terms link to ECTRACC's legal documents, not Supabase's
+3. **Seamless Flow**: Users can sign in with Google and are redirected to the ECTRACC dashboard
+4. **Consistent Experience**: Same branding appears on desktop, mobile web, and mobile app
+
+This creates a trustworthy, professional first impression for new users signing up via Google OAuth.
+
+---
+
+## Support
+
+If you encounter issues during this configuration process:
+
+1. **Check the troubleshooting section** above for common issues
+2. **Verify all links** in the verification checklist
+3. **Review Google Cloud Console logs** under "APIs & Services" → "Dashboard" for any OAuth errors
+4. **Check Supabase logs** under your project's "Auth" section for authentication errors
+
+Remember: OAuth configuration changes can take up to 15 minutes to propagate globally.
+

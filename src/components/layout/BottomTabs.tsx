@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import {
   Dashboard,
-  QrCodeScanner,
+  Info,
   Timeline,
   Person,
   AdminPanelSettings
@@ -17,7 +17,7 @@ import { useAdminAuth } from '../../hooks/useAdminAuth';
 
 const baseNavigationItems = [
   { path: '/dashboard', label: 'Dashboard', icon: Dashboard },
-  { path: '/products/search', label: 'Scan', icon: QrCodeScanner }, // Prominent scan action
+  { path: '/about', label: 'About', icon: Info }, // About page - scan available via FAB
   { path: '/history', label: 'History', icon: Timeline },
   { path: '/profile', label: 'Profile', icon: Person }
 ];
@@ -40,7 +40,7 @@ export default function BottomTabs() {
 
   const currentIndex = navigationItems.findIndex(item => 
     location.pathname === item.path || 
-    (item.path === '/products/search' && location.pathname.startsWith('/products'))
+    (item.path === '/about' && location.pathname.startsWith('/about'))
   );
 
   const handleNavigation = (event: React.SyntheticEvent, newValue: number) => {

@@ -23,7 +23,7 @@ export default function ScanFab({ onClick, disabled = false }: ScanFabProps) {
       disabled={disabled}
       sx={{
         position: 'fixed',
-        bottom: 80, // Above bottom navigation (56px) + margin
+        bottom: 90, // Above bottom navigation (64px) + safe margin
         right: 16,
         zIndex: 1200,
         width: 64,
