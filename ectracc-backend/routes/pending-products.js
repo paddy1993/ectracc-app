@@ -63,11 +63,11 @@ const productSubmissionSchema = Joi.object({
   
   carbon_footprint: Joi.number()
     .positive()
-    .max(1000)
+    .max(100000)
     .required()
     .messages({
       'number.positive': 'Carbon footprint must be positive',
-      'number.max': 'Carbon footprint seems too high (max 1000 kg CO2e)',
+      'number.max': 'Carbon footprint seems too high (max 100 tonnes / 100,000 kg CO2e)',
       'any.required': 'Carbon footprint is required'
     }),
   

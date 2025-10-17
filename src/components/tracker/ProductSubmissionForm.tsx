@@ -41,12 +41,16 @@ const ProductSubmissionForm: React.FC<ProductSubmissionFormProps> = ({
   onSubmitted,
   initialData
 }) => {
+  // Convert carbon footprint from grams to kg for the form
+  // The TrackerPage stores values in grams, but backend expects kg
+  const initialCarbonKg = initialData.carbon_footprint / 1000;
+  
   const [formData, setFormData] = useState({
     product_name: initialData.product_name,
     barcode: initialData.barcode || '',
     brands: [] as string[],
     categories: [] as string[],
-    carbon_footprint: initialData.carbon_footprint,
+    carbon_footprint: initialCarbonKg,
     carbon_footprint_source: '',
     carbon_footprint_justification: ''
   });
@@ -95,6 +99,8 @@ const ProductSubmissionForm: React.FC<ProductSubmissionFormProps> = ({
     setError(null);
 
     try {
+      console.log('Submitting product with carbon footprint (kg):', formData.carbon_footprint);
+      
       const submission: PendingProductSubmission = {
         product_name: formData.product_name,
         barcode: formData.barcode || undefined,
@@ -109,9 +115,23 @@ const ProductSubmissionForm: React.FC<ProductSubmissionFormProps> = ({
       const result = await pendingProductApi.submitProduct(submission);
       onSubmitted(result.id);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting product:', error);
-      setError(error instanceof Error ? error.message : 'Failed to submit product for review');
+      
+      // Extract more specific error message from API response
+      let errorMessage = 'Failed to submit product for review';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      // Check for specific validation errors
+      if (errorMessage.includes('Carbon footprint')) {
+        errorMessage = 'Carbon footprint validation failed. Please ensure the value is positive and reasonable (max 100 tonnes / 100,000 kg CO₂e).';
+      } else if (errorMessage.includes('validation')) {
+        errorMessage = 'Please check all required fields and try again.';
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
