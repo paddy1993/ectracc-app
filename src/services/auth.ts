@@ -127,6 +127,11 @@ export class AuthService {
         throw error;
       }
 
+      // Map display_name to full_name for frontend compatibility
+      if (data && data.display_name !== undefined) {
+        data.full_name = data.display_name;
+      }
+
       return data;
     } catch (error) {
       console.error('Error getting user profile:', error);
@@ -159,10 +164,19 @@ export class AuthService {
       console.log('🔄 [AUTH SERVICE] Updating profile for user:', userId);
       console.log('📝 [AUTH SERVICE] Updates:', updates);
       
+      // Map full_name to display_name for database compatibility
+      const dbUpdates: any = { ...updates };
+      if (dbUpdates.full_name !== undefined) {
+        dbUpdates.display_name = dbUpdates.full_name;
+        delete dbUpdates.full_name;
+      }
+      
+      console.log('📝 [AUTH SERVICE] Mapped updates for database:', dbUpdates);
+      
       // First, try to update existing profile
       const { data: updateData, error: updateError } = await supabase
         .from(TABLES.PROFILES)
-        .update({ ...updates, updated_at: new Date().toISOString() })
+        .update({ ...dbUpdates, updated_at: new Date().toISOString() })
         .eq('user_id', userId)
         .select()
         .single();
@@ -170,11 +184,11 @@ export class AuthService {
       if (updateError && updateError.code === 'PGRST116') {
         // Profile doesn't exist, create it
         console.log('📝 [AUTH SERVICE] Profile not found, creating new profile');
-        const { data: insertData, error: insertError } = await supabase
+        const { data: insertData, error: insertError} = await supabase
           .from(TABLES.PROFILES)
           .insert({ 
             user_id: userId, 
-            ...updates, 
+            ...dbUpdates, 
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString() 
           })
@@ -198,6 +212,12 @@ export class AuthService {
         }
 
         console.log('✅ [AUTH SERVICE] Profile created successfully');
+        
+        // Map display_name back to full_name for frontend compatibility
+        if (insertData && insertData.display_name !== undefined) {
+          insertData.full_name = insertData.display_name;
+        }
+        
         return { profile: insertData, error: null };
       } else if (updateError) {
         console.error('❌ [AUTH SERVICE] Update error:', {
@@ -221,6 +241,12 @@ export class AuthService {
       }
 
       console.log('✅ [AUTH SERVICE] Profile updated successfully');
+      
+      // Map display_name back to full_name for frontend compatibility
+      if (updateData && updateData.display_name !== undefined) {
+        updateData.full_name = updateData.display_name;
+      }
+      
       return { profile: updateData, error: null };
     } catch (error: any) {
       console.error('❌ [AUTH SERVICE] Exception during profile update:', error);

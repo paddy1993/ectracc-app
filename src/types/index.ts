@@ -13,7 +13,8 @@ export interface User {
 
 export interface UserProfile {
   user_id: string;
-  full_name?: string; // Changed from display_name to match Supabase schema
+  full_name?: string; // Frontend uses full_name, mapped to/from display_name in database
+  display_name?: string; // Database column name (mapped automatically by auth service)
   avatar_url?: string;
   created_at: string;
   updated_at: string;
