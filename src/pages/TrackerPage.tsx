@@ -647,7 +647,7 @@ export default function TrackerPage() {
               {formData.carbon_total && parseFloat(formData.carbon_total) > 0 && (
                 <Box sx={{ mt: 2, p: 2, bgcolor: 'success.light', borderRadius: 1 }}>
                   <Typography variant="h6" color="success.dark">
-                    {parseFloat(formData.carbon_total).toFixed(2)}kg CO₂e
+                    {(parseFloat(formData.carbon_total) / 1000).toFixed(2)}kg CO₂e
                   </Typography>
                   <Typography variant="body2" color="success.dark">
                     Estimated carbon footprint for this product
