@@ -18,7 +18,7 @@ const adminRouter = require('./routes/admin');
 const notificationsRouter = require('./routes/notifications');
 const logger = require('./utils/logger');
 const { metricsMiddleware, getMetricsHandler, resetMetricsHandler } = require('./middleware/metrics');
-const adminAuth = require('./middleware/adminAuth');
+const { requireAdmin } = require('./middleware/adminAuth');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -134,8 +134,8 @@ app.get('/healthz', (req, res) => {
 });
 
 // Metrics endpoints (admin only)
-app.get('/api/metrics', adminAuth, getMetricsHandler);
-app.post('/api/metrics/reset', adminAuth, resetMetricsHandler);
+app.get('/api/metrics', requireAdmin, getMetricsHandler);
+app.post('/api/metrics/reset', requireAdmin, resetMetricsHandler);
 
 // API Routes
 app.use('/api/products', productsRouter);

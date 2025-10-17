@@ -17,7 +17,10 @@ const submissionLimiter = rateLimit({
     success: false,
     error: 'Too many product submissions. Please try again later.'
   },
-  keyGenerator: (req) => req.user?.id || req.ip
+  // Use user ID if authenticated, otherwise use default IP handler
+  skip: (req) => false, // Don't skip any requests
+  standardHeaders: true,
+  legacyHeaders: false
 });
 
 // Validation schemas
