@@ -13,6 +13,7 @@
     "import-jsonl": "node scripts/import-openfoodfacts-jsonl.js",
     "reset-db": "node scripts/reset-database.js",
     "duckdb-pipeline": "node scripts/duckdb-pipeline.js",
+    "add-indexes": "node scripts/add-indexes.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

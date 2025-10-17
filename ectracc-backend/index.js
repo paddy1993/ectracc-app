@@ -17,6 +17,8 @@ const pendingProductsRouter = require('./routes/pending-products');
 const adminRouter = require('./routes/admin');
 const notificationsRouter = require('./routes/notifications');
 const logger = require('./utils/logger');
+const { metricsMiddleware, getMetricsHandler, resetMetricsHandler } = require('./middleware/metrics');
+const adminAuth = require('./middleware/adminAuth');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -43,6 +45,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Logging middleware
 app.use(morgan('combined'));
+
+// Metrics collection middleware
+app.use(metricsMiddleware);
 
 // Health check endpoint with comprehensive service status
 app.get('/api/healthcheck', async (req, res) => {
@@ -127,6 +132,10 @@ app.get('/healthz', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Metrics endpoints (admin only)
+app.get('/api/metrics', adminAuth, getMetricsHandler);
+app.post('/api/metrics/reset', adminAuth, resetMetricsHandler);
 
 // API Routes
 app.use('/api/products', productsRouter);
