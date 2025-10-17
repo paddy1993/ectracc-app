@@ -72,20 +72,35 @@ export class OfflineSyncManager {
 
   // Queue footprint for offline sync
   async queueFootprint(footprint: TrackFootprintForm): Promise<boolean> {
+    // Don't try to fetch - we already know we're offline
+    // Instead, store directly to IndexedDB for service worker sync
     try {
-      const response = await fetch('/api/footprints/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(footprint)
+      const db = await this.openDB();
+      const transaction = db.transaction(['footprint-queue'], 'readwrite');
+      const store = transaction.objectStore('footprint-queue');
+      
+      const queueItem = {
+        id: `offline-${Date.now()}`,
+        data: footprint,
+        timestamp: Date.now(),
+        synced: false
+      };
+      
+      await new Promise((resolve, reject) => {
+        const request = store.add(queueItem);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
       });
-
-      const result = await response.json();
-      return result.success;
+      
+      console.log('[OfflineSync] Footprint queued for sync:', queueItem.id);
+      
+      // Register background sync if available
+      await this.registerBackgroundSync();
+      
+      return true;
     } catch (error) {
-      console.log('Request queued for offline sync');
-      return true; // Service worker will handle queuing
+      console.error('[OfflineSync] Failed to queue footprint:', error);
+      return false;
     }
   }
 

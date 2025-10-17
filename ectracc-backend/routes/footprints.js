@@ -45,6 +45,8 @@ router.post('/track', trackingLimiter, requireAuth, async (req, res) => {
       amount,
       carbon_total,
       category,
+      unit,
+      brand,
       logged_at
     } = validationResult.data;
 
@@ -59,6 +61,8 @@ router.post('/track', trackingLimiter, requireAuth, async (req, res) => {
       amount: amount,
       carbon_total: carbon_total,
       category: category,
+      unit: unit || null,
+      brand: brand || null,
       logged_at: logged_at || now,
       created_at: now,
       updated_at: now

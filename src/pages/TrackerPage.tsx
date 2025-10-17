@@ -390,7 +390,22 @@ export default function TrackerPage() {
       }
       
     } catch (error: any) {
-      setError(error.message || 'Failed to track footprint');
+      console.error('[TrackerPage] Submit failed:', error);
+      
+      // Show specific error message based on error type
+      if (error.message.includes('Network error')) {
+        setError('Unable to connect to server. Please check your internet connection.');
+      } else if (error.message.includes('validation') || error.message.includes('must be provided')) {
+        setError('Invalid form data. Please check your entries and try again.');
+      } else if (error.message.includes('auth') || error.message.includes('401')) {
+        setError('Authentication error. Please sign in again.');
+      } else if (error.message.includes('HTTP 400')) {
+        // Extract validation error from API response
+        setError(error.message || 'Invalid data. Please check your entries.');
+      } else {
+        setError(error.message || 'Failed to track footprint. Please try again.');
+      }
+      
       setSubmitStatus('idle');
     } finally {
       setLoading(false);

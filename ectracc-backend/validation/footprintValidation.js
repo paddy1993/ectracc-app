@@ -7,6 +7,8 @@ const trackFootprintValidation = z.object({
   amount: z.number().positive().max(10000), // max 10kg
   carbon_total: z.number().positive().max(100000), // max 100kg CO₂e
   category: z.enum(['food', 'transport', 'energy', 'shopping', 'misc']),
+  unit: z.string().max(20).optional(), // NEW: Unit of measurement
+  brand: z.string().max(100).optional(), // NEW: Brand name
   logged_at: z.string().datetime().optional() // ISO datetime string
 }).refine(
   (data) => data.product_barcode || data.manual_item,

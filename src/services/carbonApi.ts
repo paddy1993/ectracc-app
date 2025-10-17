@@ -83,27 +83,36 @@ class CarbonApiService {
         method: 'POST',
         body: JSON.stringify(footprint)
       });
-    } catch (error) {
-      // If online request fails, use offline sync manager
-      const offlineSync = OfflineSyncManager.getInstance();
-      const queued = await offlineSync.queueFootprint(footprint);
+    } catch (error: any) {
+      // Log the actual error for debugging
+      console.error('[CarbonAPI] Track footprint failed:', error);
+      console.error('[CarbonAPI] Footprint data:', footprint);
+      console.error('[CarbonAPI] Online status:', navigator.onLine);
       
-      if (queued) {
-        // Return a mock entry for offline queue
-        return {
-          id: `offline-${Date.now()}`,
-          user_id: 'current_user',
-          product_barcode: footprint.product_barcode,
-          manual_item: footprint.manual_item,
-          amount: footprint.amount,
-          carbon_total: footprint.carbon_total,
-          category: footprint.category,
-          logged_at: footprint.logged_at || new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        } as FootprintEntry;
+      // Only use offline fallback if actually offline (not for validation/auth errors)
+      if (!navigator.onLine) {
+        console.log('[CarbonAPI] User is offline, queueing for sync');
+        const offlineSync = OfflineSyncManager.getInstance();
+        const queued = await offlineSync.queueFootprint(footprint);
+        
+        if (queued) {
+          // Return a mock entry for offline queue
+          return {
+            id: `offline-${Date.now()}`,
+            user_id: 'current_user',
+            product_barcode: footprint.product_barcode,
+            manual_item: footprint.manual_item,
+            amount: footprint.amount,
+            carbon_total: footprint.carbon_total,
+            category: footprint.category,
+            logged_at: footprint.logged_at || new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          } as FootprintEntry;
+        }
       }
       
+      // Re-throw error if online (show validation/API errors to user)
       throw error;
     }
   }
