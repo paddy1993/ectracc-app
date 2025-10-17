@@ -12,7 +12,9 @@
     "server": "cd ectracc-backend && node --max-old-space-size=400 index.js",
     "postinstall": "cd ectracc-backend && npm install",
     "add-indexes": "cd ectracc-backend && npm run add-indexes",
-    "generate-icons": "node scripts/generate-icons.js"
+    "generate-icons": "node scripts/generate-icons.js",
+    "enrich-products": "node scripts/run-enrichment-pipeline.js",
+    "monitor-storage": "node scripts/storage-monitor.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -43,10 +45,11 @@
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
     "date-fns": "^4.1.0",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.545.0",
     "mixpanel-browser": "^2.71.0",
+    "mongodb": "^6.20.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^10.1.0",

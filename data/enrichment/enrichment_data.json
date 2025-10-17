@@ -1,0 +1,315 @@
+[
+  {
+    "barcode": "3017620422003",
+    "enrichment_fields": {
+      "quantity": "250g",
+      "product_quantity": 250,
+      "product_quantity_unit": "g",
+      "net_weight": "200g",
+      "net_weight_unit": "g",
+      "packaging": "btl",
+      "packaging_text": "Mock packaging description 1",
+      "origins": [
+        "US"
+      ],
+      "manufacturing_places": [
+        "Factory 1"
+      ],
+      "labels": [
+        "org"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "7622210951965",
+    "enrichment_fields": {
+      "quantity": "300g",
+      "product_quantity": 300,
+      "product_quantity_unit": "g",
+      "net_weight": "240g",
+      "net_weight_unit": "g",
+      "packaging": "pkg",
+      "packaging_text": "Mock packaging description 2",
+      "origins": [
+        "FR",
+        "DE"
+      ],
+      "manufacturing_places": [
+        "Factory 2"
+      ],
+      "labels": [
+        "fair"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "4902430735063",
+    "enrichment_fields": {
+      "quantity": "350g",
+      "product_quantity": 350,
+      "product_quantity_unit": "g",
+      "net_weight": "280g",
+      "net_weight_unit": "g",
+      "packaging": "btl",
+      "packaging_text": "Mock packaging description 3",
+      "origins": [
+        "CA"
+      ],
+      "manufacturing_places": [
+        "Factory 3"
+      ],
+      "labels": [
+        "org"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "8901030835289",
+    "enrichment_fields": {
+      "quantity": "400g",
+      "product_quantity": 400,
+      "product_quantity_unit": "g",
+      "net_weight": "320g",
+      "net_weight_unit": "g",
+      "packaging": "pkg",
+      "packaging_text": "Mock packaging description 4",
+      "origins": [
+        "US"
+      ],
+      "manufacturing_places": [
+        "Factory 4"
+      ],
+      "labels": [
+        "fair"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "0123456789012",
+    "enrichment_fields": {
+      "quantity": "450g",
+      "product_quantity": 450,
+      "product_quantity_unit": "g",
+      "net_weight": "360g",
+      "net_weight_unit": "g",
+      "packaging": "btl",
+      "packaging_text": "Mock packaging description 5",
+      "origins": [
+        "FR",
+        "DE"
+      ],
+      "manufacturing_places": [
+        "Factory 5"
+      ],
+      "labels": [
+        "org"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "0987654321098",
+    "enrichment_fields": {
+      "quantity": "500g",
+      "product_quantity": 500,
+      "product_quantity_unit": "g",
+      "net_weight": "400g",
+      "net_weight_unit": "g",
+      "packaging": "pkg",
+      "packaging_text": "Mock packaging description 6",
+      "origins": [
+        "CA"
+      ],
+      "manufacturing_places": [
+        "Factory 6"
+      ],
+      "labels": [
+        "fair"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "1122334455667",
+    "enrichment_fields": {
+      "quantity": "550g",
+      "product_quantity": 550,
+      "product_quantity_unit": "g",
+      "net_weight": "440g",
+      "net_weight_unit": "g",
+      "packaging": "btl",
+      "packaging_text": "Mock packaging description 7",
+      "origins": [
+        "US"
+      ],
+      "manufacturing_places": [
+        "Factory 7"
+      ],
+      "labels": [
+        "org"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "2233445566778",
+    "enrichment_fields": {
+      "quantity": "600g",
+      "product_quantity": 600,
+      "product_quantity_unit": "g",
+      "net_weight": "480g",
+      "net_weight_unit": "g",
+      "packaging": "pkg",
+      "packaging_text": "Mock packaging description 8",
+      "origins": [
+        "FR",
+        "DE"
+      ],
+      "manufacturing_places": [
+        "Factory 8"
+      ],
+      "labels": [
+        "fair"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "3344556677889",
+    "enrichment_fields": {
+      "quantity": "650g",
+      "product_quantity": 650,
+      "product_quantity_unit": "g",
+      "net_weight": "520g",
+      "net_weight_unit": "g",
+      "packaging": "btl",
+      "packaging_text": "Mock packaging description 9",
+      "origins": [
+        "CA"
+      ],
+      "manufacturing_places": [
+        "Factory 9"
+      ],
+      "labels": [
+        "org"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  },
+  {
+    "barcode": "4455667788990",
+    "enrichment_fields": {
+      "quantity": "700g",
+      "product_quantity": 700,
+      "product_quantity_unit": "g",
+      "net_weight": "560g",
+      "net_weight_unit": "g",
+      "packaging": "pkg",
+      "packaging_text": "Mock packaging description 10",
+      "origins": [
+        "US"
+      ],
+      "manufacturing_places": [
+        "Factory 10"
+      ],
+      "labels": [
+        "fair"
+      ],
+      "stores": [
+        "wmt",
+        "tgt"
+      ],
+      "countries": [
+        "US",
+        "CA"
+      ]
+    },
+    "quality_score": 7,
+    "lang": "en"
+  }
+]

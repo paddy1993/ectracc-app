@@ -1,0 +1,8 @@
+{
+  "products_enriched": 10,
+  "storage_per_product_bytes": 0,
+  "projections": {
+    "projectedFinalSizeGB": 1.7
+  },
+  "recommendations": "PROCEED"
+}

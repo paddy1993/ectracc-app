@@ -294,9 +294,26 @@ class Product {
                    (product.imported_at || new Date().toISOString()),
       // Remove image data to save bandwidth
       image_url: null, // We're not storing images
+      
+      // Enhanced enrichment fields (11 new fields)
+      quantity: product.quantity || null,
+      product_quantity: product.product_quantity || null,
+      product_quantity_unit: product.product_quantity_unit || null,
+      net_weight: product.net_weight || null,
+      net_weight_unit: product.net_weight_unit || null,
       packaging: product.packaging || null,
-      countries: product.countries || null,
-      manufacturing_places: product.manufacturing_places || null
+      packaging_text: product.packaging_text || null,
+      origins: Array.isArray(product.origins) ? product.origins : 
+               (product.origins ? [product.origins] : null),
+      manufacturing_places: Array.isArray(product.manufacturing_places) ? product.manufacturing_places : 
+                           (product.manufacturing_places ? [product.manufacturing_places] : null),
+      stores: Array.isArray(product.stores) ? product.stores : 
+              (product.stores ? [product.stores] : null),
+      countries: Array.isArray(product.countries) ? product.countries : 
+                 (product.countries ? [product.countries] : null),
+      
+      // Enrichment tracking
+      last_enriched: product.last_enriched || null
     };
   }
 

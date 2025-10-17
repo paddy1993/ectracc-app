@@ -1,0 +1,346 @@
+[
+  {
+    "_id": "68da6c728f200359bd95e394",
+    "barcode": "3017620422003",
+    "product_name": "Nutella",
+    "brands": [
+      "Ferrero"
+    ],
+    "categories": [
+      "spreads",
+      "chocolate-spreads",
+      "hazelnut-spreads"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e395",
+    "barcode": "7622210951965",
+    "product_name": "Oreo Original",
+    "brands": [
+      "Oreo",
+      "Mondelez"
+    ],
+    "categories": [
+      "biscuits",
+      "cookies",
+      "chocolate-cookies"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e396",
+    "barcode": "4902430735063",
+    "product_name": "Kit Kat 4 Finger",
+    "brands": [
+      "Kit Kat",
+      "Nestle"
+    ],
+    "categories": [
+      "chocolate-bars",
+      "wafer-biscuits"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e397",
+    "barcode": "8901030835289",
+    "product_name": "Maggi 2-Minute Noodles",
+    "brands": [
+      "Maggi",
+      "Nestle"
+    ],
+    "categories": [
+      "instant-noodles",
+      "noodles",
+      "convenience-food"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e398",
+    "barcode": "0123456789012",
+    "product_name": "Organic Bananas",
+    "brands": [
+      "Fresh Organic"
+    ],
+    "categories": [
+      "fruits",
+      "fresh-fruits",
+      "bananas",
+      "organic"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e399",
+    "barcode": "0987654321098",
+    "product_name": "Whole Wheat Bread",
+    "brands": [
+      "Artisan Bakery"
+    ],
+    "categories": [
+      "breads",
+      "whole-wheat-breads",
+      "sliced-breads"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e39a",
+    "barcode": "1122334455667",
+    "product_name": "Greek Yogurt Plain",
+    "brands": [
+      "Dairy Fresh"
+    ],
+    "categories": [
+      "yogurts",
+      "plain-yogurts",
+      "greek-yogurts"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e39b",
+    "barcode": "2233445566778",
+    "product_name": "Extra Virgin Olive Oil",
+    "brands": [
+      "Mediterranean Gold"
+    ],
+    "categories": [
+      "olive-oils",
+      "vegetable-oils",
+      "extra-virgin-olive-oils"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e39c",
+    "barcode": "3344556677889",
+    "product_name": "Coca-Cola Classic",
+    "brands": [
+      "Coca-Cola"
+    ],
+    "categories": [
+      "sodas",
+      "cola-sodas",
+      "carbonated-drinks"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  },
+  {
+    "_id": "68da6c728f200359bd95e39d",
+    "barcode": "4455667788990",
+    "product_name": "Organic Quinoa",
+    "brands": [
+      "Nature Valley"
+    ],
+    "categories": [
+      "cereals",
+      "quinoa",
+      "organic",
+      "gluten-free"
+    ],
+    "enrichment_needs": {
+      "missing_fields": [
+        "quantity",
+        "product_quantity",
+        "product_quantity_unit",
+        "net_weight",
+        "net_weight_unit",
+        "packaging_text",
+        "origins",
+        "manufacturing_places",
+        "labels",
+        "stores"
+      ],
+      "existing_fields": [
+        "packaging",
+        "countries"
+      ],
+      "total_missing": 10,
+      "total_existing": 2
+    },
+    "enrichment_score": 10
+  }
+]

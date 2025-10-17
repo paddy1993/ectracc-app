@@ -1,0 +1,104 @@
+{
+  "analysis_date": "2025-10-17T21:50:21.541Z",
+  "total_openfoodfacts_products": 0,
+  "existing_barcodes_count": 10,
+  "matched_products": 0,
+  "field_availability": {
+    "quantity": {
+      "total_products": 0,
+      "has_field": 0,
+      "percentage": 0,
+      "avg_length": 20
+    },
+    "product_quantity": {
+      "total_products": 0,
+      "has_field": 0,
+      "percentage": 0,
+      "avg_length": 20
+    },
+    "packaging": {
+      "total_products": 0,
+      "has_field": 0,
+      "percentage": 0,
+      "avg_length": 20
+    },
+    "origins": {
+      "total_products": 0,
+      "has_field": 0,
+      "percentage": 0,
+      "avg_length": 20
+    },
+    "labels": {
+      "total_products": 0,
+      "has_field": 0,
+      "percentage": 0,
+      "avg_length": 20
+    },
+    "stores": {
+      "total_products": 0,
+      "has_field": 0,
+      "percentage": 0,
+      "avg_length": 20
+    },
+    "countries": {
+      "total_products": 0,
+      "has_field": 0,
+      "percentage": 0,
+      "avg_length": 20
+    }
+  },
+  "storage_estimates": {
+    "per_product_bytes": 0,
+    "total_additional_storage_mb": 0,
+    "field_breakdown": {
+      "quantity": {
+        "avg_length": 20,
+        "availability_percent": 0,
+        "estimated_bytes_per_product": 0,
+        "total_mb_for_all_products": 0
+      },
+      "product_quantity": {
+        "avg_length": 20,
+        "availability_percent": 0,
+        "estimated_bytes_per_product": 0,
+        "total_mb_for_all_products": 0
+      },
+      "packaging": {
+        "avg_length": 20,
+        "availability_percent": 0,
+        "estimated_bytes_per_product": 0,
+        "total_mb_for_all_products": 0
+      },
+      "origins": {
+        "avg_length": 20,
+        "availability_percent": 0,
+        "estimated_bytes_per_product": 0,
+        "total_mb_for_all_products": 0
+      },
+      "labels": {
+        "avg_length": 20,
+        "availability_percent": 0,
+        "estimated_bytes_per_product": 0,
+        "total_mb_for_all_products": 0
+      },
+      "stores": {
+        "avg_length": 20,
+        "availability_percent": 0,
+        "estimated_bytes_per_product": 0,
+        "total_mb_for_all_products": 0
+      },
+      "countries": {
+        "avg_length": 20,
+        "availability_percent": 0,
+        "estimated_bytes_per_product": 0,
+        "total_mb_for_all_products": 0
+      }
+    }
+  },
+  "quality_metrics": {},
+  "sample_data": {
+    "quantity": [],
+    "packaging": [],
+    "origins": []
+  }
+}
