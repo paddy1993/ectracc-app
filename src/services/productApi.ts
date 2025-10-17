@@ -179,8 +179,27 @@ class ProductApiService {
     // Create the request promise (increased timeout for search)
     const requestPromise = this.makeRequest<any>(`/products/search?${queryString}`, {}, 15000, this.currentSearchController.signal)
       .then(response => {
+        // Transform backend response to match frontend expectations
+        const transformedData = (response.data || []).map((product: any) => ({
+          ...product,
+          // Map backend field names to frontend expectations
+          product_name: product.name || product.product_name || 'Unknown Product',
+          brands: Array.isArray(product.brand) ? product.brand : 
+                  Array.isArray(product.brands) ? product.brands : 
+                  product.brand ? [product.brand] : 
+                  product.brands ? [product.brands] : [],
+          categories: Array.isArray(product.category) ? product.category : 
+                     Array.isArray(product.categories) ? product.categories : 
+                     product.category ? [product.category] : 
+                     product.categories ? [product.categories] : [],
+          carbon_footprint: product.carbonFootprint || product.carbon_footprint || 0,
+          ecoscore_grade: product.ecoScore || product.ecoscore_grade || null,
+          image_url: product.imageUrl || product.image_url || null,
+          source_database: product.source_database || 'estimated'
+        }));
+
         const result: ProductSearchResult = {
-          data: response.data || [],
+          data: transformedData,
           meta: {
             pagination: response.pagination || {
               page: parseInt(params.page?.toString() || '1'),
@@ -237,9 +256,27 @@ class ProductApiService {
 
       const response = await this.makeRequest<any>(`/products/barcode/${barcode}`);
       
+      // Transform the product data to match frontend expectations
+      const transformedProduct = response.data ? {
+        ...response.data,
+        product_name: response.data.name || response.data.product_name || 'Unknown Product',
+        brands: Array.isArray(response.data.brand) ? response.data.brand : 
+                Array.isArray(response.data.brands) ? response.data.brands : 
+                response.data.brand ? [response.data.brand] : 
+                response.data.brands ? [response.data.brands] : [],
+        categories: Array.isArray(response.data.category) ? response.data.category : 
+                   Array.isArray(response.data.categories) ? response.data.categories : 
+                   response.data.category ? [response.data.category] : 
+                   response.data.categories ? [response.data.categories] : [],
+        carbon_footprint: response.data.carbonFootprint || response.data.carbon_footprint || 0,
+        ecoscore_grade: response.data.ecoScore || response.data.ecoscore_grade || null,
+        image_url: response.data.imageUrl || response.data.image_url || null,
+        source_database: response.data.source_database || 'estimated'
+      } : null;
+      
       return {
         success: true,
-        data: response.data
+        data: transformedProduct
       };
     } catch (error: any) {
       return {
@@ -261,8 +298,26 @@ class ProductApiService {
       // Use random products endpoint for general listing
       const response = await this.makeRequest<any>(`/products/random?count=${params.limit || 20}`);
       
+      // Transform the products data to match frontend expectations
+      const transformedData = (response.data || []).map((product: any) => ({
+        ...product,
+        product_name: product.name || product.product_name || 'Unknown Product',
+        brands: Array.isArray(product.brand) ? product.brand : 
+                Array.isArray(product.brands) ? product.brands : 
+                product.brand ? [product.brand] : 
+                product.brands ? [product.brands] : [],
+        categories: Array.isArray(product.category) ? product.category : 
+                   Array.isArray(product.categories) ? product.categories : 
+                   product.category ? [product.category] : 
+                   product.categories ? [product.categories] : [],
+        carbon_footprint: product.carbonFootprint || product.carbon_footprint || 0,
+        ecoscore_grade: product.ecoScore || product.ecoscore_grade || null,
+        image_url: product.imageUrl || product.image_url || null,
+        source_database: product.source_database || 'estimated'
+      }));
+      
       return {
-        data: response.data || [],
+        data: transformedData,
         meta: {
           pagination: {
             page: params.page || 1,
@@ -359,8 +414,26 @@ class ProductApiService {
     try {
       const response = await this.makeRequest<any>(`/products/category/${encodeURIComponent(category)}?${queryString}`);
       
+      // Transform the products data to match frontend expectations
+      const transformedData = (response.data || []).map((product: any) => ({
+        ...product,
+        product_name: product.name || product.product_name || 'Unknown Product',
+        brands: Array.isArray(product.brand) ? product.brand : 
+                Array.isArray(product.brands) ? product.brands : 
+                product.brand ? [product.brand] : 
+                product.brands ? [product.brands] : [],
+        categories: Array.isArray(product.category) ? product.category : 
+                   Array.isArray(product.categories) ? product.categories : 
+                   product.category ? [product.category] : 
+                   product.categories ? [product.categories] : [],
+        carbon_footprint: product.carbonFootprint || product.carbon_footprint || 0,
+        ecoscore_grade: product.ecoScore || product.ecoscore_grade || null,
+        image_url: product.imageUrl || product.image_url || null,
+        source_database: product.source_database || 'estimated'
+      }));
+      
       return {
-        data: response.data || [],
+        data: transformedData,
         meta: {
           pagination: response.pagination || {
             page: params.page || 1,
@@ -401,9 +474,27 @@ class ProductApiService {
     try {
       const response = await this.makeRequest<any>(`/products/random?count=${count}`);
       
+      // Transform the products data to match frontend expectations
+      const transformedData = (response.data || []).map((product: any) => ({
+        ...product,
+        product_name: product.name || product.product_name || 'Unknown Product',
+        brands: Array.isArray(product.brand) ? product.brand : 
+                Array.isArray(product.brands) ? product.brands : 
+                product.brand ? [product.brand] : 
+                product.brands ? [product.brands] : [],
+        categories: Array.isArray(product.category) ? product.category : 
+                   Array.isArray(product.categories) ? product.categories : 
+                   product.category ? [product.category] : 
+                   product.categories ? [product.categories] : [],
+        carbon_footprint: product.carbonFootprint || product.carbon_footprint || 0,
+        ecoscore_grade: product.ecoScore || product.ecoscore_grade || null,
+        image_url: product.imageUrl || product.image_url || null,
+        source_database: product.source_database || 'estimated'
+      }));
+      
       return {
         success: true,
-        data: response.data || []
+        data: transformedData
       };
     } catch (error: any) {
       console.error('Error fetching random products:', error);
