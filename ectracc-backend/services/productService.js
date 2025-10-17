@@ -68,26 +68,53 @@ class ProductService {
 
     const carbonFootprint = this.calculateCarbonFootprint(product);
 
+    // Ensure brands is always an array
+    let brands = [];
+    if (product.brands) {
+      if (Array.isArray(product.brands)) {
+        brands = product.brands.filter(brand => brand && brand.trim());
+      } else if (typeof product.brands === 'string') {
+        brands = product.brands.split(',').map(b => b.trim()).filter(b => b);
+      }
+    }
+
+    // Ensure categories is always an array
+    let categories = [];
+    if (product.categories_tags && Array.isArray(product.categories_tags)) {
+      categories = product.categories_tags
+        .filter(cat => cat && typeof cat === 'string')
+        .map(cat => cat.replace(/^en:/, '').replace(/-/g, ' '))
+        .filter(cat => cat.trim());
+    } else if (product.categories) {
+      if (Array.isArray(product.categories)) {
+        categories = product.categories.filter(cat => cat && cat.trim());
+      } else if (typeof product.categories === 'string') {
+        categories = product.categories.split(',').map(c => c.trim()).filter(c => c);
+      }
+    }
+
     return {
       id: product._id?.toString(),
-      barcode: product.code || null,
-      name: product.product_name || 'Unknown Product',
-      brand: product.brands || 'Generic',
-      category: product.categories || 'General',
-      carbonFootprint,
+      code: product.code || null,
+      product_name: product.product_name || 'Unknown Product',
+      brands: brands,
+      categories: categories,
+      carbon_footprint: carbonFootprint,
       carbonFootprintUnit: 'kg CO2 per 100g',
-      ecoScore: product.ecoscore_grade?.toUpperCase() || null,
-      nutriScore: product.nutriscore_grade?.toUpperCase() || null,
-      imageUrl: product.image_url || null,
-      servingSize: product.serving_size || '100g',
-      productType: product.product_type || 'product',
-      nutritionalInfo: product.nutriments ? {
-        calories: product.nutriments['energy-kcal_100g'] || null,
-        protein: product.nutriments.proteins_100g || null,
-        carbs: product.nutriments.carbohydrates_100g || null,
-        fat: product.nutriments.fat_100g || null,
-        fiber: product.nutriments.fiber_100g || null,
-        salt: product.nutriments.salt_100g || null
+      ecoscore_grade: product.ecoscore_grade?.toLowerCase() || null,
+      nutriscore_grade: product.nutriscore_grade?.toLowerCase() || null,
+      image_url: product.image_url || null,
+      serving_size: product.serving_size || '100g',
+      product_type: product.product_type || 'product',
+      source_database: product.source_database || 'estimated',
+      last_updated: product.last_updated || new Date().toISOString(),
+      nutrition_info: product.nutriments ? {
+        energy_100g: product.nutriments['energy-kcal_100g'] || null,
+        proteins_100g: product.nutriments.proteins_100g || null,
+        carbohydrates_100g: product.nutriments.carbohydrates_100g || null,
+        fat_100g: product.nutriments.fat_100g || null,
+        fiber_100g: product.nutriments.fiber_100g || null,
+        salt_100g: product.nutriments.salt_100g || null
       } : null
     };
   }
