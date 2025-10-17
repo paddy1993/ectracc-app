@@ -11,7 +11,8 @@
     "eject": "react-scripts eject",
     "server": "cd ectracc-backend && node --max-old-space-size=400 index.js",
     "postinstall": "cd ectracc-backend && npm install",
-    "add-indexes": "cd ectracc-backend && npm run add-indexes"
+    "add-indexes": "cd ectracc-backend && npm run add-indexes",
+    "generate-icons": "node scripts/generate-icons.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -58,6 +59,7 @@
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^30.0.0",
     "react-scripts": "^5.0.1",
+    "sharp": "^0.33.5",
     "typescript": "^4.9.5"
   }
 }

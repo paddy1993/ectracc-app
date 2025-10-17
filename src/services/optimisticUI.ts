@@ -256,7 +256,7 @@ class OptimisticUIService {
 
   private async syncDeleteEntry(action: OptimisticAction): Promise<boolean> {
     try {
-      const response = await fetch(`/api/user-footprints/entries/${action.data.id}`, {
+      const response = await fetch(`/api/user-footprints/entry/${action.data.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
@@ -271,7 +271,7 @@ class OptimisticUIService {
 
   private async syncUpdateEntry(action: OptimisticAction): Promise<boolean> {
     try {
-      const response = await fetch(`/api/user-footprints/entries/${action.data.id}`, {
+      const response = await fetch(`/api/user-footprints/entry/${action.data.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
