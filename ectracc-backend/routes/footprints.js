@@ -1,6 +1,5 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
-const { createClient } = require('@supabase/supabase-js');
 const { requireAuth } = require('../middleware/auth');
 const {
   trackFootprintValidation,
@@ -8,14 +7,9 @@ const {
   goalValidation,
   categoryBreakdownValidation
 } = require('../validation/footprintValidation');
+const UserFootprint = require('../models/UserFootprint');
 
 const router = express.Router();
-
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL || 'https://placeholder.supabase.co',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder_key'
-);
 
 // Rate limiting for footprint tracking
 const trackingLimiter = rateLimit({
@@ -51,39 +45,24 @@ router.post('/track', trackingLimiter, requireAuth, async (req, res) => {
     } = validationResult.data;
 
     const userId = req.user.id;
-    const now = new Date().toISOString();
 
-    // Prepare footprint data
-    const footprintData = {
-      user_id: userId,
-      product_barcode: product_barcode || null,
-      manual_item: manual_item || null,
-      amount: amount,
-      carbon_total: carbon_total,
-      category: category,
-      unit: unit || null,
-      brand: brand || null,
-      logged_at: logged_at || now,
-      created_at: now,
-      updated_at: now
+    // Prepare footprint data for MongoDB
+    const entryData = {
+      product_name: manual_item || product_barcode || 'Manual Entry',
+      carbon_footprint: carbon_total,
+      carbon_footprint_per_unit: carbon_total / amount,
+      quantity: amount,
+      unit: unit || 'item',
+      source: 'manual_entry',
+      categories: [category],
+      brands: brand ? [brand] : [],
+      product_barcode: product_barcode || null
     };
 
-    // Insert into Supabase footprints table
-    const { data: footprint, error } = await supabase
-      .from('footprints')
-      .insert([footprintData])
-      .select()
-      .single();
+    // Insert into MongoDB via UserFootprint model
+    const footprint = await UserFootprint.addEntry(userId, entryData);
 
-    if (error) {
-      console.error('Supabase footprint insert error:', error);
-      return res.status(500).json({
-        success: false,
-        error: 'Failed to log footprint'
-      });
-    }
-
-    res.json({
+    res.status(201).json({
       success: true,
       data: footprint
     });
