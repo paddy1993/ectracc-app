@@ -107,22 +107,21 @@ export default function TrackerPage() {
   const carbonPresets = {
     food: {
       // Meat & Protein
-      'Beef (100g)': { amount: 100, carbon: 51000 },
-      'Chicken (100g)': { amount: 100, carbon: 2800 },
-      'Pork (100g)': { amount: 100, carbon: 1800 },
+      'Pork (200g)': { amount: 200, carbon: 3800 },
+      'Chicken (180g)': { amount: 180, carbon: 2800 },
       'Lamb (100g)': { amount: 100, carbon: 3900 },
       'Salmon (100g)': { amount: 100, carbon: 1400 },
       'Tuna (100g)': { amount: 100, carbon: 1800 },
       'Tofu (100g)': { amount: 100, carbon: 530 },
-      'Eggs (1 large)': { amount: 1, carbon: 340 },
+      'Carton of Eggs (6 large eggs)': { amount: 6, carbon: 2000 },
       
       // Dairy
-      'Milk (1 pint)': { amount: 568, carbon: 600 },
+      'Cow\'s Milk, global average (1 pint/16 oz)': { amount: 568, carbon: 1500 },
       'Cheddar cheese (60g)': { amount: 60, carbon: 520 },
       'Mozzarella (60g)': { amount: 60, carbon: 270 },
       
       // Fruits & Vegetables
-      'Apple (1 medium)': { amount: 180, carbon: 30 },
+      'Apple, local and seasonal (1 medium)': { amount: 180, carbon: 32 },
       'Banana (1 medium)': { amount: 120, carbon: 110 },
       'Avocado (1 medium)': { amount: 150, carbon: 150 },
       'Potatoes (100g)': { amount: 100, carbon: 130 },
@@ -130,14 +129,14 @@ export default function TrackerPage() {
       'Asparagus (250g)': { amount: 250, carbon: 270 },
       
       // Beverages
-      'Coffee (1 cup)': { amount: 240, carbon: 87 },
+      'Black Coffee, instant (1 cup)': { amount: 240, carbon: 49 },
       'Latte (1 cup)': { amount: 240, carbon: 280 },
       'Black tea (1 cup)': { amount: 240, carbon: 22 },
       'Beer (1 pint)': { amount: 568, carbon: 500 },
       'Wine (125ml)': { amount: 125, carbon: 1100 },
       
       // Processed Foods
-      'Bread (1 slice)': { amount: 30, carbon: 480 },
+      'Loaf of bread, average (800g)': { amount: 800, carbon: 815 },
       'Ice cream (100g)': { amount: 100, carbon: 740 },
       'Strawberries (250g)': { amount: 250, carbon: 490 }
     },

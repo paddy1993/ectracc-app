@@ -38,14 +38,14 @@ export default function SmartSuggestions({
   const suggestions = useMemo(() => {
     const allSuggestions: Record<string, Suggestion[]> = {
       food: [
-        { name: 'Beef (100g)', amount: 100, carbon: 51000, unit: 'g', category: 'food' },
-        { name: 'Chicken (100g)', amount: 100, carbon: 2800, unit: 'g', category: 'food' },
-        { name: 'Milk (1 pint)', amount: 568, carbon: 600, unit: 'ml', category: 'food' },
+        { name: 'Pork (200g)', amount: 200, carbon: 3800, unit: 'g', category: 'food' },
+        { name: 'Chicken (180g)', amount: 180, carbon: 2800, unit: 'g', category: 'food' },
+        { name: 'Cow\'s Milk, global average (1 pint/16 oz)', amount: 568, carbon: 1500, unit: 'ml', category: 'food' },
         { name: 'Banana (1 medium)', amount: 1, carbon: 110, unit: 'item', category: 'food' },
-        { name: 'Apple (1 medium)', amount: 1, carbon: 30, unit: 'item', category: 'food' },
-        { name: 'Bread (1 slice)', amount: 1, carbon: 480, unit: 'item', category: 'food' },
-        { name: 'Coffee (1 cup)', amount: 1, carbon: 87, unit: 'item', category: 'food' },
-        { name: 'Eggs (1 large)', amount: 1, carbon: 340, unit: 'item', category: 'food' }
+        { name: 'Apple, local and seasonal (1 medium)', amount: 1, carbon: 32, unit: 'item', category: 'food' },
+        { name: 'Loaf of bread, average (800g)', amount: 800, carbon: 815, unit: 'g', category: 'food' },
+        { name: 'Black Coffee, instant (1 cup)', amount: 1, carbon: 49, unit: 'item', category: 'food' },
+        { name: 'Carton of Eggs (6 large eggs)', amount: 6, carbon: 2000, unit: 'item', category: 'food' }
       ],
       transport: [
         { name: 'Car - Petrol (1 km)', amount: 1, carbon: 180, unit: 'km', category: 'transport' },
