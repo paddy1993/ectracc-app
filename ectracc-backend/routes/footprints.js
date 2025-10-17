@@ -47,10 +47,11 @@ router.post('/track', trackingLimiter, requireAuth, async (req, res) => {
     const userId = req.user.id;
 
     // Prepare footprint data for MongoDB
+    // NOTE: carbon_total is expected in kg CO₂e (validated above)
     const entryData = {
       product_name: manual_item || product_barcode || 'Manual Entry',
-      carbon_footprint: carbon_total,
-      carbon_footprint_per_unit: carbon_total / amount,
+      carbon_footprint: carbon_total, // kg CO₂e
+      carbon_footprint_per_unit: carbon_total / amount, // kg CO₂e per unit
       quantity: amount,
       unit: unit || 'item',
       source: 'manual_entry',

@@ -292,10 +292,12 @@ export default function TrackerPage() {
         break;
     }
     
-    const calculatedCarbon = amount * carbonPerUnit;
+    const calculatedCarbonGrams = amount * carbonPerUnit;
+    // Convert grams to kilograms for storage (database expects kg)
+    const calculatedCarbonKg = calculatedCarbonGrams / 1000;
     setFormData(prev => ({
       ...prev,
-      carbon_total: Math.round(calculatedCarbon).toString()
+      carbon_total: (Math.round(calculatedCarbonKg * 100) / 100).toString() // Round to 2 decimal places
     }));
     setCalculated(true);
   };

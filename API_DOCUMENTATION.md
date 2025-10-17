@@ -264,6 +264,21 @@ Get product by barcode.
 
 ### Carbon Footprint Tracking
 
+> **⚠️ IMPORTANT: Unit Standards**
+>
+> All carbon footprint values in the ECTRACC API are **stored and transmitted in kilograms (kg CO₂e)**.
+>
+> - **Database Storage**: All `carbon_footprint` fields are in **kilograms (kg CO₂e)**
+> - **API Requests**: Submit `carbon_total` values in **kilograms (kg CO₂e)**
+> - **API Responses**: Receive carbon values in **kilograms (kg CO₂e)**
+> - **Display**: Frontend formats values appropriately (g/kg/t) based on magnitude
+> - **Validation**: Accepted range is **0.001 to 100 kg CO₂e** per entry
+>
+> **Example Conversions:**
+> - 200 grams CO₂e → 0.2 kg (send as `"carbon_total": 0.2`)
+> - 2.8 kg CO₂e → 2.8 kg (send as `"carbon_total": 2.8`)
+> - 5000 grams CO₂e → 5.0 kg (send as `"carbon_total": 5.0`)
+
 #### POST /footprints/track 🔒
 
 Track a new carbon footprint entry.
@@ -278,20 +293,20 @@ Content-Type: application/json
 ```json
 {
   "manual_item": "Apple",
-  "amount": 100,
-  "carbon_total": 0.5,
+  "amount": 1,
+  "carbon_total": 0.032,
   "category": "food",
-  "unit": "g",
+  "unit": "item",
   "logged_at": "2025-01-15T10:30:00.000Z"
 }
 ```
 
 **Validation Rules:**
 - Either `product_barcode` OR `manual_item` required
-- `amount`: Required, positive number
-- `carbon_total`: Required, positive number
-- `category`: Required, valid category
-- `unit`: Optional, default "g"
+- `amount`: Required, positive number (max 10,000)
+- `carbon_total`: **Required, in kg CO₂e** (0.001 to 100 kg)
+- `category`: Required, one of: food, transport, energy, shopping, misc
+- `unit`: Optional, default "item"
 - `logged_at`: Optional, defaults to current time
 
 **Response:**
@@ -302,18 +317,23 @@ Content-Type: application/json
     "footprint": {
       "id": "footprint-id",
       "user_id": "user-uuid",
-      "manual_item": "Apple",
-      "amount": 100,
-      "carbon_total": 0.5,
-      "category": "food",
-      "unit": "g",
-      "logged_at": "2025-01-15T10:30:00.000Z",
+      "product_name": "Apple",
+      "carbon_footprint": 0.032,
+      "carbon_footprint_per_unit": 0.032,
+      "quantity": 1,
+      "unit": "item",
+      "total_footprint": 0.032,
+      "source": "manual_entry",
+      "categories": ["food"],
+      "date_added": "2025-01-15T10:30:00.000Z",
       "created_at": "2025-01-15T10:30:00.000Z"
     }
   },
-  "message": "Footprint tracked successfully"
+  "message": "Product added to footprint successfully"
 }
 ```
+
+**Note:** All carbon values in the response are in **kg CO₂e**.
 
 #### GET /footprints/history 🔒
 

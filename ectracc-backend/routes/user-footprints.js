@@ -40,6 +40,15 @@ router.post('/add', trackingLimiter, requireAuth, async (req, res) => {
       });
     }
 
+    // Validate carbon_footprint is in reasonable kg range
+    const carbonKg = parseFloat(carbon_footprint);
+    if (carbonKg < 0.001 || carbonKg > 100) {
+      return res.status(400).json({
+        success: false,
+        message: 'Carbon footprint must be between 0.001 and 100 kg CO₂e'
+      });
+    }
+
     const userId = req.user.id;
 
     // If product_id is provided, fetch additional details from database
@@ -53,11 +62,12 @@ router.post('/add', trackingLimiter, requireAuth, async (req, res) => {
     }
 
     // Prepare entry data
+    // NOTE: carbon_footprint is expected in kg CO₂e
     const entryData = {
       product_id: product_id || null,
       product_name: productDetails?.product_name || product_name,
-      carbon_footprint: parseFloat(carbon_footprint),
-      carbon_footprint_per_unit: parseFloat(carbon_footprint),
+      carbon_footprint: carbonKg, // kg CO₂e
+      carbon_footprint_per_unit: carbonKg, // kg CO₂e per unit
       quantity: parseFloat(quantity),
       unit: unit,
       source: productDetails?.carbon_footprint_source || source || 'manual_entry',

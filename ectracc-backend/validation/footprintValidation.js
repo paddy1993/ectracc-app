@@ -4,11 +4,11 @@ const { z } = require('zod');
 const trackFootprintValidation = z.object({
   product_barcode: z.string().regex(/^[0-9]{8,14}$/).optional(),
   manual_item: z.string().min(1).max(100).optional(),
-  amount: z.number().positive().max(10000), // max 10kg
-  carbon_total: z.number().positive().max(100000), // max 100kg CO₂e
+  amount: z.number().positive().max(10000), // max 10,000 units
+  carbon_total: z.number().positive().min(0.001).max(100), // IMPORTANT: Expected in kg CO₂e (0.001 to 100 kg)
   category: z.enum(['food', 'transport', 'energy', 'shopping', 'misc']),
-  unit: z.string().max(20).optional(), // NEW: Unit of measurement
-  brand: z.string().max(100).optional(), // NEW: Brand name
+  unit: z.string().max(20).optional(), // Unit of measurement
+  brand: z.string().max(100).optional(), // Brand name
   logged_at: z.string().datetime().optional() // ISO datetime string
 }).refine(
   (data) => data.product_barcode || data.manual_item,
