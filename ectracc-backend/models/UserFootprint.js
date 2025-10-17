@@ -226,7 +226,8 @@ class UserFootprint {
   async getEntryById(entryId) {
     try {
       const footprints = this.getCollection();
-      const entry = await footprints.findOne({ _id: entryId });
+      const { ObjectId } = require('mongodb');
+      const entry = await footprints.findOne({ _id: new ObjectId(entryId) });
       
       if (entry) {
         return this.formatEntry(entry);
@@ -243,8 +244,9 @@ class UserFootprint {
   async updateEntry(entryId, userId, updateData) {
     try {
       const footprints = this.getCollection();
+      const { ObjectId } = require('mongodb');
       const result = await footprints.updateOne(
-        { _id: entryId, user_id: userId },
+        { _id: new ObjectId(entryId), user_id: userId },
         { 
           $set: {
             ...updateData,
@@ -268,7 +270,8 @@ class UserFootprint {
   async deleteEntry(entryId, userId) {
     try {
       const footprints = this.getCollection();
-      const result = await footprints.deleteOne({ _id: entryId, user_id: userId });
+      const { ObjectId } = require('mongodb');
+      const result = await footprints.deleteOne({ _id: new ObjectId(entryId), user_id: userId });
       
       if (result.deletedCount === 0) {
         throw new Error('Footprint entry not found or access denied');
