@@ -104,18 +104,37 @@ export default function ProfilePage() {
     setError(null);
 
     try {
+      console.log('🔄 [PROFILE PAGE] Submitting profile update:', {
+        display_name: editData.display_name.trim()
+      });
+      
       const { error: updateError } = await updateProfile({
         full_name: editData.display_name.trim()
       });
 
       if (updateError) {
-        setError(updateError);
+        console.error('❌ [PROFILE PAGE] Profile update failed:', updateError);
+        
+        // Show specific error messages based on error type
+        if (updateError.includes('Permission denied')) {
+          setError('Permission denied. Database security policies may need to be configured. Please contact support.');
+        } else if (updateError.includes('Connection failed') || updateError.includes('Failed to fetch')) {
+          setError('Connection failed. Please check your internet connection and try again.');
+        } else if (updateError.includes('validation') || updateError.includes('invalid')) {
+          setError('Invalid data. Please check your entries and try again.');
+        } else if (updateError.includes('auth') || updateError.includes('401') || updateError.includes('403')) {
+          setError('Authentication error. Please sign out and sign in again.');
+        } else {
+          setError(updateError);
+        }
         return;
       }
 
+      console.log('✅ [PROFILE PAGE] Profile updated successfully');
       setEditDialogOpen(false);
     } catch (error: any) {
-      setError(error.message || 'Failed to update profile');
+      console.error('❌ [PROFILE PAGE] Exception during profile update:', error);
+      setError(error.message || 'Failed to update profile. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

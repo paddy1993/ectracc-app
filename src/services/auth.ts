@@ -156,6 +156,9 @@ export class AuthService {
   // Update user profile
   static async updateUserProfile(userId: string, updates: Partial<UserProfile>) {
     try {
+      console.log('🔄 [AUTH SERVICE] Updating profile for user:', userId);
+      console.log('📝 [AUTH SERVICE] Updates:', updates);
+      
       // First, try to update existing profile
       const { data: updateData, error: updateError } = await supabase
         .from(TABLES.PROFILES)
@@ -166,6 +169,7 @@ export class AuthService {
 
       if (updateError && updateError.code === 'PGRST116') {
         // Profile doesn't exist, create it
+        console.log('📝 [AUTH SERVICE] Profile not found, creating new profile');
         const { data: insertData, error: insertError } = await supabase
           .from(TABLES.PROFILES)
           .insert({ 
@@ -178,16 +182,48 @@ export class AuthService {
           .single();
 
         if (insertError) {
+          console.error('❌ [AUTH SERVICE] Insert error:', {
+            message: insertError.message,
+            code: insertError.code,
+            details: insertError.details,
+            hint: insertError.hint
+          });
+          
+          // Check for RLS policy error
+          if (insertError.code === '42501') {
+            return { profile: null, error: 'Permission denied. Please contact support.' };
+          }
+          
           return { profile: null, error: insertError.message };
         }
 
+        console.log('✅ [AUTH SERVICE] Profile created successfully');
         return { profile: insertData, error: null };
       } else if (updateError) {
+        console.error('❌ [AUTH SERVICE] Update error:', {
+          message: updateError.message,
+          code: updateError.code,
+          details: updateError.details,
+          hint: updateError.hint
+        });
+        
+        // Check for RLS policy error (code 42501 = insufficient_privilege)
+        if (updateError.code === '42501') {
+          return { profile: null, error: 'Permission denied. Please contact support.' };
+        }
+        
+        // Check for network/connection errors
+        if (updateError.message.includes('Failed to fetch') || updateError.message.includes('Network')) {
+          return { profile: null, error: 'Connection failed. Please check your internet connection.' };
+        }
+        
         return { profile: null, error: updateError.message };
       }
 
+      console.log('✅ [AUTH SERVICE] Profile updated successfully');
       return { profile: updateData, error: null };
     } catch (error: any) {
+      console.error('❌ [AUTH SERVICE] Exception during profile update:', error);
       return { profile: null, error: error.message || 'Failed to update profile' };
     }
   }
