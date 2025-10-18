@@ -12,26 +12,25 @@
       "hazelnut-spreads"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e395",
@@ -47,26 +46,25 @@
       "chocolate-cookies"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e396",
@@ -81,26 +79,25 @@
       "wafer-biscuits"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e397",
@@ -116,26 +113,25 @@
       "convenience-food"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e398",
@@ -151,26 +147,25 @@
       "organic"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e399",
@@ -185,26 +180,25 @@
       "sliced-breads"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e39a",
@@ -219,26 +213,25 @@
       "greek-yogurts"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e39b",
@@ -253,26 +246,25 @@
       "extra-virgin-olive-oils"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e39c",
@@ -287,26 +279,25 @@
       "carbonated-drinks"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   },
   {
     "_id": "68da6c728f200359bd95e39d",
@@ -322,25 +313,24 @@
       "gluten-free"
     ],
     "enrichment_needs": {
-      "missing_fields": [
+      "missing_fields": [],
+      "existing_fields": [
         "quantity",
         "product_quantity",
         "product_quantity_unit",
         "net_weight",
         "net_weight_unit",
+        "packaging",
         "packaging_text",
         "origins",
         "manufacturing_places",
         "labels",
-        "stores"
-      ],
-      "existing_fields": [
-        "packaging",
+        "stores",
         "countries"
       ],
-      "total_missing": 10,
-      "total_existing": 2
+      "total_missing": 0,
+      "total_existing": 12
     },
-    "enrichment_score": 10
+    "enrichment_score": 0
   }
 ]

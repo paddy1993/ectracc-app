@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-10-18T06:26:10.351Z",
+  "totalProducts": 10600,
+  "enrichedProducts": 10600,
+  "enrichmentRate": "100.0",
+  "initialDbSizeMB": "38.4",
+  "finalDbSizeMB": "38.8",
+  "addedStorageMB": "0.4",
+  "storageEfficiency": "0 bytes per product",
+  "remainingStorageMB": "4961.2"
+}

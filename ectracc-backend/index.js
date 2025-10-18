@@ -17,6 +17,7 @@ const userFootprintsRouter = require('./routes/user-footprints');
 const pendingProductsRouter = require('./routes/pending-products');
 const adminRouter = require('./routes/admin');
 const notificationsRouter = require('./routes/notifications');
+const enrichmentRouter = require('./routes/enrichment');
 const logger = require('./utils/logger');
 const { metricsMiddleware, getMetricsHandler, resetMetricsHandler } = require('./middleware/metrics');
 const { requireAdmin } = require('./middleware/adminAuth');
@@ -149,6 +150,7 @@ app.use('/api/user-footprints', userFootprintsRouter);
 app.use('/api/pending-products', pendingProductsRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/enrichment', enrichmentRouter);
 
 // Root endpoint
 app.get('/', (req, res) => {

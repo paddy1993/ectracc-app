@@ -15,6 +15,7 @@
     "generate-icons": "node scripts/generate-icons.js",
     "enrich-products": "node scripts/run-enrichment-pipeline.js",
     "enrich-production": "node scripts/production-enrichment-pipeline.js",
+    "enrich-production-scale": "node scripts/production-scale-enrichment.js",
     "monitor-storage": "node scripts/storage-monitor.js"
   },
   "engines": {

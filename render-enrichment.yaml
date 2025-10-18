@@ -1,0 +1,24 @@
+services:
+  - type: worker
+    name: ectracc-enrichment-worker
+    env: node
+    buildCommand: cd ectracc-backend && npm install && cd .. && npm install mongodb
+    startCommand: node scripts/production-scale-enrichment.js
+    envVars:
+      - key: MONGODB_URI
+        fromService:
+          type: web
+          name: ectracc-backend
+          envVarKey: MONGODB_URI
+      - key: MONGODB_DATABASE
+        fromService:
+          type: web
+          name: ectracc-backend
+          envVarKey: MONGODB_DATABASE
+      - key: NODE_ENV
+        value: production
+    plan: starter
+    region: oregon
+    branch: main
+    rootDir: ./
+    autoDeploy: false  # Manual deployment for safety
