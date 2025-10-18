@@ -1,0 +1,21 @@
+{
+  "name": "@ectracc/shared-types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types and interfaces for ECTRACC",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "ectracc",
+    "types",
+    "typescript"
+  ],
+  "author": "ECTRACC Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}
+

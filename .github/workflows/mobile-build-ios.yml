@@ -1,0 +1,83 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: 'Build profile to use'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - development
+          - preview
+          - production
+
+jobs:
+  build:
+    name: Build iOS App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run tests
+        run: npm run test:all
+
+      - name: 🏗️ Build iOS app
+        working-directory: ectracc-mobile
+        env:
+          EXPO_PUBLIC_API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          PROFILE=${{ github.event.inputs.profile || 'preview' }}
+          eas build --platform ios --profile $PROFILE --non-interactive --no-wait
+
+      - name: 📤 Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build-logs
+          path: ectracc-mobile/.expo/
+
+  submit:
+    name: Submit to TestFlight
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event.inputs.profile == 'production'
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📤 Submit to TestFlight
+        working-directory: ectracc-mobile
+        run: eas submit --platform ios --latest --non-interactive
+

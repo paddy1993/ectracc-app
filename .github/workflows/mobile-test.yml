@@ -1,0 +1,117 @@
+name: Mobile Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'ectracc-mobile/**'
+      - 'packages/**'
+      - '.github/workflows/mobile-test.yml'
+
+jobs:
+  test-shared-packages:
+    name: Test Shared Packages
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run shared-core tests
+        run: npm test --workspace=@ectracc/shared-core
+
+      - name: 🧪 Run shared-services tests
+        run: npm test --workspace=@ectracc/shared-services
+
+      - name: 📊 Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./packages/shared-core/coverage/lcov.info,./packages/shared-services/coverage/lcov.info
+          flags: shared-packages
+          name: shared-packages-coverage
+
+  test-mobile:
+    name: Test Mobile App
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧪 Run mobile tests
+        run: npm run test:mobile -- --coverage
+
+      - name: 📊 Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./ectracc-mobile/coverage/lcov.info
+          flags: mobile
+          name: mobile-coverage
+
+  lint-mobile:
+    name: Lint Mobile Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run ESLint
+        run: npm run lint --workspace=ectracc-mobile
+        continue-on-error: true
+
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Type check shared packages
+        run: |
+          cd packages/shared-types && npx tsc --noEmit
+          cd ../shared-core && npx tsc --noEmit
+          cd ../shared-services && npx tsc --noEmit
+
+      - name: 🔍 Type check mobile app
+        run: cd ectracc-mobile && npx tsc --noEmit
+

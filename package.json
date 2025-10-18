@@ -1,13 +1,22 @@
 {
-  "name": "ectracc-app",
+  "name": "ectracc-monorepo",
   "version": "1.0.0",
-  "description": "ECTRACC Application",
+  "description": "ECTRACC Application - Monorepo for Web, iOS, and Android",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "ectracc-mobile"
+  ],
   "main": "server.js",
   "scripts": {
     "start": "cd ectracc-backend && node --max-old-space-size=400 index.js",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:all": "npm run test:shared && npm run test:mobile",
+    "test:shared": "npm test --workspace=@ectracc/shared-core --workspace=@ectracc/shared-services",
+    "test:mobile": "npm test --workspace=ectracc-mobile",
+    "test:coverage": "npm run test:shared -- --coverage && npm run test:mobile -- --coverage",
     "eject": "react-scripts eject",
     "server": "cd ectracc-backend && node --max-old-space-size=400 index.js",
     "postinstall": "cd ectracc-backend && npm install",
