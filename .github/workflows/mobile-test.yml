@@ -115,3 +115,4 @@ jobs:
       - name: 🔍 Type check mobile app
         run: cd ectracc-mobile && npx tsc --noEmit
 
+

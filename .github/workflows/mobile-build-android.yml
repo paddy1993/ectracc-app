@@ -81,3 +81,4 @@ jobs:
         working-directory: ectracc-mobile
         run: eas submit --platform android --latest --track internal --non-interactive
 
+
