@@ -7,32 +7,33 @@ class ProductController {
    * GET /api/products/search
    */
   async search(req, res) {
+    // Extract request parameters outside try block for error logging
+    const { 
+      q: query, 
+      limit, 
+      page, 
+      category, 
+      brand, 
+      ecoscore,
+      ecoScore,
+      minCarbon,
+      maxCarbon,
+      sort,
+      sortBy
+    } = req.query;
+
+    const filters = {
+      limit,
+      page,
+      category,
+      brand,
+      ecoScore: ecoscore || ecoScore,
+      minCarbon,
+      maxCarbon,
+      sortBy: sortBy || sort || 'relevance'
+    };
+
     try {
-      const { 
-        q: query, 
-        limit, 
-        page, 
-        category, 
-        brand, 
-        ecoscore,
-        ecoScore,
-        minCarbon,
-        maxCarbon,
-        sort,
-        sortBy
-      } = req.query;
-
-      const filters = {
-        limit,
-        page,
-        category,
-        brand,
-        ecoScore: ecoscore || ecoScore,
-        minCarbon,
-        maxCarbon,
-        sortBy: sortBy || sort || 'relevance'
-      };
-
       const products = await productService.searchProducts(query, filters);
 
       // Format response to match frontend expectations

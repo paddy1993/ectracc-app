@@ -25,6 +25,9 @@ const { requireAdmin } = require('./middleware/adminAuth');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// Trust proxy - required for rate limiting and proper IP detection behind Render/Railway proxies
+app.set('trust proxy', 1);
+
 // Validate environment variables on startup
 try {
   validateEnvironment();

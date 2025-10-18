@@ -113,6 +113,8 @@ class ProductRepository {
       }
 
       // Build sort options
+      // Only use textScore if we actually have a text search in the filter
+      const hasTextSearch = query && query.trim().length >= 2;
       let sort = {};
       switch (sortBy) {
         case 'name_asc':
@@ -123,12 +125,12 @@ class ProductRepository {
           break;
         case 'carbon_asc':
         case 'carbon_desc':
-          // Carbon sorting done after formatting
-          sort = query ? { score: { $meta: 'textScore' } } : { product_name: 1 };
+          // Carbon sorting done after formatting, use default sort here
+          sort = hasTextSearch ? { score: { $meta: 'textScore' } } : { product_name: 1 };
           break;
         case 'relevance':
         default:
-          sort = query ? { score: { $meta: 'textScore' } } : { product_name: 1 };
+          sort = hasTextSearch ? { score: { $meta: 'textScore' } } : { product_name: 1 };
       }
 
       // Projection - only fetch needed fields for performance
@@ -159,8 +161,8 @@ class ProductRepository {
         carbon_footprint_reference: 1
       };
 
-      // Add text score to projection if using text search
-      if (query) {
+      // Add text score to projection ONLY if using text search
+      if (hasTextSearch) {
         projection.score = { $meta: 'textScore' };
       }
 
@@ -181,8 +183,18 @@ class ProductRepository {
         stack: error.stack,
         query: query,
         options: options,
+        code: error.code,
+        codeName: error.codeName,
         timestamp: new Date().toISOString()
       });
+      
+      // Handle specific MongoDB errors gracefully
+      if (error.code === 40218) {
+        // Text score metadata error - return empty results instead of crashing
+        console.warn('[ProductRepository] Text score metadata error - returning empty results. Query:', query);
+        return [];
+      }
+      
       throw error;
     }
   }
