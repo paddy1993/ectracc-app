@@ -14,6 +14,7 @@
     "add-indexes": "cd ectracc-backend && npm run add-indexes",
     "generate-icons": "node scripts/generate-icons.js",
     "enrich-products": "node scripts/run-enrichment-pipeline.js",
+    "enrich-production": "node scripts/production-enrichment-pipeline.js",
     "monitor-storage": "node scripts/storage-monitor.js"
   },
   "engines": {

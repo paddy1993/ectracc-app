@@ -9,7 +9,7 @@ class ProductRepository {
 
   getCollection() {
     if (!this.collection) {
-      this.collection = getMongoCollection('products');
+      this.collection = getMongoCollection('food_products');
     }
     return this.collection;
   }
