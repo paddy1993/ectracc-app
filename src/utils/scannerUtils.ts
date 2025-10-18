@@ -2,6 +2,8 @@
  * Scanner utility functions for barcode processing and camera management
  */
 
+import logger from './logger';
+
 export interface CameraCapabilities {
   hasFlash: boolean;
   hasFrontCamera: boolean;
@@ -77,20 +79,20 @@ export const applyCameraFocus = async (stream: MediaStream): Promise<boolean> =>
               advanced: [{ focusMode: 'continuous' } as any]
             });
           } catch (error) {
-            console.debug('Failed to reset focus mode:', error);
+            logger.debug('Failed to reset focus mode:', error);
           }
         }, 1000);
         
         return true;
       } catch (error) {
-        console.debug('Focus mode not supported or failed:', error);
+        logger.debug('Focus mode not supported or failed:', error);
         return false;
       }
     }
     
     return false;
   } catch (error) {
-    console.debug('Failed to apply focus:', error);
+    logger.debug('Failed to apply focus:', error);
     return false;
   }
 };
@@ -115,7 +117,7 @@ export const toggleCameraFlash = async (
     
     return false;
   } catch (error) {
-    console.debug('Failed to toggle flash:', error);
+    logger.debug('Failed to toggle flash:', error);
     return false;
   }
 };
@@ -229,7 +231,7 @@ export const requestCameraPermission = async (): Promise<boolean> => {
     
     return true;
   } catch (error) {
-    console.debug('Camera permission denied or not available:', error);
+    logger.debug('Camera permission denied or not available:', error);
     return false;
   }
 };
@@ -242,7 +244,7 @@ export const getAvailableCameras = async (): Promise<MediaDeviceInfo[]> => {
     const devices = await navigator.mediaDevices.enumerateDevices();
     return devices.filter(device => device.kind === 'videoinput');
   } catch (error) {
-    console.debug('Failed to enumerate camera devices:', error);
+    logger.debug('Failed to enumerate camera devices:', error);
     return [];
   }
 };

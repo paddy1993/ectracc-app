@@ -20,6 +20,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import logger from '../utils/logger';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
@@ -98,7 +99,7 @@ const MobileEnhancements: React.FC<MobileEnhancementsProps> = ({ onInstallPrompt
       const { outcome } = await deferredPrompt.userChoice;
       
       if (outcome === 'accepted') {
-        console.log('User accepted the install prompt');
+        logger.log('User accepted the install prompt');
         onInstallPrompt?.();
       }
       
@@ -123,7 +124,7 @@ const MobileEnhancements: React.FC<MobileEnhancementsProps> = ({ onInstallPrompt
     if ('Notification' in window && Notification.permission === 'default') {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
-        console.log('Notification permission granted');
+        logger.log('Notification permission granted');
       }
     }
   };

@@ -1,5 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from 'react';
 import { BrowserMultiFormatReader } from '@zxing/browser';
+import logger from '../utils/logger';
 
 interface UseContinuousScannerOptions {
   onScan: (barcode: string) => void;
@@ -58,7 +59,7 @@ export const useContinuousScanner = ({
       // Silent catch - scanning will continue
       // Only log if it's not a common "not found" error
       if (error instanceof Error && !error.message.includes('No MultiFormat Readers')) {
-        console.debug('Scan attempt failed:', error.message);
+        logger.debug('Scan attempt failed:', error.message);
       }
     }
     

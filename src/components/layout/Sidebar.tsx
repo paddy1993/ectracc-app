@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../../hooks/useAdminAuth';
+import logger from '../../utils/logger';
 import {
   Drawer,
   List,
@@ -49,7 +50,7 @@ export default function Sidebar() {
   
   // Debug logging for admin status
   React.useEffect(() => {
-    console.log('🔍 [SIDEBAR] Admin auth state:', { isAdmin, adminLoading, adminError });
+    logger.log('🔍 [SIDEBAR] Admin auth state:', { isAdmin, adminLoading, adminError });
   }, [isAdmin, adminLoading, adminError]);
   
   // Load collapsed state from localStorage
@@ -62,10 +63,10 @@ export default function Sidebar() {
   const navigationItems = React.useMemo(() => {
     const items = [...baseNavigationItems];
     if (isAdmin) {
-      console.log('✅ [SIDEBAR] Adding admin navigation item');
+      logger.log('✅ [SIDEBAR] Adding admin navigation item');
       items.push(adminNavigationItem);
     } else {
-      console.log('❌ [SIDEBAR] Not adding admin navigation - isAdmin:', isAdmin);
+      logger.log('❌ [SIDEBAR] Not adding admin navigation - isAdmin:', isAdmin);
     }
     return items;
   }, [isAdmin]);

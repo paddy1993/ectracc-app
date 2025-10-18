@@ -1,5 +1,6 @@
 import { API_BASE_URL } from '../constants';
 import { supabase } from './supabase';
+import logger from '../utils/logger';
 
 export interface PendingProductSubmission {
   product_name: string;
@@ -61,7 +62,7 @@ class PendingProductApi {
    */
   async submitProduct(submission: PendingProductSubmission): Promise<PendingProduct> {
     try {
-      console.log('📝 [PENDING PRODUCT] Submitting product for review:', submission.product_name);
+      logger.log('📝 [PENDING PRODUCT] Submitting product for review:', submission.product_name);
 
       const response = await fetch(`${API_BASE_URL}/pending-products`, {
         method: 'POST',
@@ -80,7 +81,7 @@ class PendingProductApi {
         throw new Error(result.error || 'Failed to submit product for review');
       }
 
-      console.log('✅ [PENDING PRODUCT] Product submitted successfully:', result.data.submission.id);
+      logger.log('✅ [PENDING PRODUCT] Product submitted successfully:', result.data.submission.id);
       return result.data.submission;
     } catch (error) {
       console.error('❌ [PENDING PRODUCT] Error submitting product:', error);

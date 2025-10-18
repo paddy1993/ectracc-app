@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { AuthService } from '../services/auth';
 import { User, UserProfile, AuthContextType } from '../types';
 import analytics, { EVENTS, USER_PROPERTIES } from '../services/analytics';
+import logger from '../utils/logger';
 
 // Create AuthContext
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,10 +20,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Initialize auth state on mount
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('🔄 AuthContext: Initializing auth state...');
+      logger.debug('🔄 AuthContext: Initializing auth state...');
       try {
         const currentUser = await AuthService.getCurrentUser();
-        console.log('👤 AuthContext: Current user check result:', {
+        logger.debug('👤 AuthContext: Current user check result:', {
           hasUser: !!currentUser,
           userEmail: currentUser?.email,
           userId: currentUser?.id
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           
           // Load user profile
           const userProfile = await AuthService.getUserProfile(currentUser.id);
-          console.log('📋 AuthContext: Profile check result:', {
+          logger.debug('📋 AuthContext: Profile check result:', {
             hasProfile: !!userProfile,
             profileData: userProfile
           });
@@ -53,9 +54,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
         }
       } catch (error) {
-        console.error('❌ AuthContext: Error initializing auth:', error);
+        logger.error('❌ AuthContext: Error initializing auth:', error);
       } finally {
-        console.log('✅ AuthContext: Auth initialization complete, setting loading to false');
+        logger.debug('✅ AuthContext: Auth initialization complete, setting loading to false');
         setLoading(false);
       }
     };
@@ -66,7 +67,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Listen for auth state changes
   useEffect(() => {
     const { data: { subscription } } = AuthService.onAuthStateChange(async (user) => {
-      console.log('🔄 [AUTH CONTEXT] Auth state change detected:', { 
+      logger.debug('🔄 [AUTH CONTEXT] Auth state change detected:', { 
         hasUser: !!user, 
         userEmail: user?.email,
         userId: user?.id 
@@ -79,9 +80,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         analytics.trackLogin(user.id);
         
         // Load user profile when user signs in
-        console.log('📋 [AUTH CONTEXT] Loading profile for authenticated user:', user.id);
+        logger.debug('📋 [AUTH CONTEXT] Loading profile for authenticated user:', user.id);
         const userProfile = await AuthService.getUserProfile(user.id);
-        console.log('📊 [AUTH CONTEXT] Profile loaded:', { 
+        logger.debug('📊 [AUTH CONTEXT] Profile loaded:', { 
           hasProfile: !!userProfile,
           fullName: userProfile?.full_name 
         });
@@ -96,7 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           });
         }
       } else {
-        console.log('👋 [AUTH CONTEXT] User signed out, clearing profile');
+        logger.debug('👋 [AUTH CONTEXT] User signed out, clearing profile');
         
         // Track user logout and reset analytics
         analytics.track(EVENTS.USER_SIGNED_OUT);

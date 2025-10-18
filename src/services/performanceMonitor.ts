@@ -1,4 +1,6 @@
 // Performance Monitoring Service for ECTRACC
+import logger from '../utils/logger';
+
 interface PerformanceMetric {
   name: string;
   value: number;
@@ -71,7 +73,7 @@ class PerformanceMonitorService {
     // Send metrics periodically
     this.startPeriodicReporting();
 
-    console.log('[Performance] Monitoring initialized');
+    logger.log('[Performance] Monitoring initialized');
   }
 
   // Initialize Web Vitals monitoring
@@ -178,7 +180,7 @@ class PerformanceMonitorService {
     this.webVitals.push(metric);
     this.recordMetric(`web-vital-${name.toLowerCase()}`, value);
 
-    console.log(`[Performance] ${name}: ${value.toFixed(2)}ms (${rating})`);
+    logger.log(`[Performance] ${name}: ${value.toFixed(2)}ms (${rating})`);
   }
 
   // Get Web Vital rating
@@ -259,7 +261,7 @@ class PerformanceMonitorService {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         this.recordMetric('long-task', entry.duration);
-        console.warn(`[Performance] Long task detected: ${entry.duration.toFixed(2)}ms`);
+        logger.warn(`[Performance] Long task detected: ${entry.duration.toFixed(2)}ms`);
       }
     });
 
@@ -281,7 +283,7 @@ class PerformanceMonitorService {
       // Warn about high memory usage
       const usagePercent = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
       if (usagePercent > 80) {
-        console.warn(`[Performance] High memory usage: ${usagePercent.toFixed(1)}%`);
+        logger.warn(`[Performance] High memory usage: ${usagePercent.toFixed(1)}%`);
       }
     }, 30000); // Check every 30 seconds
   }
@@ -390,7 +392,7 @@ class PerformanceMonitorService {
       });
     }
 
-    console.log('[Performance] Metrics reported:', summary);
+    logger.log('[Performance] Metrics reported:', summary);
   }
 
   // Monitor React component performance
@@ -398,7 +400,7 @@ class PerformanceMonitorService {
     this.recordMetric(`component-render-${componentName}`, renderTime);
     
     if (renderTime > 16) { // Longer than one frame
-      console.warn(`[Performance] Slow component render: ${componentName} (${renderTime.toFixed(2)}ms)`);
+      logger.warn(`[Performance] Slow component render: ${componentName} (${renderTime.toFixed(2)}ms)`);
     }
   }
 
@@ -411,7 +413,7 @@ class PerformanceMonitorService {
     }
     
     if (duration > 5000) {
-      console.warn(`[Performance] Slow API call: ${endpoint} (${duration.toFixed(2)}ms)`);
+      logger.warn(`[Performance] Slow API call: ${endpoint} (${duration.toFixed(2)}ms)`);
     }
   }
 
@@ -420,7 +422,7 @@ class PerformanceMonitorService {
     this.recordMetric(`interaction-${type}`, duration);
     
     if (duration > 100) {
-      console.warn(`[Performance] Slow interaction: ${type} (${duration.toFixed(2)}ms)`);
+      logger.warn(`[Performance] Slow interaction: ${type} (${duration.toFixed(2)}ms)`);
     }
   }
 

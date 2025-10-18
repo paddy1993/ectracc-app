@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import logger from '../utils/logger';
 
 const STORAGE_KEY = 'ectracc-search-history';
 const MAX_HISTORY_ITEMS = 10;
@@ -17,7 +18,7 @@ export function useSearchHistory() {
         }
       }
     } catch (error) {
-      console.warn('Failed to load search history:', error);
+      logger.warn('Failed to load search history:', error);
     }
   }, []);
 
@@ -26,7 +27,7 @@ export function useSearchHistory() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
     } catch (error) {
-      console.warn('Failed to save search history:', error);
+      logger.warn('Failed to save search history:', error);
     }
   }, [history]);
 

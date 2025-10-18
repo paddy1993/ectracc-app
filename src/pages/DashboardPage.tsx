@@ -40,6 +40,7 @@ import userFootprintApi, { UserFootprintEntry, UserFootprintSummary, UserFootpri
 import carbonApi from '../services/carbonApi';
 import analytics, { EVENTS } from '../services/analytics';
 import SkeletonLoader from '../components/SkeletonLoader';
+import logger from '../utils/logger';
 // ProfileSetupModal removed - users go directly to dashboard
 import { 
   useOptimizedApiCall, 
@@ -283,7 +284,7 @@ export default function DashboardPage() {
         const performanceCached = performanceCache.get(cacheKey);
         
         if (performanceCached) {
-          console.log('⚡ Using performance cached dashboard data');
+          logger.log('⚡ Using performance cached dashboard data');
           setSummary(performanceCached.summaryData);
           setRecentEntries(performanceCached.entriesData || []);
           setHistoryData(performanceCached.historyDataResult || []);
@@ -335,7 +336,7 @@ export default function DashboardPage() {
 
         const loadTime = Date.now() - startTime;
         if (loadTime > 1000) {
-          console.log(`⚠️ Dashboard loaded slowly: ${loadTime}ms`);
+          logger.log(`⚠️ Dashboard loaded slowly: ${loadTime}ms`);
         }
         
         // Cache the loaded data in both caches
@@ -393,7 +394,7 @@ export default function DashboardPage() {
         
         // Retry logic for transient errors
         if (retryCount < 2 && !error.message?.includes('Authorization')) {
-          console.log(`Retrying dashboard load (attempt ${retryCount + 1}/3)...`);
+          logger.log(`Retrying dashboard load (attempt ${retryCount + 1}/3)...`);
           setTimeout(() => {
             setRetryCount(prev => prev + 1);
             // Trigger a reload by changing a state that will cause useEffect to re-run

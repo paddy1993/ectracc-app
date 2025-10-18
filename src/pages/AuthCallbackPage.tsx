@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { supabase } from '../services/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import logger from '../utils/logger';
 
 export default function AuthCallbackPage() {
   const navigate = useNavigate();
@@ -20,14 +21,14 @@ export default function AuthCallbackPage() {
 
   const handleAuthCallback = async (isRetry = false) => {
     try {
-      console.log('🔄 Handling auth callback...', { isRetry, retryCount });
+      logger.log('🔄 Handling auth callback...', { isRetry, retryCount });
       
       // For mobile browsers, try to get session from URL first
       const urlParams = new URLSearchParams(window.location.search);
       const urlHash = window.location.hash;
       
-      console.log('📱 URL params:', urlParams.toString());
-      console.log('📱 URL hash:', urlHash);
+      logger.log('📱 URL params:', urlParams.toString());
+      logger.log('📱 URL hash:', urlHash);
       
       // Check for OAuth errors in URL
       if (urlParams.get('error')) {
@@ -46,7 +47,7 @@ export default function AuthCallbackPage() {
         
         // Retry logic for mobile browsers
         if (retryCount < 3 && !isRetry) {
-          console.log('🔄 Retrying auth callback...');
+          logger.log('🔄 Retrying auth callback...');
           setRetryCount(prev => prev + 1);
           setTimeout(() => handleAuthCallback(true), 1000);
           return;
@@ -58,7 +59,7 @@ export default function AuthCallbackPage() {
       }
 
       if (data.session) {
-        console.log('✅ OAuth successful, session found');
+        logger.log('✅ OAuth successful, session found');
         
         // Wait longer for auth context to update on mobile
         const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -66,11 +67,11 @@ export default function AuthCallbackPage() {
         
         setTimeout(() => {
           // Always redirect to dashboard - profile setup questionnaire removed
-          console.log('🏠 Redirecting to dashboard (profile setup questionnaire disabled)');
+          logger.log('🏠 Redirecting to dashboard (profile setup questionnaire disabled)');
           navigate('/dashboard', { replace: true });
         }, waitTime);
       } else {
-        console.log('❌ No session found, redirecting to login');
+        logger.log('❌ No session found, redirecting to login');
         navigate('/login', { replace: true });
       }
     } catch (error: any) {
@@ -78,7 +79,7 @@ export default function AuthCallbackPage() {
       
       // Retry logic
       if (retryCount < 3) {
-        console.log('🔄 Retrying due to error...');
+        logger.log('🔄 Retrying due to error...');
         setRetryCount(prev => prev + 1);
         setTimeout(() => handleAuthCallback(true), 1000);
         return;

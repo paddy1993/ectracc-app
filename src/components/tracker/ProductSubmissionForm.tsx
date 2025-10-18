@@ -22,6 +22,7 @@ import {
   Send as SubmitIcon
 } from '@mui/icons-material';
 import pendingProductApi, { PendingProductSubmission } from '../../services/pendingProductApi';
+import logger from '../../utils/logger';
 
 interface ProductSubmissionFormProps {
   open: boolean;
@@ -99,7 +100,7 @@ const ProductSubmissionForm: React.FC<ProductSubmissionFormProps> = ({
     setError(null);
 
     try {
-      console.log('Submitting product with carbon footprint (kg):', formData.carbon_footprint);
+      logger.log('Submitting product with carbon footprint (kg):', formData.carbon_footprint);
       
       const submission: PendingProductSubmission = {
         product_name: formData.product_name,

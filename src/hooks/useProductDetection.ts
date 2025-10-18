@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import productApi from '../services/productApi';
 import pendingProductApi from '../services/pendingProductApi';
+import logger from '../utils/logger';
 
 interface ProductDetectionResult {
   exists: boolean;
@@ -34,14 +35,14 @@ export const useProductDetection = () => {
     }));
 
     try {
-      console.log('🔍 [PRODUCT DETECTION] Checking product:', productName, barcode);
+      logger.log('🔍 [PRODUCT DETECTION] Checking product:', productName, barcode);
 
       // First, check if product exists by barcode
       if (barcode) {
         try {
           const barcodeResult = await productApi.getProductByBarcode(barcode);
           if (barcodeResult.success && barcodeResult.data) {
-            console.log('✅ [PRODUCT DETECTION] Found product by barcode:', barcodeResult.data.product_name);
+            logger.log('✅ [PRODUCT DETECTION] Found product by barcode:', barcodeResult.data.product_name);
             setDetectionResult({
               exists: true,
               product: barcodeResult.data,
@@ -51,7 +52,7 @@ export const useProductDetection = () => {
             return;
           }
         } catch (error) {
-          console.log('📝 [PRODUCT DETECTION] Product not found by barcode, checking by name');
+          logger.log('📝 [PRODUCT DETECTION] Product not found by barcode, checking by name');
         }
       }
 
@@ -75,7 +76,7 @@ export const useProductDetection = () => {
           const foundProduct = exactMatch || closeMatch;
           
           if (foundProduct) {
-            console.log('✅ [PRODUCT DETECTION] Found product by name:', foundProduct.product_name);
+            logger.log('✅ [PRODUCT DETECTION] Found product by name:', foundProduct.product_name);
             setDetectionResult({
               exists: true,
               product: foundProduct,
@@ -86,14 +87,14 @@ export const useProductDetection = () => {
           }
         }
       } catch (error) {
-        console.log('📝 [PRODUCT DETECTION] Product not found by name search');
+        logger.log('📝 [PRODUCT DETECTION] Product not found by name search');
       }
 
       // Check if user has already submitted this product
       try {
         const pendingCheck = await pendingProductApi.checkProductExists(barcode, productName);
         if (pendingCheck.exists && pendingCheck.pendingSubmission) {
-          console.log('⏳ [PRODUCT DETECTION] Found pending submission:', pendingCheck.pendingSubmission.id);
+          logger.log('⏳ [PRODUCT DETECTION] Found pending submission:', pendingCheck.pendingSubmission.id);
           setDetectionResult({
             exists: true,
             pendingSubmission: pendingCheck.pendingSubmission,
@@ -103,11 +104,11 @@ export const useProductDetection = () => {
           return;
         }
       } catch (error) {
-        console.log('📝 [PRODUCT DETECTION] No pending submissions found');
+        logger.log('📝 [PRODUCT DETECTION] No pending submissions found');
       }
 
       // Product not found anywhere
-      console.log('❌ [PRODUCT DETECTION] Product not found:', productName);
+      logger.log('❌ [PRODUCT DETECTION] Product not found:', productName);
       setDetectionResult({
         exists: false,
         isLoading: false,

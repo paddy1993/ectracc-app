@@ -1,4 +1,5 @@
 import mixpanel from 'mixpanel-browser';
+import logger from '../utils/logger';
 
 // Analytics configuration
 const MIXPANEL_TOKEN = process.env.REACT_APP_MIXPANEL_TOKEN;
@@ -20,9 +21,9 @@ if (MIXPANEL_TOKEN) {
     autocapture: true, // Enable autocapture as per Mixpanel instructions
     record_sessions_percent: 100 // Enable session recording
   });
-  console.log('🔍 Mixpanel initialized with token:', MIXPANEL_TOKEN?.substring(0, 8) + '...');
+  logger.log('🔍 Mixpanel initialized with token:', MIXPANEL_TOKEN?.substring(0, 8) + '...');
 } else {
-  console.warn('Mixpanel token not found. Analytics tracking disabled.');
+  logger.warn('Mixpanel token not found. Analytics tracking disabled.');
 }
 
 // Event names - centralized for consistency
@@ -80,16 +81,16 @@ class AnalyticsService {
     this.isEnabled = !!MIXPANEL_TOKEN;
     
     if (this.isEnabled) {
-      console.log('🔍 Analytics tracking enabled');
+      logger.log('🔍 Analytics tracking enabled');
     } else {
-      console.log('🔍 Analytics tracking disabled - missing token');
+      logger.log('🔍 Analytics tracking disabled - missing token');
     }
   }
 
   // Track events
   track(eventName: string, properties?: Record<string, any>) {
     if (!this.isEnabled) {
-      console.log(`📊 [Analytics] ${eventName}`, properties);
+      logger.log(`📊 [Analytics] ${eventName}`, properties);
       return;
     }
 
@@ -105,7 +106,7 @@ class AnalyticsService {
       };
 
       mixpanel.track(eventName, enrichedProperties);
-      console.log(`📊 [Analytics] ${eventName}`, enrichedProperties);
+      logger.log(`📊 [Analytics] ${eventName}`, enrichedProperties);
     } catch (error) {
       console.error('Analytics tracking error:', error);
     }
@@ -132,7 +133,7 @@ class AnalyticsService {
       } else {
         mixpanel.opt_out_tracking();
       }
-      console.log(`📊 [Analytics] Tracking consent: ${consented ? 'granted' : 'denied'}`);
+      logger.log(`📊 [Analytics] Tracking consent: ${consented ? 'granted' : 'denied'}`);
     } catch (error) {
       console.error('Analytics consent error:', error);
     }
@@ -153,7 +154,7 @@ class AnalyticsService {
   // Identify user
   identify(userId: string, userProperties?: Record<string, any>) {
     if (!this.isEnabled) {
-      console.log(`👤 [Analytics] Identify user: ${userId}`, userProperties);
+      logger.log(`👤 [Analytics] Identify user: ${userId}`, userProperties);
       return;
     }
 
@@ -164,7 +165,7 @@ class AnalyticsService {
         this.setUserProperties(userProperties);
       }
       
-      console.log(`👤 [Analytics] User identified: ${userId}`);
+      logger.log(`👤 [Analytics] User identified: ${userId}`);
     } catch (error) {
       console.error('Analytics identify error:', error);
     }
@@ -173,13 +174,13 @@ class AnalyticsService {
   // Set user properties
   setUserProperties(properties: Record<string, any>) {
     if (!this.isEnabled) {
-      console.log('👤 [Analytics] Set user properties:', properties);
+      logger.log('👤 [Analytics] Set user properties:', properties);
       return;
     }
 
     try {
       mixpanel.people.set(properties);
-      console.log('👤 [Analytics] User properties set:', properties);
+      logger.log('👤 [Analytics] User properties set:', properties);
     } catch (error) {
       console.error('Analytics user properties error:', error);
     }
@@ -188,7 +189,7 @@ class AnalyticsService {
   // Increment user properties
   incrementUserProperty(property: string, value: number = 1) {
     if (!this.isEnabled) {
-      console.log(`👤 [Analytics] Increment ${property} by ${value}`);
+      logger.log(`👤 [Analytics] Increment ${property} by ${value}`);
       return;
     }
 
@@ -285,13 +286,13 @@ class AnalyticsService {
   // Reset user (for logout)
   reset() {
     if (!this.isEnabled) {
-      console.log('👤 [Analytics] User reset');
+      logger.log('👤 [Analytics] User reset');
       return;
     }
 
     try {
       mixpanel.reset();
-      console.log('👤 [Analytics] User session reset');
+      logger.log('👤 [Analytics] User session reset');
     } catch (error) {
       console.error('Analytics reset error:', error);
     }

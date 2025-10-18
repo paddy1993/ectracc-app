@@ -26,6 +26,7 @@ import ExportActions from '../components/history/ExportActions';
 import HistoryEntry from '../components/history/HistoryEntry';
 import HistoryFilters, { HistoryFilters as FilterType } from '../components/history/HistoryFilters';
 import EmptyState from '../components/ui/EmptyState';
+import logger from '../utils/logger';
 
 export default function HistoryPage() {
   const navigate = useNavigate();
@@ -258,12 +259,12 @@ export default function HistoryPage() {
 
   const handleChartExport = () => {
     // Implementation for chart export
-    console.log('Chart export requested');
+    logger.log('Chart export requested');
   };
 
   const handleChartShare = () => {
     // Implementation for chart sharing
-    console.log('Chart share requested');
+    logger.log('Chart share requested');
   };
 
   if (loading) {

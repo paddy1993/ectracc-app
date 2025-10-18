@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../services/supabase';
+import logger from '../utils/logger';
 
 interface AdminAuthState {
   isAdmin: boolean;
@@ -30,7 +31,7 @@ export const useAdminAuth = () => {
       }
 
       try {
-        console.log('🔍 [ADMIN AUTH] Checking admin status for user:', user.id);
+        logger.log('🔍 [ADMIN AUTH] Checking admin status for user:', user.id);
 
         const { data: profile, error } = await supabase
           .from('profiles')
@@ -49,7 +50,7 @@ export const useAdminAuth = () => {
         }
 
         const isAdmin = profile?.is_admin === true;
-        console.log(`✅ [ADMIN AUTH] Admin status for user ${user.id}: ${isAdmin}`);
+        logger.log(`✅ [ADMIN AUTH] Admin status for user ${user.id}: ${isAdmin}`);
 
         setAdminState({
           isAdmin,
@@ -82,7 +83,7 @@ export const useRequireAdmin = () => {
 
   useEffect(() => {
     if (!isLoading && !isAdmin && isAuthenticated) {
-      console.log('❌ [REQUIRE ADMIN] Access denied - user is not an admin');
+      logger.log('❌ [REQUIRE ADMIN] Access denied - user is not an admin');
       // Could redirect to unauthorized page or show error
     }
   }, [isAdmin, isLoading, isAuthenticated]);

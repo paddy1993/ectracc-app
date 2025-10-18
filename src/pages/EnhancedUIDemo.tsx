@@ -28,6 +28,7 @@ import {
 import EnhancedKPICard from '../components/ui/EnhancedKPICard';
 import EnhancedBottomTabs from '../components/layout/EnhancedBottomTabs';
 import OnboardingFlow from '../components/onboarding/OnboardingFlow';
+import logger from '../utils/logger';
 
 export default function EnhancedUIDemo() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -165,7 +166,7 @@ export default function EnhancedUIDemo() {
                   if (enableHaptics && 'vibrate' in navigator) {
                     navigator.vibrate(10);
                   }
-                  console.log(`Clicked ${kpi.label}`);
+                  logger.log(`Clicked ${kpi.label}`);
                 }}
               />
             </Grid>
@@ -329,7 +330,7 @@ export default function EnhancedUIDemo() {
           enableGestures={true}
           showLabels={true}
           onTabChange={(index, path) => {
-            console.log(`Tab changed to: ${path} (index: ${index})`);
+            logger.log(`Tab changed to: ${path} (index: ${index})`);
           }}
         />
       )}

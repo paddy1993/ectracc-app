@@ -32,6 +32,7 @@ import { TransitionProps } from '@mui/material/transitions';
 import { Person, PhotoCamera, CheckCircle } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import analytics, { EVENTS, USER_PROPERTIES } from '../services/analytics';
+import logger from '../utils/logger';
 
 interface ProfileSetupForm {
   display_name: string;
@@ -97,7 +98,7 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
   };
 
   const handleSubmit = async () => {
-    console.log('🔄 [PROFILE MODAL] Starting profile submission...');
+    logger.log('🔄 [PROFILE MODAL] Starting profile submission...');
     
     if (!user) {
       console.error('❌ [PROFILE MODAL] No user found');
@@ -122,7 +123,7 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
         // Note: country and sustainability_goal removed until table schema is updated
       };
 
-      console.log('📝 [PROFILE MODAL] Updating profile with data:', profileData);
+      logger.log('📝 [PROFILE MODAL] Updating profile with data:', profileData);
       const { error: updateError } = await updateProfile(profileData);
       
       if (updateError) {
@@ -131,7 +132,7 @@ export default function ProfileSetupModal({ open, onClose }: ProfileSetupModalPr
         return;
       }
 
-      console.log('✅ [PROFILE MODAL] Profile updated successfully!');
+      logger.log('✅ [PROFILE MODAL] Profile updated successfully!');
       
       // Track profile completion
       analytics.track(EVENTS.PROFILE_COMPLETED, {

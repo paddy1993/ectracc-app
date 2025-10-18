@@ -1,3 +1,5 @@
+import logger from '../utils/logger';
+
 // Push Notification Service for ECTRACC PWA
 class NotificationService {
   private vapidPublicKey = process.env.REACT_APP_VAPID_PUBLIC_KEY || '';
@@ -8,19 +10,19 @@ class NotificationService {
     try {
       // Check if notifications are supported
       if (!('Notification' in window)) {
-        console.log('This browser does not support notifications');
+        logger.log('This browser does not support notifications');
         return false;
       }
 
       // Check if service worker is supported
       if (!('serviceWorker' in navigator)) {
-        console.log('This browser does not support service workers');
+        logger.log('This browser does not support service workers');
         return false;
       }
 
       // Check if push messaging is supported
       if (!('PushManager' in window)) {
-        console.log('This browser does not support push messaging');
+        logger.log('This browser does not support push messaging');
         return false;
       }
 
@@ -35,7 +37,7 @@ class NotificationService {
   async requestPermission(): Promise<NotificationPermission> {
     try {
       const permission = await Notification.requestPermission();
-      console.log('Notification permission:', permission);
+      logger.log('Notification permission:', permission);
       return permission;
     } catch (error) {
       console.error('Error requesting notification permission:', error);
@@ -214,7 +216,7 @@ class NotificationService {
   private async sendSubscriptionToServer(subscription: PushSubscription): Promise<void> {
     try {
       // In production, send to your backend API
-      console.log('Sending subscription to server:', subscription);
+      logger.log('Sending subscription to server:', subscription);
       
       // Mock API call
       const response = await fetch('/api/notifications/subscribe', {
@@ -232,7 +234,7 @@ class NotificationService {
         throw new Error('Failed to send subscription to server');
       }
     } catch (error) {
-      console.log('Mock subscription sent (backend not implemented):', error);
+      logger.log('Mock subscription sent (backend not implemented):', error);
     }
   }
 
@@ -240,7 +242,7 @@ class NotificationService {
   private async removeSubscriptionFromServer(): Promise<void> {
     try {
       // In production, send to your backend API
-      console.log('Removing subscription from server');
+      logger.log('Removing subscription from server');
       
       // Mock API call
       const response = await fetch('/api/notifications/unsubscribe', {
@@ -257,7 +259,7 @@ class NotificationService {
         throw new Error('Failed to remove subscription from server');
       }
     } catch (error) {
-      console.log('Mock subscription removed (backend not implemented):', error);
+      logger.log('Mock subscription removed (backend not implemented):', error);
     }
   }
 

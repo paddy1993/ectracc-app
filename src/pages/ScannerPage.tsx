@@ -18,6 +18,7 @@ import {
 import CameraScanner from '../components/CameraScanner';
 import productApi from '../services/productApi';
 import notificationService from '../services/notificationService';
+import logger from '../utils/logger';
 
 const ScannerPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const ScannerPage: React.FC = () => {
     setIsScanning(false); // Stop the scanner UI
     
     try {
-      console.log('🔍 Scanned barcode:', barcode);
+      logger.log('🔍 Scanned barcode:', barcode);
       
       // Additional haptic feedback for successful scan
       if ('vibrate' in navigator) {
@@ -47,7 +48,7 @@ const ScannerPage: React.FC = () => {
       
       if (response.success && response.data) {
         setScannedProduct(response.data);
-        console.log('✅ Product found:', response.data.product_name);
+        logger.log('✅ Product found:', response.data.product_name);
         
         // Show success notification
         // TODO: Fix notification service templates
@@ -59,7 +60,7 @@ const ScannerPage: React.FC = () => {
         //   }
         // );
       } else {
-        console.log('❌ Product not found for barcode:', barcode);
+        logger.log('❌ Product not found for barcode:', barcode);
         setError('Product not found in our database. Try scanning again or search manually.');
       }
     } catch (err) {

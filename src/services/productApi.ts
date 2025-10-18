@@ -1,5 +1,6 @@
 import { Product, ProductSearchParams, ProductSearchResult, ProductStats } from '../types';
 import offlineStorage from './offlineStorage';
+import logger from '../utils/logger';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://ectracc-backend.onrender.com/api';
 
@@ -72,7 +73,7 @@ class ProductApiService {
   // Helper method to make API requests to real MongoDB backend with timeout
   private async makeRequest<T>(endpoint: string, options?: RequestInit, timeout: number = 8000, externalSignal?: AbortSignal): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    console.log(`🌐 Real API call: ${url}`);
+    logger.log(`🌐 Real API call: ${url}`);
     
     try {
       const controller = new AbortController();
@@ -151,14 +152,14 @@ class ProductApiService {
     // Check in-memory cache first
     const cachedEntry = this.searchCache.get(cacheKey);
     if (cachedEntry && this.isCacheValid(cachedEntry.timestamp, this.CACHE_TTL)) {
-      console.log('🚀 Using cached search results');
+      logger.log('🚀 Using cached search results');
       return cachedEntry.data;
     }
 
     // Check if there's already a pending request for this search
     const pendingRequest = this.pendingRequests.get(cacheKey);
     if (pendingRequest) {
-      console.log('⏳ Using pending request (deduplication)');
+      logger.log('⏳ Using pending request (deduplication)');
       return pendingRequest;
     }
 
@@ -174,7 +175,7 @@ class ProductApiService {
       sortBy: params.sortBy || 'relevance'
     });
 
-    console.log('🌐 Fetching fresh search results');
+    logger.log('🌐 Fetching fresh search results');
     
     // Create the request promise (increased timeout for search)
     const requestPromise = this.makeRequest<any>(`/products/search?${queryString}`, {}, 15000, this.currentSearchController.signal)
@@ -355,11 +356,11 @@ class ProductApiService {
 
   // Get product categories with caching
   async getCategories(): Promise<string[]> {
-    console.log('🌐 Fetching categories');
+    logger.log('🌐 Fetching categories');
     
     try {
       const response = await this.makeRequest<any>('/products/categories');
-      console.log('📦 Raw categories response:', response);
+      logger.log('📦 Raw categories response:', response);
       
       const categories = response.data
         ?.map((item: any) => item.category || item)
@@ -370,7 +371,7 @@ class ProductApiService {
           category.trim() !== ''
         ) || [];
       
-      console.log('✅ Processed categories:', categories.slice(0, 10), `(${categories.length} total)`);
+      logger.log('✅ Processed categories:', categories.slice(0, 10), `(${categories.length} total)`);
       
       return categories;
     } catch (error: any) {
@@ -381,11 +382,11 @@ class ProductApiService {
 
   // Get product brands with caching
   async getBrands(): Promise<string[]> {
-    console.log('🌐 Fetching brands');
+    logger.log('🌐 Fetching brands');
 
     try {
       const response = await this.makeRequest<any>('/products/brands');
-      console.log('📦 Raw brands response:', response);
+      logger.log('📦 Raw brands response:', response);
       
       const brands = response.data
         ?.map((item: any) => item.brand || item)
@@ -395,7 +396,7 @@ class ProductApiService {
           brand.trim() !== ''
         ) || [];
       
-      console.log('✅ Processed brands:', brands.slice(0, 10), `(${brands.length} total)`);
+      logger.log('✅ Processed brands:', brands.slice(0, 10), `(${brands.length} total)`);
       
       return brands;
     } catch (error: any) {

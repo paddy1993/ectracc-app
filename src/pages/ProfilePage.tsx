@@ -52,6 +52,7 @@ interface ProfileEditForm {
 import { useApp } from '../contexts/AppContext';
 import { APP_VERSION } from '../constants';
 import OfflineSyncManager, { getAppEnvironment, isStandalone } from '../utils/offlineSync';
+import logger from '../utils/logger';
 
 const sustainabilityGoals = [
   'Learn about the carbon footprint of products I buy',
@@ -104,7 +105,7 @@ export default function ProfilePage() {
     setError(null);
 
     try {
-      console.log('🔄 [PROFILE PAGE] Submitting profile update:', {
+      logger.log('🔄 [PROFILE PAGE] Submitting profile update:', {
         display_name: editData.display_name.trim()
       });
       
@@ -130,7 +131,7 @@ export default function ProfilePage() {
         return;
       }
 
-      console.log('✅ [PROFILE PAGE] Profile updated successfully');
+      logger.log('✅ [PROFILE PAGE] Profile updated successfully');
       setEditDialogOpen(false);
     } catch (error: any) {
       console.error('❌ [PROFILE PAGE] Exception during profile update:', error);

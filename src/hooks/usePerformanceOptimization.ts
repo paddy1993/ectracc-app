@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import logger from '../utils/logger';
 
 // Performance cache with TTL
 class PerformanceCache {
@@ -216,7 +217,7 @@ export const usePrefetch = () => {
         prefetchedData.current.delete(key);
       }, ttl);
     } catch (error) {
-      console.warn(`Prefetch failed for ${key}:`, error);
+      logger.warn(`Prefetch failed for ${key}:`, error);
     }
   }, []);
 

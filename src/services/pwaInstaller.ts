@@ -1,4 +1,6 @@
 // PWA Installation Service
+import logger from '../utils/logger';
+
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
   readonly userChoice: Promise<{
@@ -65,7 +67,7 @@ class PWAInstallerService {
                              document.referrer.includes('android-app://') ||
                              window.location.search.includes('utm_source=pwa');
 
-    console.log('[PWA] Installation state:', {
+    logger.log('[PWA] Installation state:', {
       isStandalone: this.state.isStandalone,
       isInstalled: this.state.isInstalled,
       platform: this.state.platform
@@ -76,7 +78,7 @@ class PWAInstallerService {
   private setupEventListeners() {
     // Listen for beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('[PWA] Before install prompt triggered');
+      logger.log('[PWA] Before install prompt triggered');
       e.preventDefault(); // Prevent automatic prompt
       
       this.state.installPromptEvent = e as BeforeInstallPromptEvent;
@@ -88,7 +90,7 @@ class PWAInstallerService {
 
     // Listen for app installed event
     window.addEventListener('appinstalled', () => {
-      console.log('[PWA] App installed successfully');
+      logger.log('[PWA] App installed successfully');
       
       this.state.isInstalled = true;
       this.state.canInstall = false;
@@ -123,7 +125,7 @@ class PWAInstallerService {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistration().then(registration => {
         if (registration) {
-          console.log('[PWA] Service worker registered, app is installable');
+          logger.log('[PWA] Service worker registered, app is installable');
         }
       });
     }
@@ -132,7 +134,7 @@ class PWAInstallerService {
   // Trigger installation prompt
   async triggerInstall(): Promise<boolean> {
     if (!this.state.canInstall) {
-      console.warn('[PWA] Cannot install: not installable');
+      logger.warn('[PWA] Cannot install: not installable');
       return false;
     }
 
@@ -144,7 +146,7 @@ class PWAInstallerService {
         // Wait for user choice
         const choiceResult = await this.state.installPromptEvent.userChoice;
         
-        console.log('[PWA] User choice:', choiceResult.outcome);
+        logger.log('[PWA] User choice:', choiceResult.outcome);
         
         if (choiceResult.outcome === 'accepted') {
           this.trackInstallation('prompt-accepted');
@@ -293,7 +295,7 @@ class PWAInstallerService {
           await registration.update();
           
           if (registration.waiting) {
-            console.log('[PWA] Update available');
+            logger.log('[PWA] Update available');
             
             // Dispatch update available event
             window.dispatchEvent(new CustomEvent('pwa-update-available', {

@@ -1,5 +1,6 @@
 import { supabase, TABLES, AUTH_CONFIG } from './supabase';
 import { User, UserProfile } from '../types';
+import logger from '../utils/logger';
 
 export class AuthService {
   // Sign up with email and password
@@ -44,8 +45,8 @@ export class AuthService {
   // Sign in with Google OAuth
   static async signInWithGoogle() {
     try {
-      console.log('🔄 Starting Google OAuth sign-in...');
-      console.log('📍 Redirect URL:', AUTH_CONFIG.redirectTo);
+      logger.log('🔄 Starting Google OAuth sign-in...');
+      logger.log('📍 Redirect URL:', AUTH_CONFIG.redirectTo);
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -61,7 +62,7 @@ export class AuthService {
         return { user: null, error: error.message };
       }
 
-      console.log('✅ Google OAuth initiated successfully');
+      logger.log('✅ Google OAuth initiated successfully');
       // OAuth redirect - user will be null initially
       return { user: null, error: null };
     } catch (error: any) {
@@ -161,8 +162,8 @@ export class AuthService {
   // Update user profile
   static async updateUserProfile(userId: string, updates: Partial<UserProfile>) {
     try {
-      console.log('🔄 [AUTH SERVICE] Updating profile for user:', userId);
-      console.log('📝 [AUTH SERVICE] Updates:', updates);
+      logger.log('🔄 [AUTH SERVICE] Updating profile for user:', userId);
+      logger.log('📝 [AUTH SERVICE] Updates:', updates);
       
       // Map full_name to display_name for database compatibility
       const dbUpdates: any = { ...updates };
@@ -171,7 +172,7 @@ export class AuthService {
         delete dbUpdates.full_name;
       }
       
-      console.log('📝 [AUTH SERVICE] Mapped updates for database:', dbUpdates);
+      logger.log('📝 [AUTH SERVICE] Mapped updates for database:', dbUpdates);
       
       // First, try to update existing profile
       const { data: updateData, error: updateError } = await supabase
@@ -183,7 +184,7 @@ export class AuthService {
 
       if (updateError && updateError.code === 'PGRST116') {
         // Profile doesn't exist, create it
-        console.log('📝 [AUTH SERVICE] Profile not found, creating new profile');
+        logger.log('📝 [AUTH SERVICE] Profile not found, creating new profile');
         const { data: insertData, error: insertError} = await supabase
           .from(TABLES.PROFILES)
           .insert({ 
@@ -211,7 +212,7 @@ export class AuthService {
           return { profile: null, error: insertError.message };
         }
 
-        console.log('✅ [AUTH SERVICE] Profile created successfully');
+        logger.log('✅ [AUTH SERVICE] Profile created successfully');
         
         // Map display_name back to full_name for frontend compatibility
         if (insertData && insertData.display_name !== undefined) {
@@ -240,7 +241,7 @@ export class AuthService {
         return { profile: null, error: updateError.message };
       }
 
-      console.log('✅ [AUTH SERVICE] Profile updated successfully');
+      logger.log('✅ [AUTH SERVICE] Profile updated successfully');
       
       // Map display_name back to full_name for frontend compatibility
       if (updateData && updateData.display_name !== undefined) {

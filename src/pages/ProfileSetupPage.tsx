@@ -37,6 +37,7 @@ interface ProfileSetupForm {
 }
 import analytics, { EVENTS, USER_PROPERTIES } from '../services/analytics';
 import { APP_NAME } from '../constants';
+import logger from '../utils/logger';
 
 const sustainabilityGoals = [
   'Learn about the carbon footprint of products I buy',
@@ -274,7 +275,7 @@ export default function ProfileSetupPage() {
 
   // Profile setup questionnaire disabled - always redirect to dashboard
   React.useEffect(() => {
-    console.log('🔍 [PROFILE SETUP] Profile setup questionnaire disabled, redirecting to dashboard');
+    logger.log('🔍 [PROFILE SETUP] Profile setup questionnaire disabled, redirecting to dashboard');
     navigate('/dashboard', { replace: true });
   }, [navigate]);
 
@@ -331,7 +332,7 @@ export default function ProfileSetupPage() {
   };
 
   const handleSubmit = async () => {
-    console.log('🔄 [PROFILE SETUP] handleSubmit called');
+    logger.log('🔄 [PROFILE SETUP] handleSubmit called');
     
     if (!user) {
       console.error('❌ [PROFILE SETUP] No user found');
@@ -349,7 +350,7 @@ export default function ProfileSetupPage() {
       return;
     }
 
-    console.log('✅ [PROFILE SETUP] Starting profile submission...');
+    logger.log('✅ [PROFILE SETUP] Starting profile submission...');
     setIsSubmitting(true);
     setError(null);
 
@@ -362,7 +363,7 @@ export default function ProfileSetupPage() {
         avatar_url: avatarUrl || undefined
       };
 
-      console.log('📝 [PROFILE SETUP] Updating profile with data:', profileData);
+      logger.log('📝 [PROFILE SETUP] Updating profile with data:', profileData);
       const { error: updateError } = await updateProfile(profileData);
       
       if (updateError) {
@@ -371,7 +372,7 @@ export default function ProfileSetupPage() {
         return;
       }
 
-      console.log('✅ [PROFILE SETUP] Profile updated successfully!');
+      logger.log('✅ [PROFILE SETUP] Profile updated successfully!');
       
       // Track profile completion
       analytics.track(EVENTS.PROFILE_COMPLETED, {
@@ -389,7 +390,7 @@ export default function ProfileSetupPage() {
       localStorage.setItem('profileSetupCompleted', 'true');
       localStorage.setItem('profileSetupCompletedAt', Date.now().toString());
       
-      console.log('🎯 [PROFILE SETUP] Profile setup completed successfully! Navigating to dashboard...');
+      logger.log('🎯 [PROFILE SETUP] Profile setup completed successfully! Navigating to dashboard...');
       
       // Clear any existing error state
       setError(null);
@@ -397,13 +398,13 @@ export default function ProfileSetupPage() {
       
       // IMMEDIATE NAVIGATION: Navigate directly without waiting for context updates
       // This prevents race conditions with useEffect hooks
-      console.log('🚀 [PROFILE SETUP] Executing immediate navigation to dashboard');
+      logger.log('🚀 [PROFILE SETUP] Executing immediate navigation to dashboard');
       navigate('/dashboard', { replace: true });
       
       // Fallback: If React Router navigation fails, use window.location as backup
       setTimeout(() => {
         if (window.location.pathname !== '/dashboard') {
-          console.log('🔄 [PROFILE SETUP] React Router navigation may have failed, using window.location fallback');
+          logger.log('🔄 [PROFILE SETUP] React Router navigation may have failed, using window.location fallback');
           window.location.replace('/dashboard');
         }
       }, 2000);
@@ -435,7 +436,7 @@ export default function ProfileSetupPage() {
                   accept="image/*"
                   onChange={(e) => {
                     // Handle avatar upload (placeholder for now)
-                    console.log('Avatar upload:', e.target.files?.[0]);
+                    logger.log('Avatar upload:', e.target.files?.[0]);
                   }}
                 />
               </IconButton>
@@ -586,7 +587,7 @@ export default function ProfileSetupPage() {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  console.log('User chose to skip profile setup');
+                  logger.log('User chose to skip profile setup');
                   navigate('/dashboard', { replace: true });
                 }}
                 disabled={loading || isSubmitting}
@@ -597,7 +598,7 @@ export default function ProfileSetupPage() {
               <Button
                 variant="contained"
                 onClick={() => {
-                  console.log('🔘 Complete Setup button clicked!');
+                  logger.log('🔘 Complete Setup button clicked!');
                   alert('Complete Setup button clicked! Check console for details.');
                   handleSubmit();
                 }}

@@ -20,6 +20,7 @@ import jaJP from './locales/ja-JP.json';
 import zhCN from './locales/zh-CN.json';
 import koKR from './locales/ko-KR.json';
 import arSA from './locales/ar-SA.json';
+import logger from '../utils/logger';
 
 // Supported languages configuration
 export const supportedLanguages = {
@@ -341,7 +342,7 @@ export const convertUnits = (value: number, fromUnit: string, toUnit: string): n
     return value / reverseConversion;
   }
   
-  console.warn(`No conversion found from ${fromUnit} to ${toUnit}`);
+  logger.warn(`No conversion found from ${fromUnit} to ${toUnit}`);
   return value;
 };
 

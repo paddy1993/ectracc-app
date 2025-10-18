@@ -54,6 +54,7 @@ import productApi, { ProductApiService } from '../services/productApi';
 import { useApp } from '../contexts/AppContext';
 import analytics, { EVENTS } from '../services/analytics';
 import SkeletonLoader from '../components/SkeletonLoader';
+import logger from '../utils/logger';
 import { 
   useDebounce, 
   useOptimizedApiCall, 
@@ -240,14 +241,14 @@ export default function ProductSearchPage() {
 
       // Log performance metrics
       if (searchTime < 100) {
-        console.log('🚀 Fast search (likely cached):', searchTime + 'ms');
+        logger.log('🚀 Fast search (likely cached):', searchTime + 'ms');
       } else {
-        console.log('🌐 Network search:', searchTime + 'ms');
+        logger.log('🌐 Network search:', searchTime + 'ms');
       }
     } catch (error: any) {
       // Don't show error for cancelled requests (user typed new search)
       if (error.message === 'Request was cancelled') {
-        console.log('🔄 Search request cancelled (new search started)');
+        logger.log('🔄 Search request cancelled (new search started)');
         return;
       }
       

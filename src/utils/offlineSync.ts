@@ -1,5 +1,6 @@
 // Offline Sync Utilities for ECTRACC PWA
 import { TrackFootprintForm } from '../types';
+import logger from '../utils/logger';
 
 export class OfflineSyncManager {
   private static instance: OfflineSyncManager;
@@ -20,14 +21,14 @@ export class OfflineSyncManager {
 
   private setupOnlineListeners() {
     window.addEventListener('online', () => {
-      console.log('App is back online');
+      logger.log('App is back online');
       this.isOnline = true;
       this.notifyListeners();
       this.notifyServiceWorker();
     });
 
     window.addEventListener('offline', () => {
-      console.log('App is offline');
+      logger.log('App is offline');
       this.isOnline = false;
       this.notifyListeners();
     });
@@ -37,7 +38,7 @@ export class OfflineSyncManager {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data?.type === 'SYNC_SUCCESS') {
-          console.log('Background sync completed:', event.data);
+          logger.log('Background sync completed:', event.data);
           this.notifyListeners();
         }
       });
@@ -92,7 +93,7 @@ export class OfflineSyncManager {
         request.onerror = () => reject(request.error);
       });
       
-      console.log('[OfflineSync] Footprint queued for sync:', queueItem.id);
+      logger.log('[OfflineSync] Footprint queued for sync:', queueItem.id);
       
       // Register background sync if available
       await this.registerBackgroundSync();
@@ -136,7 +137,7 @@ export class OfflineSyncManager {
       try {
         const registration = await navigator.serviceWorker.ready;
         await (registration as any).sync.register('footprint-sync');
-        console.log('Background sync registered');
+        logger.log('Background sync registered');
       } catch (error) {
         console.error('Background sync registration failed:', error);
       }
@@ -147,7 +148,7 @@ export class OfflineSyncManager {
   showOfflineStatus(): void {
     if (!this.isOnline) {
       // You can integrate this with your app's notification system
-      console.log('App is in offline mode. Data will sync when connection is restored.');
+      logger.log('App is in offline mode. Data will sync when connection is restored.');
     }
   }
 }

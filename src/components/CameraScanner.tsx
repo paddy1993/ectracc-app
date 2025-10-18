@@ -8,6 +8,7 @@ import {
 import { useContinuousScanner } from '../hooks/useContinuousScanner';
 import ScannerOverlay from './scanner/ScannerOverlay';
 import ScannerControls from './scanner/ScannerControls';
+import logger from '../utils/logger';
 import {
   getOptimalCameraConstraints,
   analyzeCameraCapabilities,
@@ -44,7 +45,7 @@ const CameraScanner: React.FC<CameraScannerProps> = ({
   const handleBarcodeDetected = useCallback((barcode: string) => {
     // Validate the barcode
     if (!validateBarcode(barcode)) {
-      console.debug('Invalid barcode detected:', barcode);
+      logger.debug('Invalid barcode detected:', barcode);
       return;
     }
 
@@ -59,7 +60,7 @@ const CameraScanner: React.FC<CameraScannerProps> = ({
 
   // Handle scanning errors
   const handleScanError = useCallback((errorMessage: string) => {
-    console.debug('Scan error:', errorMessage);
+    logger.debug('Scan error:', errorMessage);
     // Don't show errors for common "not found" cases
     if (!errorMessage.includes('No MultiFormat Readers')) {
       setError(errorMessage);

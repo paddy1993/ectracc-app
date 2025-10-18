@@ -9,6 +9,7 @@ import {
 } from '../types';
 import { supabase } from './supabase';
 import OfflineSyncManager from '../utils/offlineSync';
+import logger from '../utils/logger';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://ectracc-backend.onrender.com/api';
 
@@ -25,7 +26,7 @@ class CarbonApiService {
   // Helper method to make API requests
   private async makeRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
     // For demo purposes, return mock data for missing endpoints
-    console.log(`Mock Carbon API call: ${endpoint}`);
+    logger.log(`Mock Carbon API call: ${endpoint}`);
     
     // Mock different endpoints
     if (endpoint.includes('/footprints/history')) {
@@ -91,7 +92,7 @@ class CarbonApiService {
       
       // Only use offline fallback if actually offline (not for validation/auth errors)
       if (!navigator.onLine) {
-        console.log('[CarbonAPI] User is offline, queueing for sync');
+        logger.log('[CarbonAPI] User is offline, queueing for sync');
         const offlineSync = OfflineSyncManager.getInstance();
         const queued = await offlineSync.queueFootprint(footprint);
         

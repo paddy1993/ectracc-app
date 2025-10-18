@@ -32,6 +32,7 @@ import {
 import { Product } from '../types';
 import productApi, { ProductApiService } from '../services/productApi';
 import AddToFootprintModal from '../components/AddToFootprintModal';
+import logger from '../utils/logger';
 
 // Helper functions for source display
 const getSourceIcon = (source: string): string => {
@@ -103,7 +104,7 @@ export default function ProductDetailPage() {
         const randomResult = await productApi.getRandomProducts(100);
         foundProduct = randomResult.data.find(p => p.id === productId);
       } catch (randomError) {
-        console.log('Random products failed, trying search approach');
+        logger.log('Random products failed, trying search approach');
       }
       
       // If not found in random products, try a broad search
@@ -112,7 +113,7 @@ export default function ProductDetailPage() {
           const searchResult = await productApi.searchProducts({ q: 'milk', limit: 100 });
           foundProduct = searchResult.data.find(p => p.id === productId);
         } catch (searchError) {
-          console.log('Search failed, trying another approach');
+          logger.log('Search failed, trying another approach');
         }
       }
       

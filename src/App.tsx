@@ -18,6 +18,7 @@ import performanceMonitor from './services/performanceMonitor';
 import optimisticUI from './services/optimisticUI';
 import pwaInstaller from './services/pwaInstaller';
 import { register as registerSW } from './services/serviceWorkerRegistration';
+import logger from './utils/logger';
 import './styles/mobile.css';
 import './styles/accessibility.css';
 
@@ -44,14 +45,14 @@ function ThemedApp() {
       // Register service worker
       registerSW({
         onSuccess: () => {
-          console.log('[PWA] Service worker registered successfully');
+          logger.log('[PWA] Service worker registered successfully');
           performanceMonitor.recordMetric('sw-registration', performance.now());
         },
         onUpdate: () => {
-          console.log('[PWA] New content available');
+          logger.log('[PWA] New content available');
         },
         onOfflineReady: () => {
-          console.log('[PWA] App ready for offline use');
+          logger.log('[PWA] App ready for offline use');
         }
       });
 
@@ -64,14 +65,14 @@ function ThemedApp() {
       // Initialize notifications
       const notificationsSupported = await notificationService.initialize();
       if (notificationsSupported) {
-        console.log('[Services] Notification service initialized');
+        logger.log('[Services] Notification service initialized');
         performanceMonitor.recordMetric('notifications-init', performance.now());
       }
 
       // Initialize offline storage
       const offlineSupported = await offlineStorage.initialize();
       if (offlineSupported) {
-        console.log('[Services] Offline storage initialized');
+        logger.log('[Services] Offline storage initialized');
         performanceMonitor.recordMetric('offline-storage-init', performance.now());
       }
 
@@ -79,7 +80,7 @@ function ThemedApp() {
       if (pwaInstaller.getState().isStandalone) {
         const persistent = await pwaInstaller.getStorageEstimate();
         if (persistent) {
-          console.log('[PWA] Storage estimate:', persistent);
+          logger.log('[PWA] Storage estimate:', persistent);
         }
       }
 
@@ -87,7 +88,7 @@ function ThemedApp() {
       performanceMonitor.markMilestone('app-init-end');
       const initTime = performanceMonitor.measureBetween('app-init-start', 'app-init-end', 'app-initialization');
       
-      console.log(`[Performance] App initialized in ${initTime.toFixed(2)}ms`);
+      logger.log(`[Performance] App initialized in ${initTime.toFixed(2)}ms`);
     };
 
     initializeServices();
@@ -95,7 +96,7 @@ function ThemedApp() {
 
   const handleInstallPrompt = () => {
     // Show success message after install
-    console.log('App installed successfully!');
+    logger.log('App installed successfully!');
   };
 
   const handleCloseError = () => {

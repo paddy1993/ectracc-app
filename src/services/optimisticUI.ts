@@ -1,4 +1,5 @@
 import { UserFootprintEntry } from './userFootprintApi';
+import logger from '../utils/logger';
 
 // Types for optimistic updates
 export interface OptimisticAction {
@@ -38,14 +39,14 @@ class OptimisticUIService {
   // Initialize network status listeners
   private initializeNetworkListeners() {
     window.addEventListener('online', () => {
-      console.log('[OptimisticUI] Back online');
+      logger.log('[OptimisticUI] Back online');
       this.state.isOnline = true;
       this.notifyListeners();
       this.syncPendingActions();
     });
 
     window.addEventListener('offline', () => {
-      console.log('[OptimisticUI] Gone offline');
+      logger.log('[OptimisticUI] Gone offline');
       this.state.isOnline = false;
       this.notifyListeners();
     });
@@ -226,7 +227,7 @@ class OptimisticUIService {
     this.notifyListeners();
 
     const pendingActions = this.getPendingActions();
-    console.log(`[OptimisticUI] Syncing ${pendingActions.length} pending actions`);
+    logger.log(`[OptimisticUI] Syncing ${pendingActions.length} pending actions`);
 
     for (const action of pendingActions) {
       await this.syncAction(action);

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { BrowserMultiFormatReader, Result } from '@zxing/library';
+import logger from '../utils/logger';
 
 interface UseBarcodeScanner {
   isScanning: boolean;
@@ -180,16 +181,16 @@ export function useBarcodeScanner(options: UseBarccodeScannerOptions = {}): UseB
   // Native scanner functions
   const startNativeScanner = useCallback(() => {
     if (isNativeWrapper && (window as any).nativeBridge?.scanBarcode) {
-      console.log('Starting native barcode scanner');
+      logger.log('Starting native barcode scanner');
       (window as any).nativeBridge.scanBarcode();
     } else {
-      console.log('Native scanner not available');
+      logger.log('Native scanner not available');
     }
   }, [isNativeWrapper]);
 
   const stopNativeScanner = useCallback(() => {
     if (isNativeWrapper) {
-      console.log('Native scanner stopped');
+      logger.log('Native scanner stopped');
       // Native scanner typically stops automatically after scan
     }
   }, [isNativeWrapper]);

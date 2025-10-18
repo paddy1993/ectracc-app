@@ -1,5 +1,7 @@
 // Enhanced Service Worker Registration for ECTRACC PWA
 
+import logger from '../utils/logger';
+
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
   window.location.hostname === '[::1]' ||
@@ -29,7 +31,7 @@ export function register(config?: Config) {
       if (isLocalhost) {
         checkValidServiceWorker(swUrl, config);
         navigator.serviceWorker.ready.then(() => {
-          console.log(
+          logger.log(
             '[SW] This web app is being served cache-first by a service worker.'
           );
         });
@@ -44,7 +46,7 @@ function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
-      console.log('[SW] Service worker registered successfully');
+      logger.log('[SW] Service worker registered successfully');
       
       // Handle updates
       registration.addEventListener('updatefound', () => {
@@ -57,7 +59,7 @@ function registerValidSW(swUrl: string, config?: Config) {
         installingWorker.addEventListener('statechange', () => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
-              console.log('[SW] New content is available; please refresh.');
+              logger.log('[SW] New content is available; please refresh.');
               
               // Execute callback
               if (config && config.onUpdate) {
@@ -69,7 +71,7 @@ function registerValidSW(swUrl: string, config?: Config) {
                 detail: { registration }
               }));
             } else {
-              console.log('[SW] Content is cached for offline use.');
+              logger.log('[SW] Content is cached for offline use.');
               
               // Execute callback
               if (config && config.onSuccess) {
@@ -93,7 +95,7 @@ function registerValidSW(swUrl: string, config?: Config) {
       // Listen for messages from service worker
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data && event.data.type === 'SYNC_SUCCESS') {
-          console.log('[SW] Background sync successful:', event.data.action);
+          logger.log('[SW] Background sync successful:', event.data.action);
           
           // Dispatch custom event
           window.dispatchEvent(new CustomEvent('sw-sync-success', {
@@ -104,7 +106,7 @@ function registerValidSW(swUrl: string, config?: Config) {
 
       // Handle skip waiting message
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('[SW] Controller changed, reloading page');
+        logger.log('[SW] Controller changed, reloading page');
         window.location.reload();
       });
     })
@@ -134,7 +136,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
       }
     })
     .catch(() => {
-      console.log('[SW] No internet connection found. App is running in offline mode.');
+      logger.log('[SW] No internet connection found. App is running in offline mode.');
     });
 }
 
@@ -194,7 +196,7 @@ export class PWAUtils {
     if ('storage' in navigator && 'persist' in navigator.storage) {
       try {
         const persistent = await navigator.storage.persist();
-        console.log(`[PWA] Persistent storage: ${persistent}`);
+        logger.log(`[PWA] Persistent storage: ${persistent}`);
         return persistent;
       } catch (error) {
         console.error('[PWA] Persistent storage request failed:', error);

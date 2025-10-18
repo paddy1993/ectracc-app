@@ -3,6 +3,8 @@
  * Provides comprehensive offline data management using IndexedDB
  */
 
+import logger from '../utils/logger';
+
 interface OfflineEntry {
   id: string;
   type: 'footprint' | 'product' | 'goal' | 'profile';
@@ -66,7 +68,7 @@ class OfflineStorageService {
 
       request.onsuccess = () => {
         this.db = request.result;
-        console.log('IndexedDB initialized successfully');
+        logger.log('IndexedDB initialized successfully');
         resolve();
       };
 
@@ -98,7 +100,7 @@ class OfflineStorageService {
           db.createObjectStore('settings', { keyPath: 'key' });
         }
 
-        console.log('IndexedDB schema updated');
+        logger.log('IndexedDB schema updated');
       };
     });
   }
@@ -135,7 +137,7 @@ class OfflineStorageService {
       const request = store.put(entry);
 
       request.onsuccess = () => {
-        console.log(`Stored offline ${type} data:`, entryId);
+        logger.log(`Stored offline ${type} data:`, entryId);
         resolve(entryId);
       };
 
@@ -222,7 +224,7 @@ class OfflineStorageService {
       const request = store.put(updated);
 
       request.onsuccess = () => {
-        console.log('Updated offline entry:', id);
+        logger.log('Updated offline entry:', id);
         resolve();
       };
 
@@ -256,7 +258,7 @@ class OfflineStorageService {
       const request = store.put(updated);
 
       request.onsuccess = () => {
-        console.log('Marked as synced:', id);
+        logger.log('Marked as synced:', id);
         resolve();
       };
 
@@ -279,7 +281,7 @@ class OfflineStorageService {
       const request = store.delete(id);
 
       request.onsuccess = () => {
-        console.log('Deleted offline entry:', id);
+        logger.log('Deleted offline entry:', id);
         resolve();
       };
 
@@ -321,7 +323,7 @@ class OfflineStorageService {
       const request = store.put(item);
 
       request.onsuccess = () => {
-        console.log('Added to sync queue:', id);
+        logger.log('Added to sync queue:', id);
         resolve(id);
       };
 
@@ -373,7 +375,7 @@ class OfflineStorageService {
       const request = store.delete(id);
 
       request.onsuccess = () => {
-        console.log('Removed from sync queue:', id);
+        logger.log('Removed from sync queue:', id);
         resolve();
       };
 
@@ -408,14 +410,14 @@ class OfflineStorageService {
         if (item.retryCount >= item.maxRetries) {
           const deleteRequest = store.delete(id);
           deleteRequest.onsuccess = () => {
-            console.log('Removed failed sync item:', id);
+            logger.log('Removed failed sync item:', id);
             resolve();
           };
           deleteRequest.onerror = () => reject(deleteRequest.error);
         } else {
           const putRequest = store.put(item);
           putRequest.onsuccess = () => {
-            console.log('Updated retry count:', id, item.retryCount);
+            logger.log('Updated retry count:', id, item.retryCount);
             resolve();
           };
           putRequest.onerror = () => reject(putRequest.error);
@@ -448,7 +450,7 @@ class OfflineStorageService {
       const request = store.put(cacheEntry);
 
       request.onsuccess = () => {
-        console.log('Cached response:', key);
+        logger.log('Cached response:', key);
         resolve();
       };
 
@@ -562,7 +564,7 @@ class OfflineStorageService {
 
       Promise.all(clearPromises)
         .then(() => {
-          console.log('All offline data cleared');
+          logger.log('All offline data cleared');
           resolve();
         })
         .catch(reject);
@@ -588,7 +590,7 @@ class OfflineStorageService {
           cursor.delete();
           cursor.continue();
         } else {
-          console.log('Expired cache entries cleaned up');
+          logger.log('Expired cache entries cleaned up');
           resolve();
         }
       };
@@ -632,7 +634,7 @@ class OfflineStorageService {
       const request = store.put({ key, value });
 
       request.onsuccess = () => {
-        console.log('Setting saved:', key);
+        logger.log('Setting saved:', key);
         resolve();
       };
 
