@@ -37,13 +37,31 @@ class ProductRepository {
 
   /**
    * Find product by MongoDB ID
-   * @param {string} id - MongoDB ObjectId string
+   * @param {string|ObjectId} id - MongoDB ObjectId string or ObjectId instance
    * @returns {Promise<object|null>} Raw product document
    */
   async findById(id) {
     try {
       const products = this.getCollection();
-      return await products.findOne({ _id: new ObjectId(id) });
+      
+      // Handle both string and ObjectId formats
+      let objectId;
+      if (typeof id === 'string') {
+        // Check if it's a valid ObjectId string
+        if (ObjectId.isValid(id)) {
+          objectId = new ObjectId(id);
+        } else {
+          console.log('[ProductRepository] Invalid ObjectId format:', id);
+          return null;
+        }
+      } else if (id instanceof ObjectId) {
+        objectId = id;
+      } else {
+        console.log('[ProductRepository] Invalid ID type:', typeof id, id);
+        return null;
+      }
+      
+      return await products.findOne({ _id: objectId });
     } catch (error) {
       console.error('[ProductRepository] Error finding by ID:', error);
       throw error;

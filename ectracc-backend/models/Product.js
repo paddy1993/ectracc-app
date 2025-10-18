@@ -275,7 +275,7 @@ class Product {
     }
 
     return {
-      id: product._id,
+      id: product._id?.toString(),
       code: product.code,
       product_name: product.product_name || 'Unknown Product',
       brands: Array.isArray(product.brands) ? product.brands : 

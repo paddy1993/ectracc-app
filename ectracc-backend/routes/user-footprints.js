@@ -301,17 +301,25 @@ router.post('/add-from-product', trackingLimiter, requireAuth, async (req, res) 
     const userId = req.user.id;
 
     // Fetch product details
-    console.log('Looking for product with ID:', product_id, 'type:', typeof product_id);
+    console.log('🔍 [ADD-TO-FOOTPRINT] Looking for product with ID:', product_id, 'type:', typeof product_id);
+    console.log('🔍 [ADD-TO-FOOTPRINT] ID length:', product_id?.length);
+    console.log('🔍 [ADD-TO-FOOTPRINT] Is valid ObjectId string?', require('mongodb').ObjectId.isValid(product_id));
+    
     const product = await Product.findById(product_id);
-    console.log('Raw product from DB:', product);
-    console.log('Product found:', {
-      id: product?.id,
-      _id: product?._id,
-      product_name: product?.product_name,
-      carbon_footprint: product?.carbon_footprint,
-      carbon_footprint_type: typeof product?.carbon_footprint,
-      carbon_footprint_source: product?.carbon_footprint_source
-    });
+    
+    console.log('🔍 [ADD-TO-FOOTPRINT] Raw product from DB:', product ? 'FOUND' : 'NOT FOUND');
+    if (product) {
+      console.log('✅ [ADD-TO-FOOTPRINT] Product found:', {
+        id: product?.id,
+        _id: product?._id,
+        product_name: product?.product_name,
+        carbon_footprint: product?.carbon_footprint,
+        carbon_footprint_type: typeof product?.carbon_footprint,
+        carbon_footprint_source: product?.carbon_footprint_source
+      });
+    } else {
+      console.log('❌ [ADD-TO-FOOTPRINT] Product NOT found for ID:', product_id);
+    }
     
     if (!product) {
       return res.status(404).json({
