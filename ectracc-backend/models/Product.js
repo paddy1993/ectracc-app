@@ -35,7 +35,25 @@ class Product {
     try {
       const products = this.getCollection();
       const { ObjectId } = require('mongodb');
-      const product = await products.findOne({ _id: new ObjectId(id) });
+      
+      // Handle both string and ObjectId formats
+      let objectId;
+      if (typeof id === 'string') {
+        // Check if it's a valid ObjectId string
+        if (ObjectId.isValid(id)) {
+          objectId = new ObjectId(id);
+        } else {
+          console.log('Invalid ObjectId format:', id);
+          return null;
+        }
+      } else if (id instanceof ObjectId) {
+        objectId = id;
+      } else {
+        console.log('Invalid ID type:', typeof id, id);
+        return null;
+      }
+      
+      const product = await products.findOne({ _id: objectId });
       return product ? this.formatProduct(product) : null;
     } catch (error) {
       console.error('Error finding product by ID:', error);
