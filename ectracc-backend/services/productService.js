@@ -115,7 +115,29 @@ class ProductService {
         fat_100g: product.nutriments.fat_100g || null,
         fiber_100g: product.nutriments.fiber_100g || null,
         salt_100g: product.nutriments.salt_100g || null
-      } : null
+      } : null,
+      
+      // Enhanced enrichment fields (11 new fields)
+      quantity: product.quantity || null,
+      product_quantity: product.product_quantity || null,
+      product_quantity_unit: product.product_quantity_unit || null,
+      net_weight: product.net_weight || null,
+      net_weight_unit: product.net_weight_unit || null,
+      packaging: product.packaging || null,
+      packaging_text: product.packaging_text || null,
+      origins: Array.isArray(product.origins) ? product.origins : 
+               (product.origins ? [product.origins] : null),
+      manufacturing_places: Array.isArray(product.manufacturing_places) ? product.manufacturing_places : 
+                           (product.manufacturing_places ? [product.manufacturing_places] : null),
+      labels: Array.isArray(product.labels) ? product.labels : 
+              (product.labels ? [product.labels] : null),
+      stores: Array.isArray(product.stores) ? product.stores : 
+              (product.stores ? [product.stores] : null),
+      countries: Array.isArray(product.countries) ? product.countries : 
+                 (product.countries ? [product.countries] : null),
+      
+      // Enrichment tracking
+      last_enriched: product.last_enriched || null
     };
   }
 
