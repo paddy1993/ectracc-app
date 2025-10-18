@@ -137,6 +137,19 @@ class ProductService {
       countries: Array.isArray(product.countries) ? product.countries : 
                  (product.countries ? [product.countries] : null),
       
+      // Carbon footprint details and source information
+      carbon_footprint_details: (product.co2_total || product.co2_agriculture || product.co2_processing || 
+                                product.co2_transportation || product.co2_packaging || product.co2_distribution) ? {
+        total: product.co2_total || carbonFootprint,
+        agriculture: product.co2_agriculture || null,
+        processing: product.co2_processing || null,
+        transportation: product.co2_transportation || null,
+        packaging: product.co2_packaging || null,
+        distribution: product.co2_distribution || null
+      } : null,
+      carbon_footprint_source: product.carbon_footprint_source || 'estimated',
+      carbon_footprint_reference: product.carbon_footprint_reference || null,
+      
       // Enrichment tracking
       last_enriched: product.last_enriched || null
     };

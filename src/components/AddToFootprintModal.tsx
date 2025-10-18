@@ -124,7 +124,20 @@ export default function AddToFootprintModal({
               
               {product.brands.length > 0 && (
                 <Typography variant="body2" color="text.secondary" gutterBottom>
+                  <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                    Brand:{' '}
+                  </Box>
                   {product.brands.slice(0, 2).join(', ')}
+                </Typography>
+              )}
+
+              {/* Quantity Information */}
+              {(product.quantity || (product.product_quantity && product.product_quantity_unit)) && (
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                    Package Size:{' '}
+                  </Box>
+                  {product.quantity || `${product.product_quantity} ${product.product_quantity_unit}`}
                 </Typography>
               )}
 
@@ -138,9 +151,9 @@ export default function AddToFootprintModal({
                     color: 'success.main'
                   }}
                 />
-                {product.source_database && (
+                {product.carbon_footprint_source && (
                   <Chip
-                    label={`Source: ${product.source_database}`}
+                    label={`Source: ${product.carbon_footprint_source}`}
                     size="small"
                     variant="outlined"
                     sx={{ 
@@ -186,6 +199,49 @@ export default function AddToFootprintModal({
                 </FormControl>
               </Box>
             </Box>
+
+            {/* Carbon Footprint Details */}
+            {product.carbon_footprint_details && (
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
+                  Carbon Footprint Breakdown
+                </Typography>
+                <Box sx={{ p: 1.5, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid', borderColor: 'grey.200' }}>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, fontSize: '0.8rem' }}>
+                    {product.carbon_footprint_details.agriculture && (
+                      <Typography variant="caption" color="text.secondary">
+                        🌾 Agriculture: {userFootprintApi.formatCarbonFootprint(product.carbon_footprint_details.agriculture)}
+                      </Typography>
+                    )}
+                    {product.carbon_footprint_details.processing && (
+                      <Typography variant="caption" color="text.secondary">
+                        🏭 Processing: {userFootprintApi.formatCarbonFootprint(product.carbon_footprint_details.processing)}
+                      </Typography>
+                    )}
+                    {product.carbon_footprint_details.transportation && (
+                      <Typography variant="caption" color="text.secondary">
+                        🚚 Transport: {userFootprintApi.formatCarbonFootprint(product.carbon_footprint_details.transportation)}
+                      </Typography>
+                    )}
+                    {product.carbon_footprint_details.packaging && (
+                      <Typography variant="caption" color="text.secondary">
+                        📦 Packaging: {userFootprintApi.formatCarbonFootprint(product.carbon_footprint_details.packaging)}
+                      </Typography>
+                    )}
+                    {product.carbon_footprint_details.distribution && (
+                      <Typography variant="caption" color="text.secondary">
+                        🏪 Distribution: {userFootprintApi.formatCarbonFootprint(product.carbon_footprint_details.distribution)}
+                      </Typography>
+                    )}
+                  </Box>
+                  {product.carbon_footprint_reference && (
+                    <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block', fontStyle: 'italic' }}>
+                      Reference: {product.carbon_footprint_reference}
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            )}
 
             {/* Total Footprint Calculation */}
             <Box 

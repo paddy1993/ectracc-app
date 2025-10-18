@@ -29,7 +29,9 @@ import {
   Fade,
   Zoom,
   Snackbar,
-  CircularProgress
+  CircularProgress,
+  Collapse,
+  Tooltip
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import {
@@ -37,7 +39,9 @@ import {
   Clear,
   QrCodeScanner,
   EmojiNature as Eco,
-  Add as AddIcon
+  Add as AddIcon,
+  ExpandMore as ExpandMoreIcon,
+  Info as InfoIcon
 } from '@mui/icons-material';
 import FilterChips from '../components/ui/FilterChips';
 import SheetFilters from '../components/filters/SheetFilters';
@@ -149,6 +153,9 @@ export default function ProductSearchPage() {
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const { history, addToHistory, removeFromHistory, clearHistory } = useSearchHistory();
+  
+  // Carbon footprint details expansion state
+  const [expandedDetails, setExpandedDetails] = useState<Set<string>>(new Set());
 
   // Debounced search query (reduced from 500ms to 300ms for faster response)
   const debouncedSearchQuery = useDebounce(searchQuery, 200); // Faster response
@@ -445,6 +452,18 @@ export default function ProductSearchPage() {
 
   const handleScannerClick = () => {
     navigate('/scanner');
+  };
+
+  const toggleCarbonDetails = (productId: string) => {
+    setExpandedDetails(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+      } else {
+        newSet.add(productId);
+      }
+      return newSet;
+    });
   };
 
   // Calculate active filters count
@@ -954,8 +973,25 @@ export default function ProductSearchPage() {
                             color="text.secondary" 
                             sx={{ mb: 1.5, fontWeight: 500 }}
                           >
+                            <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                              Brand:{' '}
+                            </Box>
                             {product.brands.slice(0, 2).join(', ')}
                             {product.brands.length > 2 && ` +${product.brands.length - 2}`}
+                          </Typography>
+                        )}
+
+                        {/* Quantity Information */}
+                        {(product.quantity || (product.product_quantity && product.product_quantity_unit)) && (
+                          <Typography 
+                            variant="body2" 
+                            color="text.secondary" 
+                            sx={{ mb: 1.5, fontWeight: 500 }}
+                          >
+                            <Box component="span" sx={{ fontWeight: 600, color: 'text.primary' }}>
+                              Size:{' '}
+                            </Box>
+                            {product.quantity || `${product.product_quantity} ${product.product_quantity_unit}`}
                           </Typography>
                         )}
 
@@ -985,20 +1021,39 @@ export default function ProductSearchPage() {
                                   fontSize: '0.75rem'
                                 }}
                               />
-                              {product.source_database && (
-                                <Chip
-                                  label={getSourceIcon(product.source_database)}
-                                  size="small"
-                                  variant="outlined"
-                                  sx={{ 
-                                    borderColor: getSourceColor(product.source_database),
-                                    color: getSourceColor(product.source_database),
-                                    fontSize: '0.7rem',
-                                    minWidth: 'auto',
-                                    '& .MuiChip-label': { px: 0.5 }
-                                  }}
-                                  title={getSourceLabel(product.source_database)}
-                                />
+                              {product.carbon_footprint_source && (
+                                <Tooltip title={`Source: ${product.carbon_footprint_source}`}>
+                                  <Chip
+                                    label={getSourceIcon(product.carbon_footprint_source)}
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{ 
+                                      borderColor: getSourceColor(product.carbon_footprint_source),
+                                      color: getSourceColor(product.carbon_footprint_source),
+                                      fontSize: '0.7rem',
+                                      minWidth: 'auto',
+                                      '& .MuiChip-label': { px: 0.5 }
+                                    }}
+                                  />
+                                </Tooltip>
+                              )}
+                              {product.carbon_footprint_details && (
+                                <Tooltip title="View carbon footprint breakdown">
+                                  <IconButton
+                                    size="small"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      toggleCarbonDetails(product.id);
+                                    }}
+                                    sx={{
+                                      transform: expandedDetails.has(product.id) ? 'rotate(180deg)' : 'rotate(0deg)',
+                                      transition: 'transform 0.2s ease',
+                                      p: 0.5
+                                    }}
+                                  >
+                                    <ExpandMoreIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
                               )}
                             </>
                           )}
@@ -1019,6 +1074,49 @@ export default function ProductSearchPage() {
                           {product.categories.slice(0, 3).join(' • ')}
                           {product.categories.length > 3 && ` • +${product.categories.length - 3} more`}
                         </Typography>
+
+                        {/* Carbon Footprint Details - Collapsible */}
+                        {product.carbon_footprint_details && (
+                          <Collapse in={expandedDetails.has(product.id)}>
+                            <Box sx={{ mt: 2, p: 1.5, bgcolor: 'success.50', borderRadius: 1, border: '1px solid', borderColor: 'success.200' }}>
+                              <Typography variant="caption" sx={{ fontWeight: 600, color: 'success.dark', mb: 1, display: 'block' }}>
+                                Carbon Footprint Breakdown
+                              </Typography>
+                              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.5, fontSize: '0.7rem' }}>
+                                {product.carbon_footprint_details.agriculture && (
+                                  <Typography variant="caption" color="text.secondary">
+                                    🌾 Agriculture: {ProductApiService.formatCarbonFootprint(product.carbon_footprint_details.agriculture)}
+                                  </Typography>
+                                )}
+                                {product.carbon_footprint_details.processing && (
+                                  <Typography variant="caption" color="text.secondary">
+                                    🏭 Processing: {ProductApiService.formatCarbonFootprint(product.carbon_footprint_details.processing)}
+                                  </Typography>
+                                )}
+                                {product.carbon_footprint_details.transportation && (
+                                  <Typography variant="caption" color="text.secondary">
+                                    🚚 Transport: {ProductApiService.formatCarbonFootprint(product.carbon_footprint_details.transportation)}
+                                  </Typography>
+                                )}
+                                {product.carbon_footprint_details.packaging && (
+                                  <Typography variant="caption" color="text.secondary">
+                                    📦 Packaging: {ProductApiService.formatCarbonFootprint(product.carbon_footprint_details.packaging)}
+                                  </Typography>
+                                )}
+                                {product.carbon_footprint_details.distribution && (
+                                  <Typography variant="caption" color="text.secondary">
+                                    🏪 Distribution: {ProductApiService.formatCarbonFootprint(product.carbon_footprint_details.distribution)}
+                                  </Typography>
+                                )}
+                              </Box>
+                              {product.carbon_footprint_reference && (
+                                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block', fontStyle: 'italic' }}>
+                                  Reference: {product.carbon_footprint_reference}
+                                </Typography>
+                              )}
+                            </Box>
+                          </Collapse>
+                        )}
                       </CardContent>
                     </CardActionArea>
                     

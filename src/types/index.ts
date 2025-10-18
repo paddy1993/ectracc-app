@@ -105,6 +105,8 @@ export interface Product {
     packaging?: number;
     distribution?: number;
   };
+  carbon_footprint_source?: string;
+  carbon_footprint_reference?: string;
   product_type?: string;
   source_database?: string;
   last_updated: string;
@@ -112,6 +114,10 @@ export interface Product {
   packaging?: string;
   countries?: string[];
   manufacturing_places?: string;
+  // Quantity information
+  quantity?: string;
+  product_quantity?: number;
+  product_quantity_unit?: string;
   score?: number; // text search relevance score
 }
 

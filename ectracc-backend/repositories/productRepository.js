@@ -126,7 +126,19 @@ class ProductRepository {
         nutriments: 1,
         product_type: 1,
         image_url: 1,
-        serving_size: 1
+        serving_size: 1,
+        // Quantity fields
+        quantity: 1,
+        product_quantity: 1,
+        product_quantity_unit: 1,
+        // Carbon footprint detail fields
+        co2_agriculture: 1,
+        co2_processing: 1,
+        co2_transportation: 1,
+        co2_packaging: 1,
+        co2_distribution: 1,
+        carbon_footprint_source: 1,
+        carbon_footprint_reference: 1
       };
 
       // Add text score to projection if using text search
