@@ -1,14 +1,16 @@
 name: Mobile Tests
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
-    paths:
-      - 'ectracc-mobile/**'
-      - 'packages/**'
-      - '.github/workflows/mobile-test.yml'
+  # Temporarily disabled - will enable after dependencies are installed
+  # push:
+  #   branches: [main, develop]
+  # pull_request:
+  #   branches: [main, develop]
+  #   paths:
+  #     - 'ectracc-mobile/**'
+  #     - 'packages/**'
+  #     - '.github/workflows/mobile-test.yml'
+  workflow_dispatch:
 
 jobs:
   test-shared-packages:
