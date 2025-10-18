@@ -1,44 +1,33 @@
-# GitHub Actions Workflows Status
+# 🤖 GitHub Actions Workflows
 
-## Current Status
+Automated CI/CD workflows for ECTRACC application.
 
-The mobile CI/CD workflows have been temporarily disabled to prevent failed builds while the project is being set up.
+---
 
-### Disabled Workflows
+## 📋 Available Workflows
 
-1. **Mobile Tests** (`mobile-test.yml`) - Temporarily disabled
-   - **Reason**: Need to install dependencies first
-   - **Re-enable when**: After running `npm install` in the root directory
+### 1. Mobile Tests (`mobile-test.yml`)
 
-2. **Build iOS App** (`mobile-build-ios.yml`) - Manual trigger only
-   - **Reason**: Requires Expo credentials (EXPO_TOKEN) in GitHub Secrets
-   - **Re-enable when**: After setting up Expo account and adding secrets
+**Purpose**: Run automated tests on mobile app and shared packages  
+**Trigger**: Manual (workflow_dispatch) - Currently disabled for auto-trigger  
+**Duration**: ~3 minutes
 
-3. **Build Android App** (`mobile-build-android.yml`) - Manual trigger only
-   - **Reason**: Requires Expo credentials (EXPO_TOKEN) in GitHub Secrets
-   - **Re-enable when**: After setting up Expo account and adding secrets
+#### Jobs
+1. **test-shared-packages**: Tests shared-core and shared-services packages
+2. **test-mobile**: Tests mobile app
+3. **lint-mobile**: Lints mobile code
+4. **type-check**: TypeScript type checking
 
-## How to Enable Workflows
-
-### Step 1: Install Dependencies
-
+#### How to Run
 ```bash
-cd /path/to/ectracc-fresh
-npm install
+# Via GitHub UI
+GitHub → Actions → Mobile Tests → Run workflow
+
+# Or enable auto-trigger by uncommenting in workflow file
 ```
 
-This will install all dependencies for the monorepo, including:
-- Mobile app dependencies
-- Shared package dependencies  
-- Testing libraries (Jest, React Native Testing Library)
-
-### Step 2: Enable Mobile Tests
-
-Once dependencies are installed locally and tests pass:
-
-1. Edit `.github/workflows/mobile-test.yml`
-2. Uncomment the `on:` section:
-
+#### Enable Auto-Trigger
+Uncomment lines 4-12 in `mobile-test.yml`:
 ```yaml
 on:
   push:
@@ -51,83 +40,279 @@ on:
       - '.github/workflows/mobile-test.yml'
 ```
 
-3. Commit and push
+---
 
-### Step 3: Configure Expo for Build Workflows
+### 2. Build iOS App (`mobile-build-ios.yml`)
 
-To enable automated builds:
+**Purpose**: Build iOS application using EAS Build  
+**Trigger**: Manual or git tags (v*)  
+**Duration**: ~25-30 minutes
 
-1. Create an Expo account at https://expo.dev
-2. Install EAS CLI: `npm install -g eas-cli`
-3. Login: `eas login`
-4. Initialize: `cd ectracc-mobile && eas init`
-5. Create auth token: `eas token:create`
-6. Add to GitHub Secrets:
-   - Go to GitHub repo → Settings → Secrets and variables → Actions
-   - Add new secret: `EXPO_TOKEN` with the token from step 5
-7. Add other required secrets:
-   - `API_BASE_URL`: Your backend API URL
-   - `SUPABASE_URL`: Your Supabase project URL
-   - `SUPABASE_ANON_KEY`: Your Supabase anon key
+#### Jobs
+1. **build**: Builds iOS app
+   - Runs tests
+   - Builds with EAS
+   - Uploads logs
+   
+2. **submit**: Submits to TestFlight (only if production + main branch)
 
-### Step 4: Enable Build Workflows
+#### Build Profiles
+- **development**: Development build with dev client
+- **preview**: Internal testing build (simulator compatible)
+- **production**: Production build for App Store
 
-Once Expo is configured:
+#### How to Run
+```bash
+# Via GitHub UI
+GitHub → Actions → Build iOS App → Run workflow
+# Select profile: development | preview | production
 
-1. Edit `.github/workflows/mobile-build-ios.yml`
-2. Uncomment the `on:` section:
+# Via git tag (auto-trigger)
+git tag -a v1.0.1 -m "Release 1.0.1"
+git push origin v1.0.1
+```
 
+#### Enable Auto-Trigger
+Uncomment lines 4-8 in `mobile-build-ios.yml`:
 ```yaml
 on:
   push:
     branches: [main]
-  tags:
-    - 'v*'
-  workflow_dispatch:
+    tags:
+      - 'v*'
 ```
 
-3. Repeat for `mobile-build-android.yml`
-4. Commit and push
+---
 
-## Testing Workflows Manually
+### 3. Build Android App (`mobile-build-android.yml`)
 
-All workflows can be triggered manually even when automatic triggers are disabled:
+**Purpose**: Build Android application using EAS Build  
+**Trigger**: Manual or git tags (v*)  
+**Duration**: ~20-25 minutes
 
-1. Go to GitHub repo → Actions tab
-2. Select the workflow you want to run
-3. Click "Run workflow"
-4. Select branch and options
-5. Click "Run workflow"
+#### Jobs
+1. **build**: Builds Android app
+   - Runs tests
+   - Builds with EAS
+   - Uploads logs
+   
+2. **submit**: Submits to Google Play (only if production + main branch)
 
-## Troubleshooting
+#### Build Profiles
+- **development**: Development build with dev client
+- **preview**: Internal testing build (APK)
+- **production**: Production build for Play Store (AAB)
 
-### Tests Fail with "Cannot find module"
-
-**Solution**: Ensure all dependencies are installed:
+#### How to Run
 ```bash
-npm install
-cd ectracc-mobile && npm install
+# Via GitHub UI
+GitHub → Actions → Build Android App → Run workflow
+# Select profile: development | preview | production
+
+# Via git tag (auto-trigger)
+git tag -a v1.0.1 -m "Release 1.0.1"
+git push origin v1.0.1
 ```
 
-### Build Fails with "Expo token not found"
+#### Enable Auto-Trigger
+Uncomment lines 4-8 in `mobile-build-android.yml`:
+```yaml
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+```
 
-**Solution**: Add `EXPO_TOKEN` to GitHub Secrets (see Step 3 above)
+---
 
-### Type Errors in Tests
+## 🔐 Required Secrets
 
-**Solution**: Build the TypeScript packages first:
+Set these in: **GitHub → Settings → Secrets and variables → Actions**
+
+| Secret Name | Description | Where to Get |
+|-------------|-------------|--------------|
+| `EXPO_TOKEN` | EAS/Expo authentication token | [Expo Dashboard](https://expo.dev/accounts/[account]/settings/access-tokens) |
+| `API_BASE_URL` | Backend API URL | Your backend deployment URL |
+| `SUPABASE_URL` | Supabase project URL | Supabase Dashboard → Project Settings → API |
+| `SUPABASE_ANON_KEY` | Supabase anonymous key | Supabase Dashboard → Project Settings → API |
+
+### How to Get EXPO_TOKEN
+
+1. Go to https://expo.dev
+2. Log in to your account
+3. Navigate to Account Settings → Access Tokens
+4. Click "Create Token"
+5. Name: "GitHub Actions"
+6. Copy the token (save it - you won't see it again!)
+7. Add to GitHub Secrets as `EXPO_TOKEN`
+
+---
+
+## 📊 Workflow Status
+
+Check workflow status:
+- **GitHub UI**: Repository → Actions tab
+- **Badge**: Add to README.md:
+  ```markdown
+  ![Mobile Tests](https://github.com/yourusername/ectracc/actions/workflows/mobile-test.yml/badge.svg)
+  ![iOS Build](https://github.com/yourusername/ectracc/actions/workflows/mobile-build-ios.yml/badge.svg)
+  ![Android Build](https://github.com/yourusername/ectracc/actions/workflows/mobile-build-android.yml/badge.svg)
+  ```
+
+---
+
+## 🔄 Typical Workflow Usage
+
+### During Development
 ```bash
-npm run build --workspaces
+# Run tests before committing
+GitHub → Actions → Mobile Tests → Run workflow
+# Wait for results (~3 min)
+# If tests pass, commit and push
 ```
 
-## Documentation
+### For Testing Builds
+```bash
+# Build preview version
+GitHub → Actions → Build iOS App → Run workflow → Select "preview"
+GitHub → Actions → Build Android App → Run workflow → Select "preview"
 
-For more detailed information, see:
-- Testing Guide: `ectracc-mobile/TESTING_GUIDE.md`
-- CI/CD Guide: `ectracc-mobile/CI_CD_IMPLEMENTATION_COMPLETE.md`
-- Expo Setup: `ectracc-mobile/README.md`
+# Download builds from EAS
+# Test on devices
+```
 
-## Contact
+### For Production Release
+```bash
+# 1. Update version in app.json
+# 2. Commit and push to main
+# 3. Create and push tag
+git tag -a v1.1.0 -m "Release 1.1.0"
+git push origin v1.1.0
 
-If you encounter issues with the workflows, check the documentation or consult the CI/CD implementation guide.
+# 4. Builds automatically trigger (if auto-trigger enabled)
+# OR manually trigger:
+GitHub → Actions → Build iOS App → Run workflow → Select "production"
+GitHub → Actions → Build Android App → Run workflow → Select "production"
 
+# 5. Apps automatically submit to stores (if on main branch)
+```
+
+---
+
+## 🚨 Troubleshooting
+
+### Workflow Fails: "Expo token not found"
+**Solution**: Add `EXPO_TOKEN` to GitHub Secrets
+```bash
+GitHub → Settings → Secrets → New repository secret
+Name: EXPO_TOKEN
+Value: [your-expo-token]
+```
+
+### Workflow Fails: Tests Timeout
+**Solution**: Tests might be failing. Run locally:
+```bash
+npm run test:all
+```
+
+### Build Fails: "Module not found"
+**Solution**: Dependencies might be out of sync
+```bash
+# Ensure package-lock.json is committed
+# In workflow, `npm ci` is used (not `npm install`)
+```
+
+### Submit Fails: "Invalid credentials"
+**Solution**: Check EAS credentials:
+```bash
+cd ectracc-mobile
+eas credentials
+# Verify Apple/Google credentials are configured
+```
+
+### Workflow Not Triggering Automatically
+**Solution**: Check workflow file has correct triggers uncommented
+```yaml
+# Should have:
+on:
+  push:
+    branches: [main]
+```
+
+---
+
+## 📈 Optimization Tips
+
+### Cache Dependencies
+Already implemented in workflows:
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    cache: 'npm'
+```
+
+### Parallel Jobs
+Test jobs run in parallel for faster execution:
+- test-shared-packages (parallel)
+- test-mobile (parallel)
+- lint-mobile (parallel)
+- type-check (parallel)
+
+### Skip CI for Docs
+Add to commit message to skip CI:
+```bash
+git commit -m "docs: update README [skip ci]"
+```
+
+---
+
+## 🔗 Related Documentation
+
+- [EAS Build Documentation](https://docs.expo.dev/build/introduction/)
+- [EAS Submit Documentation](https://docs.expo.dev/submit/introduction/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [ECTRACC Development Workflow](../../DEVELOPMENT_WORKFLOW_PLAN.md)
+
+---
+
+## 📝 Workflow Maintenance
+
+### Update Node Version
+Change in all workflow files:
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    node-version: '18'  # Update this
+```
+
+### Update Actions Versions
+Periodically update action versions:
+```yaml
+- uses: actions/checkout@v4      # Check for v5
+- uses: actions/setup-node@v4    # Check for updates
+- uses: expo/expo-github-action@v8  # Check for v9
+```
+
+### Add New Workflow
+1. Create `.github/workflows/new-workflow.yml`
+2. Define triggers, jobs, steps
+3. Test with manual trigger first
+4. Enable auto-trigger when stable
+
+---
+
+## 🎯 Best Practices
+
+1. **Always test locally first**: Run `npm run test:all` before pushing
+2. **Use manual trigger initially**: Test workflow before enabling auto-trigger
+3. **Monitor workflow runs**: Check Actions tab regularly
+4. **Keep secrets secure**: Never log or expose secrets
+5. **Use build profiles**: development → preview → production
+6. **Review logs**: Even if workflow succeeds, check logs for warnings
+7. **Keep workflows updated**: Update dependencies and actions regularly
+
+---
+
+**Last Updated**: October 18, 2025  
+**Maintained By**: Development Team

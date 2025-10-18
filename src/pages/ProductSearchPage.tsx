@@ -114,6 +114,11 @@ export default function ProductSearchPage() {
     analytics.trackPageView('Product Search');
   }, []);
 
+  // Mark initial mount as complete after first render
+  useEffect(() => {
+    setIsInitialMount(false);
+  }, []);
+
   // State
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
@@ -143,6 +148,21 @@ export default function ProductSearchPage() {
   const [error, setError] = useState<string | null>(null);
   // Categories and brands now loaded via optimized API calls above
   const [lastSearchTime, setLastSearchTime] = useState<number>(0);
+  
+  // Track initial mount to prevent auto-search on page load
+  const [isInitialMount, setIsInitialMount] = useState(true);
+  const [hasSearched, setHasSearched] = useState(false);
+  
+  // Check if we're loading from URL params (for deep linking)
+  const hasUrlParams = useMemo(() => {
+    return searchParams.get('q') || 
+           searchParams.has('category') || 
+           searchParams.has('brand') ||
+           searchParams.has('source') ||
+           searchParams.get('minCarbon') !== null ||
+           searchParams.get('maxCarbon') !== null ||
+           (searchParams.get('sortBy') && searchParams.get('sortBy') !== 'relevance');
+  }, [searchParams]);
   
   // Add to footprint modal state
   const [addToFootprintModalOpen, setAddToFootprintModalOpen] = useState(false);
@@ -291,6 +311,9 @@ export default function ProductSearchPage() {
     // Reset page to 1 for new search
     setPage(1);
     
+    // Mark that user has actively searched
+    setHasSearched(true);
+    
     // Track search
     analytics.trackProductSearch(searchQuery, {
       categories: selectedCategories,
@@ -338,12 +361,33 @@ export default function ProductSearchPage() {
     }
     setSearchFocused(false);
     setSuggestions([]);
+    setHasSearched(true);
     handleSearch();
   }, [searchQuery, addToHistory, handleSearch]);
 
   // Auto-search when debounced query changes
   useEffect(() => {
     if (debouncedSearchQuery !== searchQuery) return; // Only search when debounce is complete
+    
+    // Prevent auto-search on initial mount unless we have URL params
+    if (isInitialMount && !hasUrlParams) {
+      return;
+    }
+    
+    // Only search if:
+    // 1. User has a search query, OR
+    // 2. User has actively searched before (applying filters), OR
+    // 3. We're loading from URL params
+    const hasActiveFilters = selectedCategories.length > 0 || 
+                            selectedBrands.length > 0 || 
+                            selectedSources.length > 0 ||
+                            carbonFootprintRange[0] > 0 || 
+                            carbonFootprintRange[1] < 10 ||
+                            sortBy !== 'relevance';
+    
+    if (!debouncedSearchQuery && !hasActiveFilters && !hasUrlParams && !hasSearched) {
+      return;
+    }
     
     const params: ProductSearchParams = {
       q: debouncedSearchQuery || undefined,
@@ -358,7 +402,7 @@ export default function ProductSearchPage() {
 
     setPage(1);
     searchProducts(params);
-  }, [debouncedSearchQuery, selectedCategories, selectedBrands, selectedSources, carbonFootprintRange, sortBy]);
+  }, [debouncedSearchQuery, selectedCategories, selectedBrands, selectedSources, carbonFootprintRange, sortBy, isInitialMount, hasUrlParams, hasSearched]);
 
   const clearFilters = () => {
     setSearchQuery('');
