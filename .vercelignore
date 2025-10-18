@@ -1,0 +1,20 @@
+# Ignore mobile packages during web deployment
+ectracc-mobile/
+packages/
+
+# Mobile-specific files
+*.native.*
+*.ios.*
+*.android.*
+
+# Mobile documentation
+MOBILE_*.md
+NEXT_STEPS_FOR_LAUNCH.md
+WORKFLOW_FIXES.md
+APP_STORE_*.md
+GOOGLE_PLAY_*.md
+MONITORING_SETUP_GUIDE.md
+
+# GitHub workflows (not needed for deployment)
+.github/workflows/mobile-*.yml
+

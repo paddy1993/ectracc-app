@@ -1,3 +1,5 @@
 {
-  "version": 2
+  "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install --legacy-peer-deps --ignore-scripts"
 }

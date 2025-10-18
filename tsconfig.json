@@ -18,15 +18,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "paths": {
-      "@ectracc/shared-types": ["./packages/shared-types/src"],
-      "@ectracc/shared-core": ["./packages/shared-core/src"],
-      "@ectracc/shared-services": ["./packages/shared-services/src"]
-    }
+    "jsx": "react-jsx"
   },
   "include": [
-    "src",
-    "packages/*/src"
+    "src"
   ]
 }
