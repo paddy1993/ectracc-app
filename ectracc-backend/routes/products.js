@@ -36,6 +36,9 @@ router.get('/random', checkMongoConnection, productController.getRandom.bind(pro
 // GET /api/products/stats - Get database statistics
 router.get('/stats', checkMongoConnection, productController.getStats.bind(productController));
 
+// GET /api/products/health - Health check for debugging
+router.get('/health', productController.healthCheck.bind(productController));
+
 // GET /api/products/:id - Get product by ID
 router.get('/:id', checkMongoConnection, productController.getById.bind(productController));
 

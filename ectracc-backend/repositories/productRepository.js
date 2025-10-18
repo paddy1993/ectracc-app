@@ -9,7 +9,13 @@ class ProductRepository {
 
   getCollection() {
     if (!this.collection) {
-      this.collection = getMongoCollection('food_products');
+      try {
+        this.collection = getMongoCollection('products');
+        console.log('[ProductRepository] Successfully connected to products collection');
+      } catch (error) {
+        console.error('[ProductRepository] Failed to get products collection:', error);
+        throw new Error('Database connection failed: ' + error.message);
+      }
     }
     return this.collection;
   }
@@ -52,6 +58,7 @@ class ProductRepository {
    */
   async search(query, options = {}) {
     try {
+      console.log('[ProductRepository] Starting search with query:', query, 'options:', options);
       const products = this.getCollection();
       const {
         limit = 20,
@@ -128,6 +135,7 @@ class ProductRepository {
       }
 
       // Execute query with proper pagination
+      console.log('[ProductRepository] Executing query with filter:', JSON.stringify(filter), 'sort:', sort);
       const results = await products
         .find(filter, { projection })
         .sort(sort)
@@ -135,9 +143,16 @@ class ProductRepository {
         .limit(limit * 2) // Get extra for post-filtering
         .toArray();
 
+      console.log('[ProductRepository] Query returned', results.length, 'results');
       return results;
     } catch (error) {
-      console.error('[ProductRepository] Error searching products:', error);
+      console.error('[ProductRepository] Error searching products:', {
+        message: error.message,
+        stack: error.stack,
+        query: query,
+        options: options,
+        timestamp: new Date().toISOString()
+      });
       throw error;
     }
   }

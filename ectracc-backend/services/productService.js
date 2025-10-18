@@ -99,7 +99,8 @@ class ProductService {
       product_name: product.product_name || 'Unknown Product',
       brands: brands,
       categories: categories,
-      carbon_footprint: carbonFootprint,
+      carbonFootprint: carbonFootprint, // Use camelCase for frontend compatibility
+      carbon_footprint: carbonFootprint, // Keep snake_case for backward compatibility
       carbonFootprintUnit: 'kg CO2 per 100g',
       ecoscore_grade: product.ecoscore_grade?.toLowerCase() || null,
       nutriscore_grade: product.nutriscore_grade?.toLowerCase() || null,
@@ -194,7 +195,7 @@ class ProductService {
       // Apply carbon footprint filtering (post-query)
       if (options.minCarbon !== null || options.maxCarbon !== null) {
         formattedProducts = formattedProducts.filter(product => {
-          const carbon = product.carbonFootprint;
+          const carbon = product.carbonFootprint || product.carbon_footprint || 0;
           if (options.minCarbon !== null && carbon < options.minCarbon) return false;
           if (options.maxCarbon !== null && carbon > options.maxCarbon) return false;
           return true;
@@ -203,9 +204,9 @@ class ProductService {
 
       // Apply carbon-based sorting
       if (sortBy === 'carbon_asc') {
-        formattedProducts.sort((a, b) => a.carbonFootprint - b.carbonFootprint);
+        formattedProducts.sort((a, b) => (a.carbonFootprint || 0) - (b.carbonFootprint || 0));
       } else if (sortBy === 'carbon_desc') {
-        formattedProducts.sort((a, b) => b.carbonFootprint - a.carbonFootprint);
+        formattedProducts.sort((a, b) => (b.carbonFootprint || 0) - (a.carbonFootprint || 0));
       }
 
       // Limit to requested amount after filtering

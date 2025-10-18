@@ -35,28 +35,52 @@ class ProductController {
 
       const products = await productService.searchProducts(query, filters);
 
+      // Format response to match frontend expectations
       res.json({
         success: true,
         data: products,
-        pagination: {
-          page: parseInt(page) || 1,
-          limit: parseInt(limit) || 20,
-          total: products.length,
-          hasMore: products.length === (parseInt(limit) || 20)
-        },
-        query: {
-          search: query || null,
-          filters: { category, brand, ecoscore: filters.ecoScore },
-          sort: filters.sortBy
+        meta: {
+          pagination: {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 20,
+            total: products.length,
+            totalPages: Math.ceil(products.length / (parseInt(limit) || 20)),
+            hasMore: products.length === (parseInt(limit) || 20)
+          },
+          query: {
+            q: query || null,
+            category: category || null,
+            brand: brand || null,
+            minCarbon: minCarbon || null,
+            maxCarbon: maxCarbon || null,
+            sortBy: filters.sortBy
+          }
         }
       });
     } catch (error) {
-      console.error('[ProductController] Search error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Search failed',
-        message: 'An error occurred while searching products'
+      console.error('[ProductController] Search error:', {
+        message: error.message,
+        stack: error.stack,
+        query: query,
+        filters: filters,
+        timestamp: new Date().toISOString()
       });
+      
+      // Check if it's a MongoDB connection error
+      if (error.message?.includes('MongoServerError') || error.message?.includes('connection')) {
+        res.status(503).json({
+          success: false,
+          error: 'Database connection failed',
+          message: 'Unable to connect to the database. Please try again later.'
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          error: 'Search failed',
+          message: 'An error occurred while searching products',
+          details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+      }
     }
   }
 
@@ -223,6 +247,40 @@ class ProductController {
         success: false,
         error: 'Failed to fetch statistics',
         message: 'An error occurred while fetching statistics'
+      });
+    }
+  }
+
+  /**
+   * Health check for product search functionality
+   * GET /api/products/health
+   */
+  async healthCheck(req, res) {
+    try {
+      // Test basic database connection
+      const testProduct = await productService.getRandomProducts(1);
+      
+      // Test search functionality
+      const searchTest = await productService.searchProducts('', { limit: 1 });
+      
+      res.json({
+        success: true,
+        status: 'healthy',
+        data: {
+          database: 'connected',
+          collection: 'accessible',
+          totalProducts: testProduct.length > 0 ? 'available' : 'empty',
+          searchFunctional: searchTest.length >= 0 ? 'working' : 'failed',
+          timestamp: new Date().toISOString()
+        }
+      });
+    } catch (error) {
+      console.error('[ProductController] Health check failed:', error);
+      res.status(503).json({
+        success: false,
+        status: 'unhealthy',
+        error: error.message,
+        timestamp: new Date().toISOString()
       });
     }
   }
